@@ -18,4 +18,8 @@ public class UserService {
     public Optional<User> findByCredentials(String username, String password) {
         return userRepository.findByUsernameAndPassword(username, password);
     }
+
+    public User save(User user) {
+        return userRepository.save(user);
+    }
 }
