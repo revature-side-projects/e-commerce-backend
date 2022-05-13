@@ -1,4 +1,4 @@
-package com.revature.models;
+package com.revature.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,13 +13,10 @@ import javax.persistence.Id;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class ProductInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String username;
-    private String password;
-    private String firstName;
-    private String lastName;
+    private int quantity;
 }
