@@ -1,5 +1,6 @@
 package com.revature.services;
 
+import com.revature.dtos.ProductInfo;
 import com.revature.models.Product;
 import com.revature.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,10 @@ public class ProductService {
 
     public Product save(Product product) {
         return productRepository.save(product);
+    }
+    
+    public List<Product> saveAll(List<Product> productList, List<ProductInfo> metadata) {
+    	return productRepository.saveAll(productList);
     }
 
     public void delete(int id) {

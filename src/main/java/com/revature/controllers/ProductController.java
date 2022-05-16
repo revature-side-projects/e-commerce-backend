@@ -7,6 +7,7 @@ import com.revature.services.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,23 +47,29 @@ public class ProductController {
 
     @Authorized
     @PatchMapping
-    public ResponseEntity<Product> changeQuantity(@RequestBody ProductInfo metadata) {
-        Optional<Product> optional = productService.findById(metadata.getId());
+    public ResponseEntity<List<Product>> purchase(@RequestBody List<ProductInfo> metadata) { 	
+    	List<Product> productList = new ArrayList<Product>();
+    	
+    	for (int i = 0; i < metadata.size(); i++) {
+    		Optional<Product> optional = productService.findById(metadata.get(i).getId());
 
-        if(!optional.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
+    		if(!optional.isPresent()) {
+    			return ResponseEntity.notFound().build();
+    		}
 
-        Product product = optional.get();
+    		Product product = optional.get();
 
-        if(product.getQuantity() + metadata.getQuantity() < 0) {
-            return ResponseEntity.badRequest().build();
-        }
+    		if(product.getQuantity() - metadata.get(i).getQuantity() < 0) {
+    			return ResponseEntity.badRequest().build();
+    		}
+    		
+    		product.setQuantity(product.getQuantity() - metadata.get(i).getQuantity());
+    		productList.add(product);
+    	}
+        
+        productService.saveAll(productList, metadata);
 
-        product.setQuantity(product.getQuantity() + metadata.getQuantity());
-        productService.save(product);
-
-        return ResponseEntity.ok(product);
+        return ResponseEntity.ok(productList);
     }
 
     @Authorized
