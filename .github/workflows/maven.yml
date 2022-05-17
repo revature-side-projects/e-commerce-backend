@@ -24,7 +24,7 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-      env:
+      #env:
         #Enviroment variables
         #secrets are private Enviroment variables hidden from public view
         #POSTGRESDB: ${{secrets.POSTGRESDB}}
