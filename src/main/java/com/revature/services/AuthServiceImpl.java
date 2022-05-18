@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class AuthServiceImpl {
+public class AuthServiceImpl implements AuthService{
 
     private final UserServiceImpl userService;
 
@@ -20,5 +20,18 @@ public class AuthServiceImpl {
 
     public User register(User user) {
         return userService.save(user);
+    }
+
+    @Override
+    public boolean forgotPassword(String email) {
+        if(userService.findByEmail(email)) {
+            System.out.println("email sent");
+            //TODO POST to reset reset request table {uuid,timestamp,userId}
+            //TODO send email
+            //TODO alert that an email has been sent to the address with the reset password list
+            return true;
+        }
+        //TODO alert that an email has been sent to the address with the reset password list
+        return false;
     }
 }
