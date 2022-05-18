@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ProductServiceImpl {
+public class ProductServiceImpl implements ProductService{
 
     private final ProductRepository productRepository;
 
@@ -31,6 +31,10 @@ public class ProductServiceImpl {
     
     public List<Product> saveAll(List<Product> productList, List<ProductInfo> metadata) {
     	return productRepository.saveAll(productList);
+    }
+
+    public List<Product> searchProduct(String searchParam){
+        return null;
     }
 
     public void delete(int id) {

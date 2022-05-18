@@ -15,5 +15,7 @@ public interface ProductService {
 
     public List<Product> saveAll(List<Product> productList, List<ProductInfo> metadata);
 
+    public List<Product> searchProduct(String searchParam);
+
     public void delete(int id);
 }
