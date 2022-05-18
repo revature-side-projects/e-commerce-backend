@@ -19,12 +19,18 @@ public class UserServiceImpl implements UserService{
         return userRepository.findByEmailAndPassword(email, password);
     }
 
-    @Override
-    public boolean findByEmail(String email) {
-        return userRepository.findByEmail(email).isPresent();
-    }
-
     public User save(User user) {
         return userRepository.save(user);
+    }
+
+    @Override
+    public Boolean findByEmail(String email) {
+        User searchedUser = userRepository.findByEmail(email);
+        if (searchedUser == null){
+            return false;
+        }
+        else{
+            return true;
+        }
     }
 }

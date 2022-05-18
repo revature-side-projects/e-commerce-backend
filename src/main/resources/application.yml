@@ -13,3 +13,15 @@ spring:
     password: password
   h2:
     console.enabled: true
+
+  mail:
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: 'true'
+          auth: 'true'
+    host: smtp.gmail.com
+    username: isaiahlee667@gmail.com
+    password: swyqkclkpnoylfng
+    port: '587'
