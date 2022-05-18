@@ -2,38 +2,18 @@ package com.revature.services;
 
 import com.revature.dtos.ProductInfo;
 import com.revature.models.Product;
-import com.revature.repositories.ProductRepository;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
-public class ProductService {
+public interface ProductService {
+    public List<Product> findAll();
 
-    private final ProductRepository productRepository;
+    public Optional<Product> findById(int id);
 
-    public ProductService(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+    public Product save(Product product);
 
-    public List<Product> findAll() {
-        return productRepository.findAll();
-    }
+    public List<Product> saveAll(List<Product> productList, List<ProductInfo> metadata);
 
-    public Optional<Product> findById(int id) {
-        return productRepository.findById(id);
-    }
-
-    public Product save(Product product) {
-        return productRepository.save(product);
-    }
-    
-    public List<Product> saveAll(List<Product> productList, List<ProductInfo> metadata) {
-    	return productRepository.saveAll(productList);
-    }
-
-    public void delete(int id) {
-        productRepository.deleteById(id);
-    }
+    public void delete(int id);
 }
