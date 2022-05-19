@@ -31,8 +31,7 @@ public class ResetPasswordTests {
     @Autowired
     private AuthController authController;
 
-    @Autowired
-    private ResetRepository resetRepository;
+
 
     @Test
     void findEmailRepositoryTest(){
@@ -57,8 +56,5 @@ public class ResetPasswordTests {
     @Test void sendEmailTest() throws MessagingException, UnsupportedEncodingException {
         userService.sendEmail("isaiahlee667@gmail.com",1);
     }
-    @Test void isResetCodeReal(){
 
-        resetRepository.findById("test");
-    }
 }
