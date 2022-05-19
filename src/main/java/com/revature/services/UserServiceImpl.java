@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService{
             String siteurl = "localhost:3000/reset-password/" + userId;
             String senderName = "RevatureMerchTeam";
             String mailContent = "<p>Click the link below to change your password</p>"
-                    + "<a href=\"http://localhost:3000/reset-password/" + userId + "\"> Link</a>" ;
+                    + "<a href=\"http://localhost:3000/reset-password/" + userId + "\"> Link to Reset Password</a>" ;
 
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message);
