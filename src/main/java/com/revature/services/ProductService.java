@@ -7,17 +7,20 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
-    List<Product> findAll();
+    public List<Product> findAll();
 
-    List<Product> findSaleItems();
+    public Optional<Product> findById(int id);
 
-    Optional<Product> findById(int id);
+    public Product save(Product product);
 
-    Product save(Product product);
+    public List<Product> saveAll(List<Product> productList, List<ProductInfo> metadata);
 
-    List<Product> saveAll(List<Product> productList, List<ProductInfo> metadata);
+    /**
+     * Filters the list of product names based on whether the searchParam is contained.
+     * @param searchParam The string
+     * @return The filtered list
+     */
+    public List<Product> searchProduct(String searchParam);
 
-    List<Product> searchProduct(String searchParam);
-
-    void delete(int id);
+    public void delete(int id);
 }

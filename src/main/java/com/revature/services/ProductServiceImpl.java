@@ -5,6 +5,7 @@ import com.revature.models.Product;
 import com.revature.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,7 +38,17 @@ public class ProductServiceImpl implements ProductService{
     }
 
     public List<Product> searchProduct(String searchParam){
-        return null;
+        String regex = "(.*)+" + searchParam.toLowerCase() + "(.*)+";
+
+        List<Product> products = productRepository.findAll();
+        List<Product> result = new ArrayList<>();
+        for (Product p : products) {
+            if (p.getName().matches(regex) || p.getDescription().matches(regex)) {
+                result.add(p);
+            }
+        }
+
+        return result;
     }
 
     public void delete(int id) {
