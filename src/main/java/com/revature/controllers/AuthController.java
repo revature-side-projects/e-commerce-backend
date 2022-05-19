@@ -29,7 +29,7 @@ public class AuthController {
      */
     @PostMapping("/reset")
     public boolean passwordResetRequest(@RequestBody ResetRequest requestDTO){
-        return authService.forgotPassword(requestDTO.getEmail());
+        return authService.forgotPassword(requestDTO.getEmail(), requestDTO.getUserId());
     }
 
     @PostMapping("/login")
@@ -61,5 +61,15 @@ public class AuthController {
                 registerRequest.getLastName());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(created));
+    }
+    @GetMapping("/reset/{id}")
+    public Object responseEntity(@PathVariable Integer userId){
+        Optional<User> userToPasswordChange = authService.findByUserId(userId);
+        if (!userToPasswordChange.isPresent()){
+            return ResponseEntity.badRequest().build();
+        }
+        else{
+            return userToPasswordChange;
+        }
     }
 }

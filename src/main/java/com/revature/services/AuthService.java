@@ -6,6 +6,7 @@ import java.util.Optional;
 public interface AuthService {
     Optional<User> findByCredentials(String email, String password);
 
+
     User register(User user);
 
     /**
@@ -13,5 +14,9 @@ public interface AuthService {
      * @param email the email to search for in the user table of the database
      * @return true - if the email was found in the database (not intended to be passed to front end)
      */
-    boolean forgotPassword(String email);
+    boolean forgotPassword(String email, int userId);
+
+    Optional<User> findByUserId(Integer id);
+
+
 }

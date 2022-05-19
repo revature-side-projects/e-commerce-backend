@@ -28,6 +28,11 @@ public class UserServiceImpl implements UserService{
         return userRepository.findByEmailAndPassword(email, password);
     }
 
+    @Override
+    public Optional<User> findById(int id) {
+        return userRepository.findById(id);
+    }
+
     public User save(User user) {
         return userRepository.save(user);
     }
@@ -38,20 +43,24 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void sendEmail(String email){
+    public void sendEmail(String email, int userId){
         try {
-            String subject = "Placeholder subject";
+            String subject = "Password Reset Request";
+            String siteurl = "localhost:3000/reset-password/" + userId;
             String senderName = "RevatureMerchTeam";
-            String mailContent = "<p>Hello world</p>" + "<b>Hello bolded edition</b>";
+            String mailContent = "<p>Click the link below to change your password</p>"
+                    + "<a href=\"http://localhost:3000/reset-password/" + userId + "\"> Link</a>" ;
+
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message);
-            helper.setFrom("isaiahlee667@gmail.com", senderName); //TODO Update with company email @no-reply address
+
             helper.setTo(email);
             helper.setSubject(subject);
             helper.setText(mailContent, true);
             mailSender.send(message);
-        } catch (MessagingException | UnsupportedEncodingException e) {
+        } catch (MessagingException e) {
             e.printStackTrace();
         }
     }
+
 }

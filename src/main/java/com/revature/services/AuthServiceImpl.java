@@ -23,15 +23,20 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public boolean forgotPassword(String email){
+    public boolean forgotPassword(String email, int userId){
         if(userService.findByEmail(email)) {
             System.out.println("email sent");
             //TODO POST to reset reset request table {uuid,timestamp,userId}
-            userService.sendEmail(email);
+            userService.sendEmail(email, userId);
             //TODO alert that an email has been sent to the address with the reset password list  -- FRONT END (RYAN)
             return true;
         }
         //TODO alert that an email has been sent to the address with the reset password list -- FRONT END (RYAN)
         return false;
+    }
+
+    @Override
+    public Optional<User> findByUserId(Integer id) {
+        return userService.findById(id);
     }
 }
