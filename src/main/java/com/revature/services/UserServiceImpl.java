@@ -33,27 +33,25 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Boolean findByEmail(String email) {
-        User searchedUser = userRepository.findByEmail(email);
-        if (searchedUser == null){
-            return false;
-        }
-        else{
-            return true;
-        }
+    public boolean findByEmail(String email) {
+        return userRepository.findByEmail(email).isPresent();
     }
 
     @Override
-    public void sendEmail(User user) throws MessagingException, UnsupportedEncodingException {
-        String subject = "Placeholder subject";
-        String senderName = "RevatureMerchTeam";
-        String mailContent = "<p>Hello world</p>" + "<b>Hello bolded edition</b>";
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
-        helper.setFrom("isaiahlee667@gmail.com", senderName);
-        helper.setTo("isaiahlee667@gmail.com");
-        helper.setSubject(subject);
-        helper.setText(mailContent,true);
-        mailSender.send(message);
+    public void sendEmail(String email){
+        try {
+            String subject = "Placeholder subject";
+            String senderName = "RevatureMerchTeam";
+            String mailContent = "<p>Hello world</p>" + "<b>Hello bolded edition</b>";
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message);
+            helper.setFrom("isaiahlee667@gmail.com", senderName); //TODO Update with company email @no-reply address
+            helper.setTo(email);
+            helper.setSubject(subject);
+            helper.setText(mailContent, true);
+            mailSender.send(message);
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 }
