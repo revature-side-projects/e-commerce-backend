@@ -3,8 +3,6 @@ package com.revature.services;
 import com.revature.models.User;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
-import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 
 @Service

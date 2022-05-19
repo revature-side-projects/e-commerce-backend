@@ -6,15 +6,10 @@ import com.revature.dtos.ResetRequest;
 import com.revature.repositories.UserRepository;
 import com.revature.services.AuthService;
 import com.revature.services.UserService;
-import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import javax.mail.MessagingException;
-import java.io.UnsupportedEncodingException;
 
 @SpringBootTest
 public class ResetPasswordTests {
