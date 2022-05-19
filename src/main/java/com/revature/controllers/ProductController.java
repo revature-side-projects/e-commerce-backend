@@ -23,8 +23,12 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getInventory() {
-        return ResponseEntity.ok(productService.findAll());
+    public ResponseEntity<List<Product>> getInventory(@RequestParam(required = false) String query) {
+        if (query == null) {
+            return ResponseEntity.ok(productService.findAll());
+        }
+
+        return ResponseEntity.ok(productService.searchProduct(query));
     }
 
     @GetMapping("/{id}")

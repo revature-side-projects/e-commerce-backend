@@ -15,6 +15,11 @@ public interface ProductService {
 
     public List<Product> saveAll(List<Product> productList, List<ProductInfo> metadata);
 
+    /**
+     * Filters the list of product names based on whether the searchParam is contained.
+     * @param searchParam The string
+     * @return The filtered list
+     */
     public List<Product> searchProduct(String searchParam);
 
     public void delete(int id);
