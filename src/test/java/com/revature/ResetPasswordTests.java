@@ -31,8 +31,6 @@ public class ResetPasswordTests {
     @Autowired
     private AuthController authController;
 
-
-
     @Test
     void findEmailRepositoryTest(){
         Assertions.assertTrue(userRepository.findByEmail("testuser@gmail.com").isPresent());

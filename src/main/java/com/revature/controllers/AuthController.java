@@ -27,7 +27,7 @@ public class AuthController {
      * @param requestDTO A DTO ResetRequest that contains the email of the account to password reset
      * @return true - if the password reset request was sent. Do not use in the front end (for testing)
      */
-    @PostMapping("/reset")
+    @GetMapping("/reset")
     public boolean passwordResetRequest(@RequestBody ResetRequest requestDTO){
         return authService.forgotPassword(requestDTO.getEmail(), requestDTO.getUserId());
     }
@@ -62,14 +62,9 @@ public class AuthController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(created));
     }
-    @GetMapping("/reset/{id}")
-    public Object responseEntity(@PathVariable Integer userId){
-        Optional<User> userToPasswordChange = authService.findByUserId(userId);
-        if (!userToPasswordChange.isPresent()){
-            return ResponseEntity.badRequest().build();
-        }
-        else{
-            return userToPasswordChange;
-        }
+    @PostMapping("/reset")
+    public Object responseEntity(@RequestBody User user){
+      return authService.register(user);
+
     }
 }
