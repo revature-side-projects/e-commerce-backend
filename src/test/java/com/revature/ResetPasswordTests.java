@@ -3,7 +3,6 @@ package com.revature;
 
 import com.revature.controllers.AuthController;
 import com.revature.dtos.ResetRequest;
-import com.revature.repositories.ResetRepository;
 import com.revature.repositories.UserRepository;
 import com.revature.services.AuthService;
 import com.revature.services.UserService;
