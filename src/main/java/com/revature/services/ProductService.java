@@ -7,15 +7,17 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
-    public List<Product> findAll();
+    List<Product> findAll();
 
-    public Optional<Product> findById(int id);
+    List<Product> findSaleItems();
 
-    public Product save(Product product);
+    Optional<Product> findById(int id);
 
-    public List<Product> saveAll(List<Product> productList, List<ProductInfo> metadata);
+    Product save(Product product);
 
-    public List<Product> searchProduct(String searchParam);
+    List<Product> saveAll(List<Product> productList, List<ProductInfo> metadata);
 
-    public void delete(int id);
+    List<Product> searchProduct(String searchParam);
+
+    void delete(int id);
 }
