@@ -51,7 +51,7 @@ public class ResetPasswordTests {
         ResetRequest request = new ResetRequest("testuser@gmail.com");
         //Assertions.assertTrue(authController.passwordResetRequest(request));
     }
-    @Test void sendEmailTest() throws MessagingException, UnsupportedEncodingException {
+    @Test void sendEmailTest() {
         userService.sendEmail("testuser@gmail.com");
     }
 
