@@ -20,7 +20,9 @@ public class Product {
     private int id;
     private int quantity;
     private double price;
+    private double sale_price;
     private String description;
     private String image;
     private String name;
+    private boolean is_sale;
 }

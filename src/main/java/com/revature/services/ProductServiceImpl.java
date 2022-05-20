@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService{
@@ -20,6 +21,8 @@ public class ProductServiceImpl implements ProductService{
     public List<Product> findAll() {
         return productRepository.findAll();
     }
+
+    public List<Product> findSaleItems(){ return findAll().stream().filter(Product::is_sale).collect(Collectors.toList());}
 
     public Optional<Product> findById(int id) {
         return productRepository.findById(id);
