@@ -20,7 +20,8 @@ public class Product {
     private int id;
     private int quantity;
     private double price;
-    private double sale_price;
+    private double sale_rate;
+    private double sale_flat;
     private String description;
     private String image;
     private String name;
