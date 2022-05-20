@@ -22,6 +22,6 @@ spring:
             enable: 'true'
           auth: 'true'
     host: smtp.gmail.com
-    username: ${{secrets.LOCALEMAIL}}
-    password: ${{secrets.EMAILPASSWORD}}
+    username: ${LOCALEMAIL}
+    password: ${EMAILPASSWORD}
     port: '587'
