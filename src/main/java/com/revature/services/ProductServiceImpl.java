@@ -22,7 +22,7 @@ public class ProductServiceImpl implements ProductService{
         return productRepository.findAll();
     }
 
-    public List<Product> findSaleItems(){ return findAll().stream().filter(Product::is_sale).collect(Collectors.toList());}
+    public List<Product> findSaleItems(){ return findAll().stream().filter(Product::isSale).collect(Collectors.toList());}
 
     public Optional<Product> findById(int id) {
         return productRepository.findById(id);
