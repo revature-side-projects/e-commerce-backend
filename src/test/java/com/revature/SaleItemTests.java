@@ -24,6 +24,6 @@ public class SaleItemTests {
     @Test
     void filterEntities(){
         List<Product> sales = productService.findSaleItems();
-        Assertions.assertEquals(1,sales.size());
+        Assertions.assertNotEquals(productService.findAll().size(),sales.size());
     }
 }
