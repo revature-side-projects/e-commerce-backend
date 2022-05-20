@@ -48,7 +48,7 @@ INSERT INTO product (id, quantity, price,sale_price, description, image, name,is
     'A nice coat',
     'https://www.pngarts.com/files/3/Women-Jacket-PNG-High-Quality-Image.png',
     'Coat',
-    false
+    true
 );
 --Copy Pasting the salt doesn't work
 INSERT INTO users (id, email, password, first_name, last_name, salt) VALUES (
