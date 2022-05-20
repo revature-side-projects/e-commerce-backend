@@ -63,12 +63,13 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(created));
     }
     @PatchMapping("/users/{userId}")
-    public Object responseEntity(@RequestBody ResetRequest email, @PathVariable("userId") int id){
+    public Object responseEntity(@RequestBody String password, @PathVariable("userId") int id){
       Optional<User> possibleUser = authService.findByUserId(id);
       if(!possibleUser.isPresent()) {
           return ResponseEntity.badRequest().build();
       }else{
           User user = possibleUser.get();
+          user.setPassword(password);
           return authService.register(user);
       }
     }
