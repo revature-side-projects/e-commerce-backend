@@ -15,5 +15,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ResetRequest {
     private String email;
-    private int userId;
+
 }

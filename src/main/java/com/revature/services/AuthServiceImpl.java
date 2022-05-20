@@ -24,14 +24,11 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     //TODO replace userId with UUID if allowed
-    public boolean forgotPassword(String email, int userId){
-        if(userService.findByEmail(email)) {
-            System.out.println("email sent");
+    public void forgotPassword(String email){
+
             //TODO POST to reset reset request table {uuid,timestamp,userId}, if we end up being allowed to implement it
-            userService.sendEmail(email, userId);
-            return true;
-        }
-        return false;
+            userService.sendEmail(email);
+
     }
     @Override
     public Optional<User> findByUserId(Integer id) {

@@ -28,8 +28,8 @@ public class AuthController {
      * @return true - if the password reset request was sent. Do not use in the front end (for testing)
      */
     @GetMapping("/reset")
-    public boolean passwordResetRequest(@RequestBody ResetRequest requestDTO){
-        return authService.forgotPassword(requestDTO.getEmail(), requestDTO.getUserId());
+    public void passwordResetRequest(@RequestBody ResetRequest requestDTO){
+        authService.forgotPassword(requestDTO.getEmail());
     }
 
     @PostMapping("/login")
