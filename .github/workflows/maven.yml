@@ -27,5 +27,6 @@ jobs:
       #enviroment variables
       env:
         #secrets are private/hidden enviroment variables saved on github
+        #Values below
         LOCALEMAIL: ${{secrets.LOCALEMAIL}}
         EMAILPASSWORD: ${{secrets.EMAILPASSWORD}}
