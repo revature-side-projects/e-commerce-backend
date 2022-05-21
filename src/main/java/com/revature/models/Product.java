@@ -17,10 +17,10 @@ public class Product {
     private int id;
     private int quantity;
     private double price;
-    @Column(name = "saleRate")
-    private double sale_rate;
-    @Column(name = "saleFlat")
-    private double sale_flat;
+    @Column(name = "sale_rate")
+    private double saleRate;
+    @Column(name = "sale_flat")
+    private double saleFlat;
     private String description;
     private String image;
     private String name;
