@@ -5,7 +5,9 @@ import com.revature.models.User;
 import java.util.Optional;
 
 public interface UserService {
-    public Optional<User> findByCredentials(String email, String password);
+    Optional<User> findByCredentials(String email, String password);
 
-    public User save(User user);
+    Optional<User> findByEmail(String email);
+
+    User save(User user);
 }

@@ -26,13 +26,13 @@ public class AuthController {
     public ResponseEntity<User> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
         Optional<User> optional = authService.findByCredentials(loginRequest.getEmail(), loginRequest.getPassword());
 
-        if(!optional.isPresent()) {
-            return ResponseEntity.badRequest().build();
-        }
+        if (!optional.isPresent()) {
 
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
         session.setAttribute("user", optional.get());
 
-        return ResponseEntity.ok(optional.get());
+        return ResponseEntity.status(HttpStatus.OK).body(optional.get());
     }
 
     @PostMapping("/logout")
@@ -48,8 +48,12 @@ public class AuthController {
                 registerRequest.getEmail(),
                 registerRequest.getPassword(),
                 registerRequest.getFirstName(),
-                registerRequest.getLastName());
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(created));
+                registerRequest.getLastName(),
+                ""
+        );
+        created = authService.register(created);
+        //TODO: Someone double check same user can't have multiple accounts under email also correct errors
+        if (created.getId() > 0) return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(created);
     }
 }
