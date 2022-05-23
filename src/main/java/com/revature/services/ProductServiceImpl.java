@@ -23,6 +23,8 @@ public class ProductServiceImpl implements ProductService{
         return productRepository.findAll();
     }
 
+    public List<Product> findSaleItems(){ return findAll().stream().filter(Product::isSale).collect(Collectors.toList());}
+
     public Optional<Product> findById(int id) {
         return productRepository.findById(id);
     }
@@ -35,13 +37,23 @@ public class ProductServiceImpl implements ProductService{
     	return productRepository.saveAll(productList);
     }
 
+    /**
+     * Filters the list of product names and descriptions based on whether the searchParam is contained or the total list
+     * if an empty string is supplied.
+     * @param searchParam The search keyword or the empty string.
+     * @return The filtered list containing products whose names or descriptions contain the search keyword if not the
+     * empty string. The full list of products, otherwise.
+     */
     public List<Product> searchProduct(String searchParam){
+        if (searchParam == null || searchParam.equals("")) {
+            return productRepository.findAll();
+        }
         String regex = "(.*)+" + searchParam.toLowerCase() + "(.*)+";
 
         List<Product> products = productRepository.findAll();
         List<Product> result = new ArrayList<>();
         for (Product p : products) {
-            if (p.getName().matches(regex) || p.getDescription().matches(regex)) {
+            if (p.getName().toLowerCase().matches(regex) || p.getDescription().toLowerCase().matches(regex)) {
                 result.add(p);
             }
         }

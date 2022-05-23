@@ -5,7 +5,17 @@ import com.revature.models.User;
 import java.util.Optional;
 
 public interface UserService {
-    public Optional<User> findByCredentials(String email, String password);
+    Optional<User> findByCredentials(String email, String password);
 
-    public User save(User user);
+    Optional<User> findByEmail(String email);
+
+    Optional<User> findById(int id);
+
+    User save(User user);
+
+    /**
+     * A method to send an email for password resets
+     * @param email the email that the password reset confirmation will be sent to
+     */
+    void sendEmail(String email);
 }
