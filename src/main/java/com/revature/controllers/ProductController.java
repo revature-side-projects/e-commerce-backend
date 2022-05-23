@@ -21,12 +21,16 @@ public class ProductController {
     public ProductController(ProductServiceImpl productService) {
         this.productService = productService;
     }
-
+  
     @GetMapping
-    public ResponseEntity<List<Product>> getInventory(@RequestParam(required = false) boolean sale) {
+    public ResponseEntity<List<Product>> getInventory(@RequestParam(required = false) boolean sale, @RequestParam(required = false) String query) {
          if(sale)
               return ResponseEntity.ok(productService.findSaleItems());
-        return ResponseEntity.ok(productService.findAll());
+        if (query == null) {
+          return ResponseEntity.ok(productService.findAll());
+        }
+  
+        return ResponseEntity.ok(productService.searchProduct(query));
     }
 
     @GetMapping("/{id}")
