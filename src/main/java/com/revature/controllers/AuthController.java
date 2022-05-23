@@ -2,6 +2,7 @@ package com.revature.controllers;
 
 import com.revature.dtos.LoginRequest;
 import com.revature.dtos.RegisterRequest;
+import com.revature.dtos.ResetPasswordRequest;
 import com.revature.dtos.ResetRequest;
 import com.revature.models.User;
 import com.revature.services.AuthServiceImpl;
@@ -67,13 +68,13 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(created);
     }
     @PatchMapping("/users/{userId}")
-    public Object responseEntity(@RequestBody String password, @PathVariable("userId") int id){
+    public Object responseEntity(@RequestBody ResetPasswordRequest password, @PathVariable("userId") int id){
       Optional<User> possibleUser = authService.findByUserId(id);
       if(!possibleUser.isPresent()) {
           return ResponseEntity.badRequest().build();
       }else{
           User user = possibleUser.get();
-          user.setPassword(password);
+          user.setPassword(password.getPassword());
           return authService.register(user);
       }
     }
