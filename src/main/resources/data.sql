@@ -7,7 +7,7 @@ INSERT INTO product (id, quantity, price,sale_rate,sale_flat, description, image
     15,
     3.25,
     'A nice pair of headphones',
-    'https://i.insider.com/54eb437f6bb3f7697f85da71?width=1000&format=jpeg&auto=webp',
+    'https://rss-p3-202203.s3.amazonaws.com/resources/images/headphone.png',
     'Headphones',
     false
 ),
