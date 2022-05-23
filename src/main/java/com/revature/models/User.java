@@ -35,12 +35,12 @@ public class User {
     private String salt;
 
     /**
-     * if salt is null, a random salt will be generated. Otherwise, return previously defined salt
+     * if salt is null or empty, a random salt will be generated. Otherwise, return previously defined salt
      *
      * @return string representation of securely randomized byte array
      */
     public String getSalt() {
-        if (salt == null) {
+        if (salt == null || salt.isEmpty()) {
 
             byte[] randBytes = new byte[16];
             boolean saltValid;
