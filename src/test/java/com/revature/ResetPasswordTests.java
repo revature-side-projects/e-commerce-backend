@@ -38,7 +38,7 @@ public class ResetPasswordTests {
 
     @Test
     void findEmailServiceTest(){
-        Assertions.assertTrue(userService.findByEmail("testuser@gmail.com"));
+        Assertions.assertTrue(userService.findByEmail("testuser@gmail.com").isPresent());
     }
 
     @Test
