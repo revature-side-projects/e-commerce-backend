@@ -12,12 +12,12 @@ public class ResetServiceImpl implements ResetService {
 
     @Override
     public ResetPassword findById(String id) {
-        return passwordRepository.findbyId(id);
+        return passwordRepository.findById(id);
     }
 
     @Override
     public boolean compareTimestamp(String id, long timeStamp) {
-       ResetPassword resetPassword = passwordRepository.findbyId(id);
+       ResetPassword resetPassword = passwordRepository.findById(id);
        long day = 86400000;
         if (resetPassword != null)
             if (System.currentTimeMillis()- resetPassword.getTimeStamp() < day){
