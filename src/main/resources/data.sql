@@ -55,12 +55,12 @@ INSERT INTO product (id, quantity, price,sale_rate,sale_flat, description, image
     'Coat',
     true
 );
-
-INSERT INTO users (id, email, password, first_name, last_name) VALUES (
+--Copy Pasting the salt doesn't work
+INSERT INTO users (id, email, password, first_name, last_name, salt) VALUES (
     1,
     'testuser@gmail.com',
-    'password',
+    '*eÓôéHÏÑ_£XÔ', --    'password',
     'Test',
-    'User'
+    'User',
+    'NotSoRandomSalt?'
 );
-

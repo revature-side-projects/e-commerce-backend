@@ -26,7 +26,5 @@ public interface ProductService {
      */
     List<Product> searchProduct(String searchParam);
 
-    List<Product> searchProduct(String searchParam);
-
     void delete(int id);
 }

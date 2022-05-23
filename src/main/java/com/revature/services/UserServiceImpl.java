@@ -28,6 +28,10 @@ public class UserServiceImpl implements UserService{
         return userRepository.findByEmailAndPassword(email, password);
     }
 
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+  
     @Override
     public Optional<User> findById(int id) {
         return userRepository.findById(id);
@@ -35,11 +39,6 @@ public class UserServiceImpl implements UserService{
 
     public User save(User user) {
         return userRepository.save(user);
-    }
-
-    @Override
-    public boolean findByEmail(String email) {
-        return userRepository.findByEmail(email).isPresent();
     }
 
     @Override
