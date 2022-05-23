@@ -25,6 +25,8 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
       #enviroment variables
-      #env:
+      env:
         #secrets are private/hidden enviroment variables saved on github
-        #POSTGRESDB: ${{secrets.POSTGRESDB}}
+        #Values below
+        LOCALEMAIL: ${{secrets.LOCALEMAIL}}
+        EMAILPASSWORD: ${{secrets.EMAILPASSWORD}}
