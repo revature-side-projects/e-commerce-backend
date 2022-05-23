@@ -7,15 +7,26 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
-    public List<Product> findAll();
+    List<Product> findAll();
 
-    public Optional<Product> findById(int id);
+    List<Product> findSaleItems();
 
-    public Product save(Product product);
+    Optional<Product> findById(int id);
 
-    public List<Product> saveAll(List<Product> productList, List<ProductInfo> metadata);
+    Product save(Product product);
 
-    public List<Product> searchProduct(String searchParam);
+    List<Product> saveAll(List<Product> productList, List<ProductInfo> metadata);
+  
+    /**
+     * Filters the list of product names and descriptions based on whether the searchParam is contained or the total list
+     * if an empty string is supplied.
+     * @param searchParam The search keyword or the empty string.
+     * @return The filtered list containing products whose names or descriptions contain the search keyword if not the
+     * empty string. The full list of products, otherwise.
+     */
+    List<Product> searchProduct(String searchParam);
 
-    public void delete(int id);
+    List<Product> searchProduct(String searchParam);
+
+    void delete(int id);
 }

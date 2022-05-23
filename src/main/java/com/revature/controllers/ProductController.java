@@ -21,20 +21,23 @@ public class ProductController {
     public ProductController(ProductServiceImpl productService) {
         this.productService = productService;
     }
-
+  
     @GetMapping
-    public ResponseEntity<List<Product>> getInventory() {
-        return ResponseEntity.ok(productService.findAll());
+    public ResponseEntity<List<Product>> getInventory(@RequestParam(required = false) boolean sale, @RequestParam(required = false) String query) {
+         if(sale)
+              return ResponseEntity.ok(productService.findSaleItems());
+        if (query == null) {
+          return ResponseEntity.ok(productService.findAll());
+        }
+  
+        return ResponseEntity.ok(productService.searchProduct(query));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable("id") int id) {
         Optional<Product> optional = productService.findById(id);
 
-        if(!optional.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(optional.get());
+        return optional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @Authorized
@@ -46,24 +49,24 @@ public class ProductController {
     @Authorized
     @PatchMapping
     public ResponseEntity<List<Product>> purchase(@RequestBody List<ProductInfo> metadata) { 	
-    	List<Product> productList = new ArrayList<Product>();
-    	
-    	for (int i = 0; i < metadata.size(); i++) {
-    		Optional<Product> optional = productService.findById(metadata.get(i).getId());
+    	List<Product> productList = new ArrayList<>();
 
-    		if(!optional.isPresent()) {
-    			return ResponseEntity.notFound().build();
-    		}
+        for (ProductInfo metadatum : metadata) {
+            Optional<Product> optional = productService.findById(metadatum.getId());
 
-    		Product product = optional.get();
+            if (!optional.isPresent()) {
+                return ResponseEntity.notFound().build();
+            }
 
-    		if(product.getQuantity() - metadata.get(i).getQuantity() < 0) {
-    			return ResponseEntity.badRequest().build();
-    		}
-    		
-    		product.setQuantity(product.getQuantity() - metadata.get(i).getQuantity());
-    		productList.add(product);
-    	}
+            Product product = optional.get();
+
+            if (product.getQuantity() - metadatum.getQuantity() < 0) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            product.setQuantity(product.getQuantity() - metadatum.getQuantity());
+            productList.add(product);
+        }
         
         productService.saveAll(productList, metadata);
 

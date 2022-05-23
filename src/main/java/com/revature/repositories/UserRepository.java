@@ -3,6 +3,7 @@ package com.revature.repositories;
 import com.revature.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
@@ -13,4 +14,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> findByEmail(String email);
 
     Optional<User> findByEmailAndPassword(String email, String password);
+    Optional<User> findByEmail(String email);
+    Optional<User> findById(Integer id);
 }
