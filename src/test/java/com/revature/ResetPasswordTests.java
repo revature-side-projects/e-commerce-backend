@@ -3,8 +3,10 @@ package com.revature;
 
 import com.revature.controllers.AuthController;
 import com.revature.dtos.ResetRequest;
+import com.revature.repositories.ResetPasswordRepository;
 import com.revature.repositories.UserRepository;
 import com.revature.services.AuthService;
+import com.revature.services.ResetService;
 import com.revature.services.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -31,6 +33,12 @@ public class ResetPasswordTests {
     @Autowired
     private AuthController authController;
 
+    @Autowired
+    private ResetPasswordRepository passwordRepository;
+
+    @Autowired
+    private ResetService resetService;
+
     @Test
     void findEmailRepositoryTest(){
         Assertions.assertTrue(userRepository.findByEmail("testuser@gmail.com").isPresent());
@@ -53,6 +61,10 @@ public class ResetPasswordTests {
     }
     @Test void sendEmailTest() {
         userService.sendEmail("testuser@gmail.com");
+    }
+
+    @Test void findResetPasswordTest(){
+        Assertions.assertNotNull(resetService.findById("test"));
     }
 
 }
