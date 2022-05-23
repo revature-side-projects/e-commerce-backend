@@ -50,7 +50,7 @@ public class HashingTests{
         for (int j = 0; j < 1_000; j++) {
             testUser.setPassword("password");
             testUser.setSalt(null);
-            testUser.encryptPassword();
+            testUser.encryptAndSetPassword();
             Assertions.assertNotEquals("password", testUser.getPassword());
         }
     }
@@ -59,7 +59,7 @@ public class HashingTests{
     @Test
     void TestPassword(){
         User testUser = new User(1, "testuser@gmail.com", "password", "test", "user", "NotSoRandomSalt?");
-        testUser.encryptPassword();
+        testUser.encryptAndSetPassword();
         System.out.println(testUser.getPassword());
     }
 
