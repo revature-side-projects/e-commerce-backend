@@ -42,11 +42,6 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public boolean findByEmail(String email) {
-        return userRepository.findByEmail(email).isPresent();
-    }
-
-    @Override
     public void sendEmail(String email){
         Optional<User> possibleUser = userRepository.findByEmail(email);
         if (possibleUser.isPresent()){

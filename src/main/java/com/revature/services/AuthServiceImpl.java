@@ -78,7 +78,7 @@ public class AuthServiceImpl implements AuthService{
     //TODO replace userId with UUID if allowed
     public void forgotPassword(String email){
 
-            //TODO POST to reset reset request table {uuid,timestamp,userId}, if we end up being allowed to implement it
+            //TODO POST to reset request table {uuid,timestamp,userId}, if we end up being allowed to implement it
             userService.sendEmail(email);
 
     }
