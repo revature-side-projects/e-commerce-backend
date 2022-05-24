@@ -9,6 +9,7 @@ on:
   pull_request:
     branches: [ main ]
 
+# KHENAN: I commented these out just to see, if they were causing the .jar not to build.
 # env. variables
 #env:
     ##secrets are private/hidden enviroment variables saved on github
@@ -30,6 +31,7 @@ jobs:
         distribution: 'coretto'
         cache: maven
     - name: Build with Maven
+    # KHENAN: the "-Dmaven.test.skip" option will skip the test-check requirements
       run: mvn package -Dmaven.test.skip --file pom.xml
 
 
