@@ -1,25 +1,21 @@
 package com.revature.services;
 
 import com.revature.models.User;
-import com.revature.repositories.UserRepository;
-import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Service
-public class UserService {
+public interface UserService {
+    Optional<User> findByCredentials(String email, String password);
 
-    private final UserRepository userRepository;
+    Optional<User> findByEmail(String email);
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    Optional<User> findById(int id);
 
-    public Optional<User> findByCredentials(String email, String password) {
-        return userRepository.findByEmailAndPassword(email, password);
-    }
+    User save(User user);
 
-    public User save(User user) {
-        return userRepository.save(user);
-    }
+    /**
+     * A method to send an email for password resets
+     * @param email the email that the password reset confirmation will be sent to
+     */
+    void sendEmail(String email);
 }
