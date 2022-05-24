@@ -1,6 +1,10 @@
 ## E-Commerce Application
 
-### Application to buy Revature Swag. Working application can be found here:
+### Application to buy Revature Swag. 
+
+This application is a functional website written in Java and typescript. It will allow users to register and select from listed products for purchase, add them to the cart, and check out. If a user forgets their password they can have it reset. A guest or user can look at products and get a pop up view of the item, and its discription. The user or guest can see how many of a product are in stock. The user or guest can search items by key word.
+
+Working application can be found here:
 ### `https://production.dcs2jw2334qwo.amplifyapp.com/`
 
 ## Install Instructions for developers
