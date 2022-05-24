@@ -4,7 +4,7 @@ import com.revature.dtos.LoginRequest;
 import com.revature.dtos.RegisterRequest;
 import com.revature.dtos.ResetRequest;
 import com.revature.models.User;
-import com.revature.services.AuthServiceImpl;
+import com.revature.services.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +17,9 @@ import java.util.Optional;
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class AuthController{
 
-    private final AuthServiceImpl authService;
+    private final AuthService authService;
 
-    public AuthController(AuthServiceImpl authService){
+    public AuthController(AuthService authService){
         this.authService = authService;
     }
 
@@ -63,8 +63,10 @@ public class AuthController{
                 registerRequest.getLastName(),
                 ""
         );
+
+        if(authService.findByEmail(created.getEmail()).isPresent()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(created);
+
         created = authService.register(created);
-        //TODO: Someone double check same user can't have multiple accounts under email also correct errors
         if (created.getId() > 0) return ResponseEntity.status(HttpStatus.CREATED).body(created);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(created);
     }

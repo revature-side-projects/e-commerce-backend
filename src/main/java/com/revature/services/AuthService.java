@@ -18,5 +18,5 @@ public interface AuthService {
 
     Optional<User> findByUserId(Integer id);
 
-
+    Optional<User> findByEmail(String email);
 }
