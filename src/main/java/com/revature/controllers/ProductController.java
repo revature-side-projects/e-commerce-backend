@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/product")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@CrossOrigin(origins = "https://production.dcs2jw2334qwo.amplifyapp.com/", allowCredentials = "true")
 public class ProductController {
 
     private final ProductServiceImpl productService;
@@ -21,7 +21,7 @@ public class ProductController {
     public ProductController(ProductServiceImpl productService) {
         this.productService = productService;
     }
-  
+
     @GetMapping
     public ResponseEntity<List<Product>> getInventory(@RequestParam(required = false) boolean sale, @RequestParam(required = false) String query) {
          if(sale)
