@@ -4,6 +4,7 @@ import com.revature.dtos.LoginRequest;
 import com.revature.dtos.RegisterRequest;
 import com.revature.dtos.ResetRequestPassword;
 import com.revature.dtos.ResetRequestEmail;
+import com.revature.exceptions.ExpiredRequestException;
 import com.revature.models.User;
 import com.revature.services.AuthServiceImpl;
 import org.springframework.http.HttpStatus;
@@ -31,11 +32,6 @@ public class AuthController {
     @PostMapping("/reset")
     public void passwordResetRequest(@RequestBody ResetRequestEmail requestDTO){
         authService.forgotPassword(requestDTO.getEmail());
-    }
-
-    @PatchMapping("/reset/{id}")
-    public void passwordResetRequest(@RequestBody ResetRequestPassword passwordDTO, @PathVariable int id){
-       authService.resetPassword(passwordDTO.getPassword(),id);
     }
 
     @PostMapping("/login")
@@ -72,15 +68,17 @@ public class AuthController {
         if (created.getId() > 0) return ResponseEntity.status(HttpStatus.CREATED).body(created);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(created);
     }
-    @PatchMapping("/users/{userId}")
-    public Object responseEntity(@RequestBody ResetRequestPassword password, @PathVariable("userId") int id){
-      Optional<User> possibleUser = authService.findByUserId(id);
+    @PatchMapping("/users/{requestId}")
+    public Object responseEntity(@RequestBody ResetRequestPassword password, @PathVariable("requestId") int id) throws ExpiredRequestException {
+        return authService.resetPassword(password.getPassword(),id);
+
+      /*  Optional<User> possibleUser = authService.findByUserId(id);
       if(!possibleUser.isPresent()) {
           return ResponseEntity.badRequest().build();
       }else{
           User user = possibleUser.get();
           user.setPassword(password.getPassword());
           return authService.register(user);
-      }
+      }*/
     }
 }

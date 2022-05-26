@@ -1,5 +1,6 @@
 package com.revature.services;
 
+import com.revature.exceptions.ExpiredRequestException;
 import com.revature.models.ResetRequest;
 import com.revature.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,26 +78,20 @@ public class AuthServiceImpl implements AuthService{
     }
   
     @Override
-    //TODO replace userId with UUID if allowed
+    //TODO replace id with UUID
     public void forgotPassword(String email){
             Optional<User> user = userService.findByEmail(email);
             if(user.isPresent()){
                 ResetRequest request = resetService.createEntry();
                 userService.sendEmail(email, request.getId());
             }
-
-            //TODO POST to reset request table {uuid,timestamp,userId}, if we end up being allowed to implement it
-
-
     }
 
-    public boolean resetPassword(String password,int resetId){
+    public User resetPassword(String password,int resetId) throws ExpiredRequestException {
         ResetRequest resetRequest = resetService.findById(resetId);
-        if(resetService.compareTimestamp(resetRequest.getTimeStamp())) {
-            User user = resetService.reset(password, resetRequest);
-            return user != null;
-        }
-        return false;
+        if(resetService.compareTimestamp(resetRequest.getTimeStamp()))
+            return resetService.reset(password, resetRequest);
+        throw new ExpiredRequestException();
     }
     @Override
     public Optional<User> findByUserId(Integer id) {
