@@ -15,6 +15,7 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService{
 
+    @Autowired
     private JavaMailSender mailSender;
 
     private final UserRepository userRepository;
