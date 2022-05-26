@@ -2,8 +2,8 @@ package com.revature.controllers;
 
 import com.revature.dtos.LoginRequest;
 import com.revature.dtos.RegisterRequest;
-import com.revature.dtos.ResetPasswordRequest;
-import com.revature.dtos.ResetRequest;
+import com.revature.dtos.ResetRequestPassword;
+import com.revature.dtos.ResetRequestEmail;
 import com.revature.models.User;
 import com.revature.services.AuthServiceImpl;
 import org.springframework.http.HttpStatus;
@@ -29,8 +29,13 @@ public class AuthController {
      * @return true - if the password reset request was sent. Do not use in the front end (for testing)
      */
     @PostMapping("/reset")
-    public void passwordResetRequest(@RequestBody ResetRequest requestDTO){
+    public void passwordResetRequest(@RequestBody ResetRequestEmail requestDTO){
         authService.forgotPassword(requestDTO.getEmail());
+    }
+
+    @PatchMapping("/reset/{id}")
+    public void passwordResetRequest(@RequestBody ResetRequestPassword passwordDTO, @PathVariable int id){
+       authService.resetPassword(passwordDTO.getPassword(),id);
     }
 
     @PostMapping("/login")
@@ -68,7 +73,7 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(created);
     }
     @PatchMapping("/users/{userId}")
-    public Object responseEntity(@RequestBody ResetPasswordRequest password, @PathVariable("userId") int id){
+    public Object responseEntity(@RequestBody ResetRequestPassword password, @PathVariable("userId") int id){
       Optional<User> possibleUser = authService.findByUserId(id);
       if(!possibleUser.isPresent()) {
           return ResponseEntity.badRequest().build();

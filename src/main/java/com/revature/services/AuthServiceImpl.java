@@ -1,6 +1,8 @@
 package com.revature.services;
 
+import com.revature.models.ResetRequest;
 import com.revature.models.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKeyFactory;
@@ -16,11 +18,11 @@ import java.util.Optional;
 @Service
 public class AuthServiceImpl implements AuthService{
 
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private ResetService resetService;
 
-    public AuthServiceImpl(UserService userService) {
-        this.userService = userService;
-    }
 
     public Optional<User> findByCredentials(String email, String password) {
         Optional<User> optionalUser = userService.findByEmail(email);
@@ -77,10 +79,24 @@ public class AuthServiceImpl implements AuthService{
     @Override
     //TODO replace userId with UUID if allowed
     public void forgotPassword(String email){
+            Optional<User> user = userService.findByEmail(email);
+            if(user.isPresent()){
+                ResetRequest request = resetService.createEntry();
+                userService.sendEmail(email, request.getId());
+            }
 
             //TODO POST to reset request table {uuid,timestamp,userId}, if we end up being allowed to implement it
-            userService.sendEmail(email);
 
+
+    }
+
+    public boolean resetPassword(String password,int resetId){
+        ResetRequest resetRequest = resetService.findById(resetId);
+        if(resetService.compareTimestamp(resetRequest.getTimeStamp())) {
+            User user = resetService.reset(password, resetRequest);
+            return user != null;
+        }
+        return false;
     }
     @Override
     public Optional<User> findByUserId(Integer id) {

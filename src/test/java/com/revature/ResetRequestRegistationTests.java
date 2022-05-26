@@ -2,8 +2,10 @@ package com.revature;
 
 
 import com.revature.controllers.AuthController;
-import com.revature.dtos.ResetRequest;
-import com.revature.repositories.ResetPasswordRepository;
+import com.revature.dtos.ResetRequestEmail;
+import com.revature.models.ResetRequest;
+import com.revature.models.User;
+import com.revature.repositories.ResetRequestRepository;
 import com.revature.repositories.UserRepository;
 import com.revature.services.AuthService;
 import com.revature.services.ResetService;
@@ -13,11 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.mail.MessagingException;
-import java.io.UnsupportedEncodingException;
-
 @SpringBootTest
-public class ResetPasswordTests {
+public class ResetRequestRegistationTests {
 
     //TEST DEPENDENCIES
 
@@ -34,7 +33,7 @@ public class ResetPasswordTests {
     private AuthController authController;
 
     @Autowired
-    private ResetPasswordRepository passwordRepository;
+    private ResetRequestRepository passwordRepository;
 
     @Autowired
     private ResetService resetService;
@@ -56,15 +55,20 @@ public class ResetPasswordTests {
 
     @Test
     void resetRequestControllerTest(){
-        ResetRequest request = new ResetRequest("testuser@gmail.com");
+        ResetRequestEmail request = new ResetRequestEmail("testuser@gmail.com");
         //Assertions.assertTrue(authController.passwordResetRequest(request));
     }
     @Test void sendEmailTest() {
-        userService.sendEmail("testuser@gmail.com");
+        userService.sendEmail("testuser@gmail.com",1);
     }
 
     @Test void findResetPasswordTest(){
-        Assertions.assertNotNull(resetService.findById("test"));
+        Assertions.assertNotNull(resetService.findById(1));
+    }
+
+    @Test void resetPassword(){
+        User user =resetService.reset("resetTest",new ResetRequest(1,1234567,1));
+        Assertions.assertEquals("resetTest", user.getPassword());
     }
 
 }

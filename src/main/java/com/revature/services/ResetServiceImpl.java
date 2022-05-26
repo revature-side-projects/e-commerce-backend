@@ -1,38 +1,47 @@
 package com.revature.services;
 
-import com.revature.models.ResetPassword;
-import com.revature.repositories.ResetPasswordRepository;
+import com.revature.models.ResetRequest;
+import com.revature.models.User;
+import com.revature.repositories.ResetRequestRepository;
+import com.revature.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
+@Service
 public class ResetServiceImpl implements ResetService {
-    private final ResetPasswordRepository passwordRepository;
 
-    public ResetServiceImpl(ResetPasswordRepository passwordRepository) {
-        this.passwordRepository = passwordRepository;
+    @Autowired
+    private ResetRequestRepository resetRequestRepository;
+    @Autowired
+    private UserRepository userRepository;
+
+    @Override
+    public ResetRequest findById(int id) {
+        System.out.println("running");
+        Optional<ResetRequest> rp = resetRequestRepository.findById(id);
+        return rp.orElse(null);
+    }
+
+    public ResetRequest createEntry(){
+        ResetRequest rr = new ResetRequest();
+        rr.setTimeStamp(System.currentTimeMillis());
+        return resetRequestRepository.save(rr);
     }
 
     @Override
-    public ResetPassword findById(String id) {
-        return passwordRepository.findById(id);
+    public boolean compareTimestamp(long timeStamp) {
+        long day = 86400000;
+        return System.currentTimeMillis() - timeStamp < day;
     }
 
     @Override
-    public boolean compareTimestamp(String id, long timeStamp) {
-       ResetPassword resetPassword = passwordRepository.findById(id);
-       long day = 86400000;
-        if (resetPassword != null)
-            if (System.currentTimeMillis()- resetPassword.getTimeStamp() < day){
-                return true;
-
-             }
-                else{
-                        return false;
-                }
-
-        else{
-            return false;
-        }
-
+    public User reset(String password, ResetRequest resetRequest){
+        User user = new User();
+        user.setPassword(password);
+        user.setId(resetRequest.getUserId());
+        return userRepository.save(user);
     }
-
-
 }
+

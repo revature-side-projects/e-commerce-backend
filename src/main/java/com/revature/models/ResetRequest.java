@@ -11,14 +11,16 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "ResetPassword")
-public class ResetPassword {
+@Table(name = "reset_request")
+public class ResetRequest {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private int id;
     @Column(name = "time_stamp")
     private long timeStamp;
+    @Column(name = "user_id")
     private int userId;
 
 }
