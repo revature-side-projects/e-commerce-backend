@@ -24,49 +24,19 @@ public class AuthServiceImpl implements AuthService{
     @Autowired
     private ResetService resetService;
 
-
-    public Optional<User> findByCredentials(String email, String password) {
+    public Optional<User> findByCredentials(String email, String password){
         Optional<User> optionalUser = userService.findByEmail(email);
         if (!optionalUser.isPresent()) return optionalUser;
 
-        User user = optionalUser.get();
-        try {
-            KeySpec spec = new PBEKeySpec(password.toCharArray(), user.getSaltBytes(), 65536, 128);
-            SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            byte[] hash = f.generateSecret(spec).getEncoded();
-            password = new String(hash, StandardCharsets.ISO_8859_1);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            throw new RuntimeException(e);
-        }
-        if (password.equals(user.getPassword())) return optionalUser;
+        User existingUser = optionalUser.get();
+        if (User.encryptPassword(password, existingUser.getSaltBytes()).equals(existingUser.getPassword()))
+            return optionalUser;
 
         return Optional.empty();
     }
 
-    public User register(User user) {
-        byte[] salt;
-        String verifiedSaltString;
-        boolean saltValid;
-        do {
-            saltValid = true;
-            salt = SaltMaker();
-            verifiedSaltString = new String(salt, StandardCharsets.ISO_8859_1);// ISO_8859 makes byte array reconstruct-able
-            byte[] unSalt = verifiedSaltString.getBytes(StandardCharsets.ISO_8859_1);
-            if (!Arrays.equals(salt, unSalt)) {
-                saltValid = false;
-            }
-        } while (!saltValid);//works first time in tests (tested 500 mil+ times)
-
-        try {
-            KeySpec spec = new PBEKeySpec(user.getPassword().toCharArray(), salt, 65536, 128);
-            SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            byte[] hash = f.generateSecret(spec).getEncoded();
-            user.setPassword(hash);
-            user.setSalt(verifiedSaltString);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            throw new RuntimeException(e);
-        }
-
+    public User register(User user){
+        user.encryptAndSetPassword();
         return userService.save(user);
     }
 
@@ -93,8 +63,9 @@ public class AuthServiceImpl implements AuthService{
             return resetService.reset(password, resetRequest);
         throw new ExpiredRequestException();
     }
+
     @Override
-    public Optional<User> findByUserId(Integer id) {
+    public Optional<User> findByUserId(Integer id){
         return userService.findById(id);
     }
 }

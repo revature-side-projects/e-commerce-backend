@@ -24,38 +24,47 @@ import java.security.spec.KeySpec;
 import java.util.Arrays;
 
 @SpringBootTest
-public class HashingTests {
+public class HashingTests{
 
     @Autowired
     AuthController authController;
 
+    /**
+     * Salt Maker is implemented in models.User.getSalt() method
+     * takes roughly 6.7 seconds for Jalil's computer for 1 million tests
+     */
     @Test
-    //takes roughly 6.7 seconds for Jalil's computer for 1 million tests
-    public void HashTest() {
-        for (int j = 0; j < 1_000_000; j++) {
+    public void HashTest(){
+        for (int j = 0; j < 1000; j++) {
             byte[] salt = SaltMaker();
             String parsed = new String(salt, StandardCharsets.ISO_8859_1);
             byte[] unSalt = parsed.getBytes(StandardCharsets.ISO_8859_1);
-            Assertions.assertTrue(Arrays.equals(salt,unSalt));
+            Assertions.assertTrue(Arrays.equals(salt, unSalt));
         }
     }
 
+    // takes 1 minute 20 secs on Jalil's computer for 1k tests
     @Test
-    void TestPassword() {
-        String testPass = "password";
-        byte[] salt = "NotSoRandomSalt?".getBytes(StandardCharsets.ISO_8859_1);
-        KeySpec spec = new PBEKeySpec(testPass.toCharArray(), salt, 65536, 128);
-        try {
-            SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            byte[] hash = f.generateSecret(spec).getEncoded();
-            System.out.println(new String(hash, StandardCharsets.ISO_8859_1));
-        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
+    public void UserHashTest(){
+        User testUser = new User(1, "testuser@gmail.com", "password", "test", "user", "NotSoRandomSalt?");
+        for (int j = 0; j < 50; j++) {
+            testUser.setPassword("password");
+            testUser.setSalt(null);
+            testUser.encryptAndSetPassword();
+            Assertions.assertNotEquals("password", testUser.getPassword());
         }
     }
 
+
     @Test
-    public void RegisterTest() {
+    void TestPassword(){
+        User testUser = new User(1, "testuser@gmail.com", "password", "test", "user", "NotSoRandomSalt?");
+        testUser.encryptAndSetPassword();
+        System.out.println(testUser.getPassword());
+    }
+
+    @Test
+    public void RegisterTest(){
         RegisterRequest request = new RegisterRequest();
         request.setEmail("newuser@gmail.com");
         request.setPassword("password");
@@ -64,7 +73,7 @@ public class HashingTests {
     }
 
     @Test
-    public void LoginTest() {
+    public void LoginTest(){
         LoginRequest request = new LoginRequest();
         request.setEmail("testuser@gmail.com");
         request.setPassword("password");
@@ -73,7 +82,7 @@ public class HashingTests {
     }
 
     @Test
-    public void failedLoginTest() {
+    public void failedLoginTest(){
         LoginRequest request = new LoginRequest();
         request.setEmail("testuser@gmail.com");
         request.setPassword("badPassword");
@@ -81,7 +90,8 @@ public class HashingTests {
         Assertions.assertFalse(test.getStatusCodeValue() >= 200 && test.getStatusCodeValue() < 300);
     }
 
-    private byte[] SaltMaker() {
+    //Salt Maker is implemented in models.User.getSalt() method
+    private byte[] SaltMaker(){
         byte[] randBytes = new byte[16];
         SecureRandom random = new SecureRandom();
         random.nextBytes(randBytes);
@@ -90,8 +100,7 @@ public class HashingTests {
 
     //use this to replace "REPLACETHIS" in sql file for salts
     //@Test
-    public void replaceSQLFile()
-    {
+    public void replaceSQLFile(){
         String testPass = "password";
         byte[] salt = "NotSoRandomSalt?".getBytes(StandardCharsets.ISO_8859_1);
         KeySpec spec = new PBEKeySpec(testPass.toCharArray(), salt, 65536, 128);
@@ -105,7 +114,7 @@ public class HashingTests {
     }
 
     //Mostly copied off internet
-    public static void replaceSQLPassword(String replaceWith) {
+    public static void replaceSQLPassword(String replaceWith){
         try {
             // input the file content to the StringBuffer "input"
             BufferedReader file = new BufferedReader(new FileReader("src/main/resources/data.sql"));
@@ -122,7 +131,7 @@ public class HashingTests {
             System.out.println(inputStr); // display the original file for debugging
 
             // logic to replace lines in the string (could use regex here to be generic)
-                inputStr = inputStr.replace("REPLACETHIS", replaceWith);
+            inputStr = inputStr.replace("REPLACETHIS", replaceWith);
 
             // display the new file for debugging
             System.out.println("----------------------------------\n" + inputStr);

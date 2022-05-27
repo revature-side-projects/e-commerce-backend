@@ -19,6 +19,8 @@ public class Product {
     private double price;
     @Column(name = "sale_rate")
     private double saleRate;
+    @Column(name = "sale_flat")
+    private double saleFlat;
     private String description;
     private String image;
     private String name;
