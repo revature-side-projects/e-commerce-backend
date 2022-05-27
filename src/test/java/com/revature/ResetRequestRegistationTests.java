@@ -68,7 +68,7 @@ public class ResetRequestRegistationTests {
 
     @Test void resetPassword(){
         User user =resetService.reset("resetTest",new ResetRequest(1,1234567,1));
-        Assertions.assertEquals("resetTest", user.getPassword());
+        Assertions.assertEquals(User.encryptPassword("resetTest",user.getSaltBytes()), user.getPassword());
     }
 
 }

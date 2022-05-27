@@ -38,10 +38,20 @@ public class ResetServiceImpl implements ResetService {
 
     @Override
     public User reset(String password, ResetRequest resetRequest){
-        User user = new User();
-        user.setPassword(password);
-        user.setId(resetRequest.getUserId());
-        return userRepository.save(user);
+        Optional<User> optionalUser = userRepository.findById(resetRequest.getUserId());
+
+        if (optionalUser.isPresent()){
+            User foundUser = optionalUser.get();
+            foundUser.setPassword(password);
+            foundUser.encryptAndSetPassword();
+            return userRepository.save(foundUser);
+        }
+
+        return new User();
+
+
+
+
     }
 }
 

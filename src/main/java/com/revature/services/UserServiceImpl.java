@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void sendEmail(String email){
+    public void sendEmail(String email, int id){
         Optional<User> possibleUser = userRepository.findByEmail(email);
         if (possibleUser.isPresent()){
                 User user = possibleUser.get();
@@ -52,6 +52,10 @@ public class UserServiceImpl implements UserService{
                     String senderName = "RevatureMerchTeam";
                     String mailContent = "<p>Click the link below to change your password</p>"
                             + "<a href=\"http://localhost:3000/reset-password/" + user.getId() + "\"> Link to Reset Password</a>" + "<br> <p>Thank you for shopping with us</p>" ;
+
+                    MimeMessage message = mailSender.createMimeMessage();
+                    MimeMessageHelper helper = new MimeMessageHelper(message);
+
 
                 helper.setTo(email);
                 helper.setSubject(subject);
