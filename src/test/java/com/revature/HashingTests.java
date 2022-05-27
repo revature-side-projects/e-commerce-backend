@@ -35,7 +35,7 @@ public class HashingTests{
      */
     @Test
     public void HashTest(){
-        for (int j = 0; j < 1_000_000; j++) {
+        for (int j = 0; j < 1000; j++) {
             byte[] salt = SaltMaker();
             String parsed = new String(salt, StandardCharsets.ISO_8859_1);
             byte[] unSalt = parsed.getBytes(StandardCharsets.ISO_8859_1);
@@ -47,7 +47,7 @@ public class HashingTests{
     @Test
     public void UserHashTest(){
         User testUser = new User(1, "testuser@gmail.com", "password", "test", "user", "NotSoRandomSalt?");
-        for (int j = 0; j < 1_000; j++) {
+        for (int j = 0; j < 50; j++) {
             testUser.setPassword("password");
             testUser.setSalt(null);
             testUser.encryptAndSetPassword();
