@@ -81,7 +81,7 @@ public class AuthController{
         User user = possibleUser.get();
 
         user.setPassword(password);
-        user.encryptPassword();
+        user.encryptAndSetPassword();
         return authService.register(user);
     }
 }
