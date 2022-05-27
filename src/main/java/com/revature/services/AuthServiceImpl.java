@@ -58,9 +58,14 @@ public class AuthServiceImpl implements AuthService{
     }
 
     public User resetPassword(String password,int resetId) throws ExpiredRequestException {
+
         ResetRequest resetRequest = resetService.findById(resetId);
-        if(resetService.compareTimestamp(resetRequest.getTimeStamp()))
+        if(resetService.compareTimestamp(resetRequest.getTimeStamp())){
+            System.out.println("The if actually returns true");
             return resetService.reset(password, resetRequest);
+        }
+
+
         throw new ExpiredRequestException();
     }
 

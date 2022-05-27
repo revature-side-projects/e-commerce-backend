@@ -41,6 +41,7 @@ public class ResetServiceImpl implements ResetService {
         Optional<User> optionalUser = userRepository.findById(resetRequest.getUserId());
 
         if (optionalUser.isPresent()){
+
             User foundUser = optionalUser.get();
             foundUser.setPassword(password);
             foundUser.encryptAndSetPassword();

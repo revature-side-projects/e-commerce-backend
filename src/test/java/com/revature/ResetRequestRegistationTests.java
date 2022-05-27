@@ -3,6 +3,7 @@ package com.revature;
 
 import com.revature.controllers.AuthController;
 import com.revature.dtos.ResetRequestEmail;
+import com.revature.exceptions.ExpiredRequestException;
 import com.revature.models.ResetRequest;
 import com.revature.models.User;
 import com.revature.repositories.ResetRequestRepository;
@@ -67,8 +68,11 @@ public class ResetRequestRegistationTests {
     }
 
     @Test void resetPassword(){
-        User user =resetService.reset("resetTest",new ResetRequest(1,1234567,1));
+        User user =resetService.reset("resetTest",new ResetRequest(1,1,1));
         Assertions.assertEquals(User.encryptPassword("resetTest",user.getSaltBytes()), user.getPassword());
+    }
+    @Test void negativeResetPassword() {
+        Assertions.assertThrows((ExpiredRequestException.class), () ->  authService.resetPassword("resetTest",1));
     }
 
 }
