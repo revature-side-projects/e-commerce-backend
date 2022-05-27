@@ -61,7 +61,6 @@ public class AuthServiceImpl implements AuthService{
 
         ResetRequest resetRequest = resetService.findById(resetId);
         if(resetService.compareTimestamp(resetRequest.getTimeStamp())){
-            System.out.println("The if actually returns true");
             return resetService.reset(password, resetRequest);
         }
 

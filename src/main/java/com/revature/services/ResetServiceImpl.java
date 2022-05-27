@@ -19,7 +19,6 @@ public class ResetServiceImpl implements ResetService {
 
     @Override
     public ResetRequest findById(int id) {
-        System.out.println("running");
         Optional<ResetRequest> rp = resetRequestRepository.findById(id);
         return rp.orElse(null);
     }
@@ -41,7 +40,6 @@ public class ResetServiceImpl implements ResetService {
         Optional<User> optionalUser = userRepository.findById(resetRequest.getUserId());
 
         if (optionalUser.isPresent()){
-
             User foundUser = optionalUser.get();
             foundUser.setPassword(password);
             foundUser.encryptAndSetPassword();

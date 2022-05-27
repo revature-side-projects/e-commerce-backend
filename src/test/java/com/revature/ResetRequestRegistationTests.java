@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Optional;
+
 @SpringBootTest
 public class ResetRequestRegistationTests {
 
@@ -71,7 +73,16 @@ public class ResetRequestRegistationTests {
         User user =resetService.reset("resetTest",new ResetRequest(1,1,1));
         Assertions.assertEquals(User.encryptPassword("resetTest",user.getSaltBytes()), user.getPassword());
     }
+    @Test void ResetPassword() {
+        Optional<ResetRequest> request = passwordRepository.findById(1);
+        request.get().setTimeStamp(12345678);
+
+        Assertions.assertThrows((ExpiredRequestException.class), () ->  authService.resetPassword("resetTest",1));
+    }
+
     @Test void negativeResetPassword() {
+        Optional<ResetRequest> request = passwordRepository.findById(1);
+        request.get().setTimeStamp(1234567 + 86400001);
         Assertions.assertThrows((ExpiredRequestException.class), () ->  authService.resetPassword("resetTest",1));
     }
 
