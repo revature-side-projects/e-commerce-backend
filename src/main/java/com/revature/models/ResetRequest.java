@@ -1,5 +1,6 @@
 package com.revature.models;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,18 +11,16 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
+@Table(name = "reset_request")
+public class ResetRequest {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int quantity;
-    private double price;
-    @Column(name = "sale_rate")
-    private double saleRate;
-    private String description;
-    private String image;
-    private String name;
-    @Column(name = "is_sale")
-    private boolean isSale;
+    @Column(name = "time_stamp")
+    private long timeStamp;
+    @Column(name = "user_id")
+    private int userId;
+
 }

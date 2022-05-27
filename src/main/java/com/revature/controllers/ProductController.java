@@ -3,7 +3,7 @@ package com.revature.controllers;
 import com.revature.annotations.Authorized;
 import com.revature.dtos.ProductInfo;
 import com.revature.models.Product;
-import com.revature.services.ProductService;
+import com.revature.services.ProductServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,19 +16,22 @@ import java.util.Optional;
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class ProductController {
 
-    private final ProductService productService;
+    private final ProductServiceImpl productService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductServiceImpl productService) {
         this.productService = productService;
     }
 
-    @Authorized
+
     @GetMapping
-    public ResponseEntity<List<Product>> getInventory() {
-        return ResponseEntity.ok(productService.findAll());
+    public ResponseEntity<List<Product>> getInventory(@RequestParam(required = false) String query) {
+        if (query == null) {
+            return ResponseEntity.ok(productService.findAll());
+        }
+
+        return ResponseEntity.ok(productService.searchProduct(query));
     }
 
-    @Authorized
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable("id") int id) {
         Optional<Product> optional = productService.findById(id);
