@@ -50,9 +50,10 @@ public class AuthServiceImpl implements AuthService{
     @Override
     //TODO replace id with UUID
     public void forgotPassword(String email){
-            Optional<User> user = userService.findByEmail(email);
-            if(user.isPresent()){
-                ResetRequest request = resetService.createEntry();
+            Optional<User> possibleUser = userService.findByEmail(email);
+            if(possibleUser.isPresent()){
+                User user = possibleUser.get();
+                ResetRequest request = resetService.createEntry(user.getId());
                 userService.sendEmail(email, request.getId());
             }
     }

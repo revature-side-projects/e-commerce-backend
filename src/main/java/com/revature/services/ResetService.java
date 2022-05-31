@@ -8,6 +8,6 @@ public interface ResetService {
     ResetRequest findById(int id);
     boolean compareTimestamp(long timeStamp);
     User reset(String password, ResetRequest resetRequest);
-    ResetRequest createEntry();
+    ResetRequest createEntry(int userId);
 
 }

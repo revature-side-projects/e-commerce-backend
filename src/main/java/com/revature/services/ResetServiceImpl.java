@@ -7,6 +7,7 @@ import com.revature.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 @Service
@@ -23,9 +24,10 @@ public class ResetServiceImpl implements ResetService {
         return rp.orElse(null);
     }
 
-    public ResetRequest createEntry(){
+    public ResetRequest createEntry(int userId){
         ResetRequest rr = new ResetRequest();
         rr.setTimeStamp(System.currentTimeMillis());
+        rr.setUserId(userId);
         return resetRequestRepository.save(rr);
     }
 
@@ -38,19 +40,14 @@ public class ResetServiceImpl implements ResetService {
     @Override
     public User reset(String password, ResetRequest resetRequest){
         Optional<User> optionalUser = userRepository.findById(resetRequest.getUserId());
-
+        System.out.println(resetRequest.toString());
         if (optionalUser.isPresent()){
             User foundUser = optionalUser.get();
             foundUser.setPassword(password);
             foundUser.encryptAndSetPassword();
             return userRepository.save(foundUser);
         }
-
-        return new User();
-
-
-
-
+        throw new EntityNotFoundException();
     }
 }
 
