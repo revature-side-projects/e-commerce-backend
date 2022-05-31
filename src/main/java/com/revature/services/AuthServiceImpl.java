@@ -73,4 +73,9 @@ public class AuthServiceImpl implements AuthService{
     public Optional<User> findByUserId(Integer id){
         return userService.findById(id);
     }
+
+    @Override
+    public Optional<User> findByEmail(String email){
+        return userService.findByEmail(email);
+    }
 }

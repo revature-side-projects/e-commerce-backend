@@ -20,5 +20,5 @@ public interface AuthService {
     Optional<User> findByUserId(Integer id);
     User resetPassword(String password,int resetId) throws ExpiredRequestException;
 
-
+    Optional<User> findByEmail(String email);
 }

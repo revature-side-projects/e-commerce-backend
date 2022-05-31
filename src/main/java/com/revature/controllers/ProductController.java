@@ -21,7 +21,7 @@ public class ProductController {
     public ProductController(ProductServiceImpl productService) {
         this.productService = productService;
     }
-  
+
     @GetMapping
     public ResponseEntity<List<Product>> getInventory(@RequestParam(required = false) boolean sale, @RequestParam(required = false) String query) {
          if(sale)

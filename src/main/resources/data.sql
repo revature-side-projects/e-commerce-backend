@@ -6,7 +6,7 @@ INSERT INTO product (id, quantity, price,sale_rate, description, image, name,is_
     20.00,
     15,
     'A nice pair of headphones',
-    'https://i.insider.com/54eb437f6bb3f7697f85da71?width=1000&format=jpeg&auto=webp',
+    'https://rss-p3-202203.s3.amazonaws.com/resources/images/headphone.png',
     'Headphones',
     false
 ),
@@ -59,6 +59,7 @@ INSERT INTO users (id, email, password, first_name, last_name, salt) VALUES (
     'User',
     'NotSoRandomSalt?'
 );
+
 INSERT into reset_request (id,time_stamp,user_id) VALUES(
     1,
     12345678,
