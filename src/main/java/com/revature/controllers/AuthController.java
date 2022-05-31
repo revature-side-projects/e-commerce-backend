@@ -71,21 +71,7 @@ public class AuthController{
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(created);
     }
     @PatchMapping("/users/{requestId}")
-    public ResponseEntity<String> responseEntity(@RequestBody ResetRequestPassword password, @PathVariable("requestId") int id) throws ExpiredRequestException {
-        try {
-             authService.resetPassword(password.getPassword(),id);
-             return ResponseEntity.status(HttpStatus.OK).body("Password Reset Successful.");
-        }catch (ExpiredRequestException e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Link is older that 24 hours.");
-        }
-
-      /*  Optional<User> possibleUser = authService.findByUserId(id);
-      if(!possibleUser.isPresent()) {
-          return ResponseEntity.badRequest().build();
-      }else{
-          User user = possibleUser.get();
-          user.setPassword(password.getPassword());
-          return authService.register(user);
-      }*/
+    public User responseEntity(@RequestBody ResetRequestPassword password, @PathVariable("requestId") int id) throws ExpiredRequestException {
+        return authService.resetPassword(password.getPassword(),id);
     }
 }

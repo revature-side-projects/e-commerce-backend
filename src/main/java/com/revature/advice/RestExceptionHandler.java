@@ -25,6 +25,6 @@ public class RestExceptionHandler {
 
         String errorMessage = "The password reset request expired. Please try again. Links expire in 24 hours.";
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMessage);
+        return ResponseEntity.status(HttpStatus.RESET_CONTENT).body(errorMessage);
    }
 }
