@@ -1,4 +1,4 @@
-INSERT INTO product (id, quantity, price, description, image, name, is_discontinued, is_featured) VALUES (
+INSERT INTO product (id, quantity, price, description, image, name, discontinued, featured) VALUES (
     1,
     10,
     20.00,
@@ -49,7 +49,7 @@ INSERT INTO product (id, quantity, price, description, image, name, is_discontin
     false
 );
 
-INSERT INTO users (id, email, password, first_name, last_name, is_admin) VALUES (
+INSERT INTO users (id, email, password, first_name, last_name, admin) VALUES (
     1,
     'testuser@gmail.com',
     'password',

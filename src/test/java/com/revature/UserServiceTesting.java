@@ -27,7 +27,7 @@ public class UserServiceTesting {
 
     @Test
     public void findByCredentialsTest(){
-        Optional<User> u = Optional.of(new User(0,"a","b","c","d"));
+        Optional<User> u = Optional.of(new User(0,"a","b","c","d",false));
         when((ur).findByEmailAndPassword(any(),any())).thenReturn(u);
         Optional<User> test = us.findByCredentials("a","b");
         verify(ur).findByEmailAndPassword(any(), any());
@@ -40,7 +40,7 @@ public class UserServiceTesting {
 
     @Test
     public void saveTest(){
-        User u = new User(0,"a","b","c","d");
+        User u = new User(0,"a","b","c","d",false);
         when((ur).save(any())).thenReturn(u);
         User test = us.save(u);
         verify(ur).save(any());

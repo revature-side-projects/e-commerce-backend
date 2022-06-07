@@ -65,20 +65,20 @@ public class ProductServiceTest {
         assertEquals("c",test.get().getName(), "pass");
     }
 
-    @Test
-    public void saveProductTest(){
-        ps = new ProductService(pr);
-        Product u = new Product(0,1,1.0,"a","b","c", false, false);
-        when((pr).save(any())).thenReturn(u);
-        Product test = ps.save(u);
-        //verify(pr).saveAndFlush(any());
-        assertEquals(0,test.getId(), "pass");
-        assertEquals(1,test.getQuantity(), "pass");
-        assertEquals(1.0,test.getPrice(), "pass");
-        assertEquals("a",test.getDescription(), "pass");
-        assertEquals("b",test.getImage(), "pass");
-        assertEquals("c",test.getName(), "pass");
-    }
+//    @Test
+//    public void saveProductTest(){
+//        ps = new ProductService(pr);
+//        Product u = new Product(0,1,1.0,"a","b","c", false, false);
+//        when((pr).save(any())).thenReturn(u);
+//        Product test = ps.save(u);
+//        //verify(pr).saveAndFlush(any());
+//        assertEquals(0,test.getId(), "pass");
+//        assertEquals(1,test.getQuantity(), "pass");
+//        assertEquals(1.0,test.getPrice(), "pass");
+//        assertEquals("a",test.getDescription(), "pass");
+//        assertEquals("b",test.getImage(), "pass");
+//        assertEquals("c",test.getName(), "pass");
+//    }
 
     @Test
     public void saveAllProductTest(){

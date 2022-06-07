@@ -39,11 +39,11 @@ public class ProductController {
         return ResponseEntity.ok(optional.get());
     }
 
-    @Authorized
-    @PutMapping
-    public ResponseEntity<Product> upsert(@RequestBody Product product) {
-        return ResponseEntity.ok(productService.save(product));
-    }
+//    @Authorized
+//    @PutMapping
+//    public ResponseEntity<Product> upsert(@RequestBody Product product) {
+//        return ResponseEntity.ok(productService.save(product));
+//    }
 
     @Authorized
     @PatchMapping
