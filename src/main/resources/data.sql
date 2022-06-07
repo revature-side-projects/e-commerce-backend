@@ -46,7 +46,7 @@ INSERT INTO product (id, quantity, price, description, image, name, is_discontin
     'https://www.pngarts.com/files/3/Women-Jacket-PNG-High-Quality-Image.png',
     'Coat',
     false,
-    false
+    true
 );
 
 INSERT INTO users (id, email, password, first_name, last_name, is_admin) VALUES (
