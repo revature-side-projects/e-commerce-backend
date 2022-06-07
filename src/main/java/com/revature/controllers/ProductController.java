@@ -84,4 +84,11 @@ public class ProductController {
 
         return ResponseEntity.ok(optional.get());
     }
+
+    @Authorized
+    @PutMapping
+    public ResponseEntity<Product> updateProduct(@RequestBody Product product){
+        return ResponseEntity.ok(productService.update(product));
+    }
+
 }
