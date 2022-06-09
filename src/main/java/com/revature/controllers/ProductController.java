@@ -28,9 +28,10 @@ public class ProductController {
         return ResponseEntity.ok(productService.findAll());
     }
 
-    @Authorized
+    //@Authorized
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable("id") int id) {
+        System.out.println("this happened" + id);
         Optional<Product> optional = productService.findById(id);
 
         if(!optional.isPresent()) {
@@ -86,7 +87,7 @@ public class ProductController {
     }
 
     @Authorized
-    @PutMapping
+    @PutMapping("/update")
     public ResponseEntity<Product> updateProduct(@RequestBody Product product){
         return ResponseEntity.ok(productService.update(product));
     }

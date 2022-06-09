@@ -58,13 +58,13 @@ public class AuthControllerTest {
     @Test
     @Transactional
     public void loginTest()throws Exception{
-        LoginRequest loginRequest = new LoginRequest("test","pass");
-        HttpSession session = new MockHttpSession();
-        User u = new User(0,"test","pass","a","b",false);
+        LoginRequest loginRequest = new LoginRequest("testuser@gmail.com","password");
+        //HttpSession session = new MockHttpSession();
+        User u = new User(0,"testuser@gmail.com","password","a","b",false);
         ur.save(u);
         mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsString(loginRequest))
-                ).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.email").value("test"))
-                .andExpect(jsonPath("$.password").value("pass")).andExpect(jsonPath("$.firstName").value("a"))
+                ).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.email").value("testuser@gmail.com"))
+                .andExpect(jsonPath("$.password").value("password")).andExpect(jsonPath("$.firstName").value("a"))
                 .andExpect(jsonPath("$.lastName").value("b")).andExpect(jsonPath("$.admin").value(false)).andExpect(jsonPath("$.id").value(3));
     }
 
