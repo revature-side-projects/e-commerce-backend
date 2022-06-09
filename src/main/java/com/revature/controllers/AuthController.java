@@ -55,13 +55,16 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(created));
     }
 
-
     @PostMapping("/checkLogin")
-    public ResponseEntity<Boolean> checkLogin(HttpSession session) {
-        if(session.getAttribute("user") == null){
-            return ResponseEntity.status(HttpStatus.OK).body(false);
-        } else {
-            return ResponseEntity.status(HttpStatus.OK).body(true);
+    public ResponseEntity<Integer> checkLogin(HttpSession session) {
+
+        User u = (User)session.getAttribute("user");
+        if(u == null){
+            return ResponseEntity.status(HttpStatus.OK).body(1);
+        } else  if(!u.isAdmin()){
+            return ResponseEntity.status(HttpStatus.OK).body(2);
+        }else {
+            return ResponseEntity.status(HttpStatus.OK).body(3);
         }
     }
 }
