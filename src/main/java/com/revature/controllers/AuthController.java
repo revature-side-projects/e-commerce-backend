@@ -1,5 +1,6 @@
 package com.revature.controllers;
 
+import com.revature.annotations.Authorized;
 import com.revature.dtos.LoginRequest;
 import com.revature.dtos.RegisterRequest;
 import com.revature.models.User;
@@ -52,5 +53,15 @@ public class AuthController {
                 registerRequest.isAdmin());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(created));
+    }
+
+
+    @PostMapping("/checkLogin")
+    public ResponseEntity<Boolean> checkLogin(HttpSession session) {
+        if(session.getAttribute("user") == null){
+            return ResponseEntity.status(HttpStatus.OK).body(false);
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(true);
+        }
     }
 }

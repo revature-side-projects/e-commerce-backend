@@ -22,7 +22,7 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @Authorized
+    //@Authorized
     @GetMapping
     public ResponseEntity<List<Product>> getInventory() {
         return ResponseEntity.ok(productService.findAll());
@@ -90,5 +90,6 @@ public class ProductController {
     public ResponseEntity<Product> updateProduct(@RequestBody Product product){
         return ResponseEntity.ok(productService.update(product));
     }
+
 
 }

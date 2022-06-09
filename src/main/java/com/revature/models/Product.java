@@ -23,6 +23,7 @@ public class Product {
     private String description;
     private String image;
     private String name;
+    private String category;
     private boolean isDiscontinued;
     private boolean isFeatured;
 }
