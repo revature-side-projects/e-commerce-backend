@@ -37,7 +37,7 @@ public class ProductServiceTest {
     public void findAllTest(){
         ps = new ProductService(pr);
         List<Product> lp = new ArrayList<>();
-        Product u = new Product(0,1,1.0,"a","b","c",false, false);
+        Product u = new Product(0,1,1.0,"a","b","c", "d", false, false);
         lp.add(u);
         when((pr).findAll()).thenReturn(lp);
         List<Product> test = ps.findAll();
@@ -53,7 +53,7 @@ public class ProductServiceTest {
     @Test
     public void findByIdTest(){
         ps = new ProductService(pr);
-        Optional<Product> u = Optional.of(new Product(0,1,1.0,"a","b","c",false, false));
+        Optional<Product> u = Optional.of(new Product(0,1,1.0,"a","b","c", "d",false, false));
         when((pr).findById(anyInt())).thenReturn(u);
         Optional<Product> test = ps.findById(0);
         //verify(pr).findById(anyInt());
@@ -85,7 +85,7 @@ public class ProductServiceTest {
         ps = new ProductService(pr);
         List<ProductInfo> pl = new ArrayList<>();
         List<Product> lp = new ArrayList<>();
-        Product u = new Product(0,1,1.0,"a","b","c", false, false);
+        Product u = new Product(0,1,1.0,"a","b","c", "d", false, false);
         lp.add(u);
         when((pr).saveAll(any())).thenReturn(lp);
         List<Product> test = ps.saveAll(lp,pl);
@@ -109,8 +109,8 @@ public class ProductServiceTest {
     @Test
     public void saveAndFlushProductTest(){
         ps = new ProductService(pr);
-        Product u = new Product(1,0,1.0,"a","b","c", false, false);
-        Product test = new Product(1,1,2.0,"d","e","f", false, false);
+        Product u = new Product(1,0,1.0,"a","b","c", "d", false, false);
+        Product test = new Product(1,1,2.0,"d","e","f", "g", false, false);
         when((pr).saveAndFlush(any())).thenReturn(u);
         test = ps.update(u);
         //verify(pr).saveAndFlush(any());
