@@ -32,6 +32,7 @@ public class AuthController {
         }
 
         session.setAttribute("user", optional.get());
+        System.out.println(optional.get().toString());
 
         return ResponseEntity.ok(optional.get());
     }
@@ -66,5 +67,14 @@ public class AuthController {
         }else {
             return ResponseEntity.status(HttpStatus.OK).body(3);
         }
+    }
+
+    @GetMapping("/getUser")
+    public ResponseEntity<User> getUser(HttpSession session) {
+
+        User u = (User)session.getAttribute("user");
+        System.out.println(u.toString());
+        return ResponseEntity.status(HttpStatus.OK).body(u);
+
     }
 }
