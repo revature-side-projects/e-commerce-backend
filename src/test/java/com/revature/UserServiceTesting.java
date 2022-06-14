@@ -36,19 +36,24 @@ public class UserServiceTesting {
         assertEquals("b",test.get().getPassword(), "pass");
         assertEquals("c",test.get().getFirstName(), "pass");
         assertEquals("d",test.get().getLastName(), "pass");
+        assertEquals(false,test.get().isAdmin(), "pass");
     }
 
     @Test
     public void saveTest(){
         User u = new User(0,"a","b","c","d",false);
+        Optional<User> p = Optional.empty();
         when((ur).save(any())).thenReturn(u);
+        when((ur).findByEmail(any())).thenReturn(p);
         User test = us.save(u);
         verify(ur).save(any());
+        verify(ur).findByEmail(any());
         assertEquals(0,test.getId(), "pass");
         assertEquals("a",test.getEmail(), "pass");
         assertEquals("b",test.getPassword(), "pass");
         assertEquals("c",test.getFirstName(), "pass");
         assertEquals("d",test.getLastName(), "pass");
+        assertEquals(false,test.isAdmin(), "pass");
     }
 
 }
