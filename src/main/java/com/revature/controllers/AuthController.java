@@ -30,7 +30,7 @@ public class AuthController {
         if(!optional.isPresent()) {
             return ResponseEntity.badRequest().build();
         }
-
+        optional.get().setPassword("");
         session.setAttribute("user", optional.get());
 
         return ResponseEntity.ok(optional.get());
@@ -51,8 +51,12 @@ public class AuthController {
                 registerRequest.getFirstName(),
                 registerRequest.getLastName(),
                 registerRequest.isAdmin());
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(created));
+                created = authService.register(created);
+                if(created == null){
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+                }else {
+                created.setPassword("");
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);}
     }
 
     @PostMapping("/checkLogin")
