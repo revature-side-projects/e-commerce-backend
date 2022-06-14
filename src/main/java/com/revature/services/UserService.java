@@ -20,6 +20,11 @@ public class UserService {
     }
 
     public User save(User user) {
-        return userRepository.save(user);
+       Optional<User> test = userRepository.findByEmail(user.getEmail());
+       if(test.isPresent()){
+           return null;
+       }else {
+           return userRepository.save(user);
+       }
     }
 }
