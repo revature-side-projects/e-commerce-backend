@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpSession;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -64,8 +66,18 @@ public class AuthControllerTest {
         ur.save(u);
         mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsString(loginRequest))
                 ).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.email").value("testuser@gmail.com"))
-                .andExpect(jsonPath("$.password").value("password")).andExpect(jsonPath("$.firstName").value("a"))
+                .andExpect(jsonPath("$.password").value("")).andExpect(jsonPath("$.firstName").value("a"))
                 .andExpect(jsonPath("$.lastName").value("b")).andExpect(jsonPath("$.admin").value(false)).andExpect(jsonPath("$.id").value(3));
+    }
+
+    @Test
+    @Transactional
+    public void failedLoginTest()throws Exception{
+        LoginRequest loginRequest = new LoginRequest("testuser@gmail.com","word");
+        User u = new User(0,"testuser@gmail.com","password","a","b",false);
+        ur.save(u);
+        mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsString(loginRequest))
+                ).andDo(print()).andExpect(status().isBadRequest());
     }
 
         @Test
@@ -77,8 +89,65 @@ public class AuthControllerTest {
         //ur.saveAndFlush(u);
         mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsString(registerRequest))
                 ).andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.email").value("test"))
-                .andExpect(jsonPath("$.password").value("pass")).andExpect(jsonPath("$.firstName").value("a"))
+                .andExpect(jsonPath("$.password").value("")).andExpect(jsonPath("$.firstName").value("a"))
                 .andExpect(jsonPath("$.lastName").value("b")).andExpect(jsonPath("$.admin").value(false)).andExpect(jsonPath("$.id").value(3));
+    }
+
+    @Test
+    @Transactional
+    public void failedSaveUserTest()throws Exception{
+        RegisterRequest registerRequest = new RegisterRequest("test","pass","a","b",false);
+        //HttpSession session = new MockHttpSession();
+        User u = new User(0,"test","pass","a","b",false);
+        ur.save(u);
+        mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsString(registerRequest))
+                ).andDo(print()).andExpect(status().isConflict());
+    }
+
+//    @Test
+//    @Transactional
+//    public void checkGuestTest()throws Exception{
+//        //RegisterRequest registerRequest = new RegisterRequest("test","pass","a","b",false);
+//        //HttpSession session = new MockHttpSession();
+//        User u = new User();
+//        // (0,"test","pass","a","b",false);
+//        //ur.save(u);
+//        //User u = null;
+//
+//        HashMap<String, Object> sessionAttr = new HashMap<String, Object>();
+//        sessionAttr.put("user", u);
+//        MvcResult content = mockMvc.perform(post("/auth/checkLogin").sessionAttrs(sessionAttr)).andDo(print()).andExpect(status().isOk()).andReturn();
+//        String result = content.getResponse().getContentAsString();
+//        assertEquals("1",result);
+//    }
+
+    @Test
+    @Transactional
+    public void checkUserTest()throws Exception{
+
+        //HttpSession session = new MockHttpSession();
+        //User u = new User(0,"test","pass","a","b",false);
+        //ur.save(u);
+        User u = new User(0,"test","pass","a","b",false);
+
+        HashMap<String, Object> sessionAttr = new HashMap<String, Object>();
+        sessionAttr.put("user", u);
+        MvcResult content = mockMvc.perform(post("/auth/checkLogin").sessionAttrs(sessionAttr)).andDo(print()).andExpect(status().isOk()).andReturn();
+        String result = content.getResponse().getContentAsString();
+        assertEquals("2",result);
+    }
+
+    @Test
+    @Transactional
+    public void checkAdminTest()throws Exception{
+
+        User u = new User(0,"test","pass","a","b",true);
+
+        HashMap<String, Object> sessionAttr = new HashMap<String, Object>();
+        sessionAttr.put("user", u);
+        MvcResult content = mockMvc.perform(post("/auth/checkLogin").sessionAttrs(sessionAttr)).andDo(print()).andExpect(status().isOk()).andReturn();
+        String result = content.getResponse().getContentAsString();
+        assertEquals("3",result);
     }
 
 }
