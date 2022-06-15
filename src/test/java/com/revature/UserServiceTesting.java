@@ -14,6 +14,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 public class UserServiceTesting {
 
+
     @BeforeEach
     public void registrationBeforeTest(){
         MockitoAnnotations.openMocks(this);
@@ -27,9 +28,10 @@ public class UserServiceTesting {
 
     @Test
     public void findByCredentialsTest(){
+        UserService uss = new UserService(ur);
         Optional<User> u = Optional.of(new User(0,"a","b","c","d",false));
         when((ur).findByEmailAndPassword(any(),any())).thenReturn(u);
-        Optional<User> test = us.findByCredentials("a","b");
+        Optional<User> test = uss.findByCredentials("a","b");
         verify(ur).findByEmailAndPassword(any(), any());
         assertEquals(0,test.get().getId(), "pass");
         assertEquals("a",test.get().getEmail(), "pass");
