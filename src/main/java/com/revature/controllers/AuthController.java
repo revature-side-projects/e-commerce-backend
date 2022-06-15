@@ -62,7 +62,6 @@ public class AuthController {
 
     @PostMapping("/checkLogin")
     public ResponseEntity<Integer> checkLogin(HttpSession session) {
-
         User u = (User)session.getAttribute("user");
         if(u == null){
             return ResponseEntity.status(HttpStatus.OK).body(1);

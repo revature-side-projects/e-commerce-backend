@@ -25,6 +25,7 @@ public class ProductController {
     //@Authorized
     @GetMapping
     public ResponseEntity<List<Product>> getInventory() {
+
         return ResponseEntity.ok(productService.findAll());
     }
 

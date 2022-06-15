@@ -1,5 +1,5 @@
 server:
-  port: 5432
+  port: 8080
 spring:
   jpa:
     hibernate:
