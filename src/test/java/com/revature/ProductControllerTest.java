@@ -1,4 +1,4 @@
-package com.revature;
+/* package com.revature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.dtos.LoginRequest;
 import com.revature.dtos.ProductInfo;
@@ -147,3 +147,4 @@ public class ProductControllerTest {
     }
 
 }
+*/
