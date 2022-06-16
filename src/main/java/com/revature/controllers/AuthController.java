@@ -59,7 +59,7 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);}
     }
 
-    @PostMapping("/checkLogin")
+    @GetMapping("/checkLogin")
     public ResponseEntity<Integer> checkLogin(HttpSession session) {
         User u = (User)session.getAttribute("user");
         
