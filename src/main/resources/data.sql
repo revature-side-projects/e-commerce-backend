@@ -1,5 +1,5 @@
 INSERT INTO product (id, quantity, price, description, image, name, category, is_discontinued, is_featured) VALUES (
-    1,
+    1000,
     10,
     20.00,
     'A nice pair of headphones',
@@ -10,7 +10,7 @@ INSERT INTO product (id, quantity, price, description, image, name, category, is
     false
 ),
 (
-    2,
+    1001,
     5,
     45.00,
     'A nice TeeShirt',
@@ -21,7 +21,7 @@ INSERT INTO product (id, quantity, price, description, image, name, category, is
     false
 ),
 (
-    3,
+    1002,
     20,
     2.50,
     'A reusable shopping bag',
@@ -32,7 +32,7 @@ INSERT INTO product (id, quantity, price, description, image, name, category, is
     false
 ),
 (
-    4,
+    1003,
     20,
     10.00,
     'A fancy cap for a fancy person',
@@ -43,7 +43,7 @@ INSERT INTO product (id, quantity, price, description, image, name, category, is
     false
 ),
 (
-    5,
+    1004,
     3,
     80.00,
     'A nice coat',
@@ -55,13 +55,13 @@ INSERT INTO product (id, quantity, price, description, image, name, category, is
 );
 
 INSERT INTO users (id, email, password, first_name, last_name, admin) VALUES (
-    1,
+    1000,
     'testuser@gmail.com',
     'password',
     'Test',
     'User',
      false),(
-       2,
+       1001,
          'admin@gmail.com',
          'password',
          'Admin',
