@@ -41,7 +41,6 @@ public class ProductServiceTest {
         lp.add(u);
         when((pr).findAll()).thenReturn(lp);
         List<Product> test = ps.findAll();
-        //verify(pr).findAll();
         assertEquals(0,test.get(0).getId(), "pass");
         assertEquals(1,test.get(0).getQuantity(), "pass");
         assertEquals(1.0,test.get(0).getPrice(), "pass");

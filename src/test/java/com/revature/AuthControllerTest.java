@@ -44,12 +44,6 @@ public class AuthControllerTest {
     @Autowired
     private UserRepository ur;
 
-//    @Autowired
-//    private UserService us;
-//
-//    @Autowired
-//    static AuthService as;
-
     @BeforeEach
     public void resetDB() {
         ur.deleteAll();
