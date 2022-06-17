@@ -67,40 +67,40 @@ public class AuthControllerTest {
                 .andExpect(jsonPath("$.password").value("")).andExpect(jsonPath("$.firstName").value("a"))
                 .andExpect(jsonPath("$.lastName").value("b")).andExpect(jsonPath("$.admin").value(false));
     }
-
-    @Test
-    @Transactional
-    public void failedLoginTest()throws Exception{
-        LoginRequest loginRequest = new LoginRequest("testuser@gmail.com","word");
-        User u = new User(0,"testuser@gmail.com","password","a","b",false);
-        ur.save(u);
-        mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsString(loginRequest))
-        ).andDo(print()).andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @Transactional
-    public void saveUserTest()throws Exception{
-        RegisterRequest registerRequest = new RegisterRequest("test","pass","a","b",false);
-        //HttpSession session = new MockHttpSession();
-        //User u = new User(0,"test","pass","a","b",false);
-        //ur.saveAndFlush(u);
-        mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsString(registerRequest))
-                ).andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.email").value("test"))
-                .andExpect(jsonPath("$.password").value("")).andExpect(jsonPath("$.firstName").value("a"))
-                .andExpect(jsonPath("$.lastName").value("b")).andExpect(jsonPath("$.admin").value(false));
-    }
-
-    @Test
-    @Transactional
-    public void failedSaveUserTest()throws Exception{
-        RegisterRequest registerRequest = new RegisterRequest("test","pass","a","b",false);
-        //HttpSession session = new MockHttpSession();
-        User u = new User(0,"test","pass","a","b",false);
-        ur.save(u);
-        mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsString(registerRequest))
-        ).andDo(print()).andExpect(status().isConflict());
-    }
+//
+//    @Test
+//    @Transactional
+//    public void failedLoginTest()throws Exception{
+//        LoginRequest loginRequest = new LoginRequest("testuser@gmail.com","word");
+//        User u = new User(0,"testuser@gmail.com","password","a","b",false);
+//        ur.save(u);
+//        mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsString(loginRequest))
+//        ).andDo(print()).andExpect(status().isBadRequest());
+//    }
+//
+//    @Test
+//    @Transactional
+//    public void saveUserTest()throws Exception{
+//        RegisterRequest registerRequest = new RegisterRequest("test","pass","a","b",false);
+//        //HttpSession session = new MockHttpSession();
+//        //User u = new User(0,"test","pass","a","b",false);
+//        //ur.saveAndFlush(u);
+//        mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsString(registerRequest))
+//                ).andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$.email").value("test"))
+//                .andExpect(jsonPath("$.password").value("")).andExpect(jsonPath("$.firstName").value("a"))
+//                .andExpect(jsonPath("$.lastName").value("b")).andExpect(jsonPath("$.admin").value(false));
+//    }
+//
+//    @Test
+//    @Transactional
+//    public void failedSaveUserTest()throws Exception{
+//        RegisterRequest registerRequest = new RegisterRequest("test","pass","a","b",false);
+//        //HttpSession session = new MockHttpSession();
+//        User u = new User(0,"test","pass","a","b",false);
+//        ur.save(u);
+//        mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsString(registerRequest))
+//        ).andDo(print()).andExpect(status().isConflict());
+//    }
 
 //    @Test
 //    @Transactional
