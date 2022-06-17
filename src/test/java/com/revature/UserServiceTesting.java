@@ -27,6 +27,7 @@
 //    static UserService us;
 //
 //    @Test
+
 //    public void findByCredentialsTest(){
 //        UserService uss = new UserService(ur);
 //        Optional<User> u = Optional.of(new User(0,"a","b","c","d",false));
