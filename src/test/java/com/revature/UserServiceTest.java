@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 @SpringBootTest
-public class UserServiceTesting {
+public class UserServiceTest {
 
 
     @BeforeEach
@@ -33,15 +33,14 @@ public class UserServiceTesting {
 
     public void findByCredentialsTest(){
         UserService uss = new UserService(ur);
-        Optional<User> u = Optional.of(new User(0,"a","b","c","d",false));
+        Optional<User> u = Optional.of(new User(0,"test@gmail.com","password","test_first","test_last",false));
         when((ur).findByEmailAndPassword(any(),any())).thenReturn(u);
+
         Optional<User> test = uss.findByCredentials("a","b");
         verify(ur).findByEmailAndPassword(any(), any());
-        assertEquals(0,test.get().getId(), "pass");
-        assertEquals("a",test.get().getEmail(), "pass");
-        assertEquals("b",test.get().getPassword(), "pass");
-        assertEquals("c",test.get().getFirstName(), "pass");
-        assertEquals("d",test.get().getLastName(), "pass");
+
+        assertEquals("test_first",test.get().getFirstName(), "pass");
+        assertEquals("test_last",test.get().getLastName(), "pass");
         assertEquals(false,test.get().isAdmin(), "pass");
     }
 }
