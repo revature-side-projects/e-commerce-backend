@@ -16,7 +16,7 @@ public class UserService {
     }
 
     public Optional<User> findByCredentials(String email, String password) {
-        return userRepository.findByEmailAndPassword(email, password);
+        return userRepository.findByEmailIgnoreCaseAndPassword(email, password);
     }
 
     public User save(User user) {

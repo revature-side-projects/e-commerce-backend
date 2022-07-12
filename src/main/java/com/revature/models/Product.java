@@ -1,26 +1,28 @@
 package com.revature.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import javax.persistence.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
-@Data
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
+@Table(name = "product")
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private int quantity;
+    @Column(name = "product_id", updatable = false, nullable = false)
+    private long product_id;
+
+    @Column(nullable = false)
     private double price;
+
     private String description;
     private String image;
     private String name;
+
+    public long getProduct_id() { return product_id; }
+    public double getPrice() { return price; }
+    public String getDescription() { return description; }
+    public String getImage() { return image; }
+    public String getName() { return name; }
+
+
 }

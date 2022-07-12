@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/product")
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:3000"}, allowCredentials = "true")
+//@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:3000"}, allowCredentials = "true")
 public class ProductController {
 
     private final ProductService productService;
@@ -59,11 +59,11 @@ public class ProductController {
 
     		Product product = optional.get();
 
-    		if(product.getQuantity() - metadata.get(i).getQuantity() < 0) {
-    			return ResponseEntity.badRequest().build();
-    		}
+//    		if(product.getQuantity() - metadata.get(i).getQuantity() < 0) {
+//    			return ResponseEntity.badRequest().build();
+//    		}
     		
-    		product.setQuantity(product.getQuantity() - metadata.get(i).getQuantity());
+//    		product.setQuantity(product.getQuantity() - metadata.get(i).getQuantity());
     		productList.add(product);
     	}
         
