@@ -22,15 +22,16 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @Authorized
+    //@Authorized
     @GetMapping
     public ResponseEntity<List<Product>> getInventory() {
         return ResponseEntity.ok(productService.findAll());
     }
 
-    @Authorized
+    //@Authorized
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable("id") int id) {
+        System.out.println("this happened" + id);
         Optional<Product> optional = productService.findById(id);
 
         if(!optional.isPresent()) {
@@ -44,6 +45,7 @@ public class ProductController {
     public ResponseEntity<Product> upsert(@RequestBody Product product) {
         return ResponseEntity.ok(productService.save(product));
     }
+    
 
     @Authorized
     @PatchMapping
@@ -84,4 +86,12 @@ public class ProductController {
 
         return ResponseEntity.ok(optional.get());
     }
+
+    @Authorized
+    @PutMapping("/update")
+    public ResponseEntity<Product> updateProduct(@RequestBody Product product){
+        return ResponseEntity.ok(productService.update(product));
+    }
+
+
 }

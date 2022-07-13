@@ -36,4 +36,9 @@ public class ProductService {
     public void delete(int id) {
         productRepository.deleteById(id);
     }
+
+    public Product update(Product p){
+
+        return productRepository.saveAndFlush(p);
+    }
 }

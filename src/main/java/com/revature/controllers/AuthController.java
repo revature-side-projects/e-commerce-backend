@@ -1,5 +1,6 @@
 package com.revature.controllers;
 
+import com.revature.annotations.Authorized;
 import com.revature.dtos.LoginRequest;
 import com.revature.dtos.RegisterRequest;
 import com.revature.models.User;
@@ -29,7 +30,7 @@ public class AuthController {
         if(!optional.isPresent()) {
             return ResponseEntity.badRequest().build();
         }
-
+        optional.get().setPassword("");
         session.setAttribute("user", optional.get());
 
         return ResponseEntity.ok(optional.get());
@@ -48,8 +49,26 @@ public class AuthController {
                 registerRequest.getEmail(),
                 registerRequest.getPassword(),
                 registerRequest.getFirstName(),
-                registerRequest.getLastName());
+                registerRequest.getLastName(),
+                registerRequest.isAdmin());
+                created = authService.register(created);
+                if(created == null){
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+                }else {
+                created.setPassword("");
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);}
+    }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(created));
+    @PostMapping("/checkLogin")
+    public ResponseEntity<Integer> checkLogin(HttpSession session) {
+
+        User u = (User)session.getAttribute("user");
+        if(u == null){
+            return ResponseEntity.status(HttpStatus.OK).body(1);
+        } else  if(!u.isAdmin()){
+            return ResponseEntity.status(HttpStatus.OK).body(2);
+        }else {
+            return ResponseEntity.status(HttpStatus.OK).body(3);
+        }
     }
 }
