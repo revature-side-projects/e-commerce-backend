@@ -29,6 +29,6 @@ public class RegisterRequest {
     private String firstName;
 
     @NotNull( message = ValidatorMessages.LNAME_REQUIRED_ON_REGISTRATION)
-    @Length ( min = 1, message = ValidatorMessages.FNAME_REQUIREMENT)
+    @Length ( min = 1, message = ValidatorMessages.LNAME_REQUIREMENT)
     private String lastName;
 }
