@@ -18,14 +18,17 @@ public class ProductService {
     }
 
     public List<Product> findAll() {
+
         return productRepository.findAll();
     }
 
     public Optional<Product> findById(int id) {
+
         return productRepository.findById(id);
     }
 
     public Product save(Product product) {
+
         return productRepository.save(product);
     }
     
