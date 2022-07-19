@@ -1,4 +1,4 @@
-package com.revature.taskmaster.common.util.web.validators.groups;
+package com.revature.util.groups;
 
 public interface OnCreate {
 }
