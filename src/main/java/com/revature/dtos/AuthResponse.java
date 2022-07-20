@@ -11,12 +11,14 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class AuthResponse {
+    private Integer id;
     private String email;
     private String role; // for conditional rendering in UI for admin
     private String firstName;
     private String lastName;
 
     public AuthResponse(User user) {
+        this.id = user.getUserId();
         this.email = user.getEmail();
         this.role = user.getRole().getName();
         this.firstName = user.getFirstName();
