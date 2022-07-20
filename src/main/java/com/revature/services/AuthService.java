@@ -61,6 +61,11 @@ public class AuthService {
     }
 
 
+    /**
+     * Attempts to create a new user.
+     * @param registerRequest The register details.
+     * @return org.springframework.http.ResponseEntity
+     */
     public ResponseEntity register(RegisterRequest registerRequest) {
         // First, check if email is already taken
         if (userRepo.existsByEmailIgnoreCase(registerRequest.getEmail())) {
@@ -79,6 +84,12 @@ public class AuthService {
         return makeResp(user, HttpStatus.CREATED.value());
     }
 
+    /**
+     * Creates a response entity when something affects users.
+     * @param user The user to pass in.
+     * @param statusCode The expected HTTP status code for the response.
+     * @return org.springframework.http.ResponseEntity
+     */
     private ResponseEntity makeResp(User user, int statusCode) {
         AuthResponse authResp = new AuthResponse(user); // init
         String resp = "";
@@ -110,13 +121,17 @@ public class AuthService {
         tokenService.extractTokenDetails(token);
     }
 
+    /**
+     * Checks if provided token has the admin role.
+     * @param token
+     */
     public void adminCheck(String token) { // could this be better as a bool?
         Principal prin = tokenService.extractTokenDetails(token);
         System.out.println("Checking if admin: "+prin);
         User user = userService.findByIdAndEmailIgnoreCase(prin.getAuthUserId(), prin.getAuthUserEmail())
                 .orElseThrow(BadRequestException::new); // user data in token not in DB
         System.out.println("User found: " + user);
-        if (!user.getRole().getName().toString().equalsIgnoreCase("admin")) {
+        if (!user.getRole().getName().equalsIgnoreCase("admin")) {
             throw new ForbiddenException(); // 403 error; must be admin
         }
         // no errors thrown, execution of program can continue
@@ -156,7 +171,7 @@ public class AuthService {
             throw new UnauthorizedException(); // invalid password. possibly better exception could be used?
         }
         user.setPassword(generatePassword(resetRequest.getNewPassword())); // otherwise, generate the password
-        userRepo.save(user); // save the repo
+        userRepo.save(user); // save to the repo
         return makeResp(user, HttpStatus.OK.value()); // all is good
     }
 }
