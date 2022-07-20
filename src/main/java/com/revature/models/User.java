@@ -9,7 +9,7 @@ import java.util.List;
 @Table(name = "`user`") // specifies database table name
 public class User {
 
-    @Id // Identifies this column as a primary key
+     // Identifies this column as a primary key
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto-incrementing
     @Column(name = "user_id", // defines column name in the database
             insertable = false, // this column is not included in generated INSERT statements
