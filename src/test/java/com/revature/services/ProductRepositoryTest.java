@@ -38,7 +38,7 @@ class ProductServiceTest {
         when(mockProductRepository.findAll()).thenReturn(mockProducts); //  here we invoke the findAll method for testing.
 
         //  When:   response is actual or true
-        List<Product> actual = sut.findAll();
+        List<Product> actual = (List<Product>) sut.findAll();
 
         //  Then: verify
         assertEquals(mockProducts.size(), actual.size());

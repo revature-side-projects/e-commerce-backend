@@ -8,15 +8,14 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class LoginRequest {
+@NoArgsConstructor
+public class ResetRequest {
+    @NotBlank // cannot be like ""
+    @NotNull // cannot be missing
+    private String oldPassword;
 
     @NotBlank // cannot be like ""
     @NotNull // cannot be missing
-    private String email;
-
-    @NotBlank // cannot be like ""
-    @NotNull // cannot be missing
-    private String password;
+    private String newPassword;
 }
