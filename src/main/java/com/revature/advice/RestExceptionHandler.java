@@ -32,10 +32,10 @@ public class RestExceptionHandler {
     public ErrorResponse handleInvalidArgument(
             MethodArgumentNotValidException ex) {
         List<String> errors = new ArrayList<>();
-       ex.getBindingResult().getFieldErrors().forEach(error-> {
-           errors.add(error.getDefaultMessage());
-       });
-       return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), errors);
+        ex.getBindingResult().getFieldErrors().forEach(error-> {
+            errors.add(error.getDefaultMessage());
+        });
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), errors);
     }
 
     // Generic 501
@@ -50,79 +50,88 @@ public class RestExceptionHandler {
                 listOfErrorMessages);
     }
 
-     //Generic 400
+    //Generic 400
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BadRequestException.class)
     public ErrorResponse handleBadRequestException(Throwable t) {
         t.printStackTrace();
+        String message = "Invalid Input.";
+        List<String> listOfErrorMessages = new ArrayList<>();
+        listOfErrorMessages.add(message);
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(),
-                new ArrayList<String>() {{add("Invalid Input.");}}
-                );
+                listOfErrorMessages
+        );
     }
-
-//    // Specific 400
-//    // This handles error thrown via the DTO validation annotations
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public ErrorResponse handleMethodArgumentNotValidException(
-//            MethodArgumentNotValidException e
-//    ) {
-//        e.printStackTrace();
-//        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(),
-//                e.getLocalizedMessage()); // TODO : this
-//    }
 
     // Generic 401
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(UnauthorizedException.class)
     public ErrorResponse handleUnauthorizedException(Throwable t) {
         t.printStackTrace();
+        String message = "Invalid Credentials.";
+        List<String> listOfErrorMessages = new ArrayList<>();
+        listOfErrorMessages.add(message);
         return new ErrorResponse(HttpStatus.UNAUTHORIZED.value(),
-                "Invalid Credentials.");
+                listOfErrorMessages);
     }
 
-    // Specific 401
-//    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-//    @ExceptionHandler(TokenParseException.class)
-//    public ErrorResponse handleTokenParseException(Throwable t) {
-//        t.printStackTrace();
-//        return new ErrorResponse(HttpStatus.UNAUTHORIZED.value(),
-//                "Login session expired. Please login again.");
-//    }
+//     Specific 401
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(TokenParseException.class)
+    public ErrorResponse handleTokenParseException(Throwable t) {
+        t.printStackTrace();
+        String message = "Login session expired. Please login again.";
+        List<String> listOfErrorMessages = new ArrayList<>();
+        listOfErrorMessages.add(message);
+        return new ErrorResponse(HttpStatus.UNAUTHORIZED.value(),
+                listOfErrorMessages);
+    }
 
-    // Generic 403
-//    @ResponseStatus(HttpStatus.FORBIDDEN)
-//    @ExceptionHandler(ForbiddenException.class)
-//    public ErrorResponse handleForbiddenException(Throwable t) {
-//        t.printStackTrace();
-//        return new ErrorResponse(HttpStatus.FORBIDDEN.value(),
-//                "Access Denied");
-//    }
+//     Generic 403
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(ForbiddenException.class)
+    public ErrorResponse handleForbiddenException(Throwable t) {
+        t.printStackTrace();
+        String message = "Access Denied";
+        List<String> listOfErrorMessages = new ArrayList<>();
+        listOfErrorMessages.add(message);
+        return new ErrorResponse(HttpStatus.FORBIDDEN.value(),
+                listOfErrorMessages);
+    }
 
     // Generic 404
-//    @ResponseStatus(HttpStatus.NOT_FOUND)
-//    @ExceptionHandler(NotFoundException.class)
-//    public ErrorResponse handleNotFoundException(Throwable t) {
-//        t.printStackTrace();
-//        return new ErrorResponse(HttpStatus.NOT_FOUND.value(),
-//                "Resource not found.");
-//    }
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotFoundException.class)
+    public ErrorResponse handleNotFoundException(Throwable t) {
+        t.printStackTrace();
+        String message = "Resource not found.";
+        List<String> listOfErrorMessages = new ArrayList<>();
+        listOfErrorMessages.add(message);
+        return new ErrorResponse(HttpStatus.NOT_FOUND.value(),
+                listOfErrorMessages);
+    }
 
     // Generic 409
-//    @ResponseStatus(HttpStatus.CONFLICT)
-//    @ExceptionHandler(ConflictException.class)
-//    public ErrorResponse handleConflictException(Throwable t) {
-//        t.printStackTrace();
-//        return new ErrorResponse(HttpStatus.CONFLICT.value(),
-//                "There is already a resource with those specifications.");
-//    }
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ConflictException.class)
+    public ErrorResponse handleConflictException(Throwable t) {
+        t.printStackTrace();
+        String message = "There is already a resource with those specifications.";
+        List<String> listOfErrorMessages = new ArrayList<>();
+        listOfErrorMessages.add(message);
+        return new ErrorResponse(HttpStatus.CONFLICT.value(),
+                listOfErrorMessages);
+    }
 
     // Generic 500
-//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//    @ExceptionHandler
-//    public ErrorResponse handleOtherException(Throwable t) {
-//        t.printStackTrace();
-//        return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-//                "An internal server error occurred.");
-//    }
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler
+    public ErrorResponse handleOtherException(Throwable t) {
+        t.printStackTrace();
+        String message = "An internal server error occurred.";
+        List<String> listOfErrorMessages = new ArrayList<>();
+        listOfErrorMessages.add(message);
+        return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                listOfErrorMessages);
+    }
 }
