@@ -94,6 +94,14 @@ public class RestExceptionHandler {
                 "Resource not found.");
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(NumberFormatException.class)
+    public ErrorResponse handleNumberFormatException(Throwable t){
+        t.printStackTrace();
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(),
+                "Invalid ID");
+    }
+
     // Generic 409
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(ConflictException.class)
