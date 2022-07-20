@@ -12,6 +12,11 @@ public class ValidatorMessageUtil {
     public static final String EMAIL_REQUIRED = "A email must be provided.  Example: john_doe@example.com";
     public static final String EMAIL_REQUIREMENTS = "A valid email must be provided";
     public static final String PASSWORD_REQUIRED = "You must provide a password.";
-    public static final String PASSWORD_REQUIREMENTS = "Passwords must be eight characters long and contain at least one of the following: lowercase letter, uppercase letter, number, special character";
+    public static final String PASSWORD_SYMBOL = "Password must contain at least one of @$!%*?&";
+    public static final String PASSWORD_NUMBER = "Password must contain at least one number";
+    public static final String PASSWORD_UPPER = "Password must contain at least one uppercase letter";
+    public static final String PASSWORD_LOWER = "Password must contain at least one lowercase letter";
+    public static final String PASSWORD_LENGTH = "Password must be at least 8 characters";
+    public static final String PASSWORD_ONLY_THESE = "Password must only contain numbers, letters, and @$!%*?&";
 
 }

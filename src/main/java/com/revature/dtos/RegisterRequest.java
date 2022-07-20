@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -17,12 +18,19 @@ import javax.validation.constraints.Pattern;
 @AllArgsConstructor
 public class RegisterRequest {
 
+    @NotBlank( message = ValidatorMessageUtil.EMAIL_REQUIRED_ON_CREATE)
     @Email( message = ValidatorMessageUtil.EMAIL_REQUIRED_ON_CREATE)
     @NotNull( message = ValidatorMessageUtil.EMAIL_REQUIRED)
     private String email;
 
+    @NotBlank( message = ValidatorMessageUtil.PASSWORD_REQUIRED_ON_CREATE)
     @NotNull( message = ValidatorMessageUtil.PASSWORD_REQUIRED_ON_CREATE)
-    @Pattern( regexp  = Regex.PASSWORD, message = ValidatorMessageUtil.PASSWORD_REQUIREMENTS)
+    @Pattern( regexp = Regex.SYMBOL, message = ValidatorMessageUtil.PASSWORD_SYMBOL)
+    @Pattern( regexp = Regex.NUMBER, message = ValidatorMessageUtil.PASSWORD_NUMBER)
+    @Pattern( regexp = Regex.UPPER, message = ValidatorMessageUtil.PASSWORD_UPPER)
+    @Pattern( regexp = Regex.LOWER, message = ValidatorMessageUtil.PASSWORD_LOWER)
+    @Pattern( regexp = Regex.LENGTH, message = ValidatorMessageUtil.PASSWORD_LENGTH)
+    @Pattern( regexp = Regex.ONLY_THESE, message = ValidatorMessageUtil.PASSWORD_ONLY_THESE)
     private String password;
 
     @NotNull(
