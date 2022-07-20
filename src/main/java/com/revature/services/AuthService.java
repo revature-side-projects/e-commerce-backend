@@ -135,10 +135,6 @@ public class AuthService {
             throw new RuntimeException();
         }
     }
-    private String additionalHash(String string) {
-        return (string == null) ? null : Hashing.sha256().
-                hashString(string, StandardCharsets.UTF_8).toString();
-    }
 
     /**
      * Updates a user password through the use of a token.
