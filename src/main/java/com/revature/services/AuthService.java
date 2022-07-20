@@ -42,6 +42,11 @@ public class AuthService {
         this.tokenService = tokenService;
     }
 
+    /**
+     * Attempts to log the user in.
+     * @param loginRequest The login details.
+     * @return org.springframework.http.ResponseEntity
+     */
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity login(LoginRequest loginRequest) {
 
