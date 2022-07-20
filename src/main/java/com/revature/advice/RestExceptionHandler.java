@@ -2,6 +2,7 @@ package com.revature.advice;
 
 import com.revature.dtos.ErrorResponse;
 import com.revature.exceptions.*;
+import org.apache.catalina.filters.ExpiresFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class RestExceptionHandler extends ResponseEntityExceptionHandler {
+public class RestExceptionHandler {
     /**
      *
      * The idea here is that all exceptions are coded here in the same way.
@@ -27,19 +28,26 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      * exceptions that give the same code will extend/inherit the original
      */
 
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex,
-            HttpHeaders headers, HttpStatus status, WebRequest request) {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleInvalidArgument(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errorMap = new HashMap<>();
+       ex.getBindingResult().getFieldErrors().forEach(error-> {
+           errorMap.put(error.getField(), error.getDefaultMessage());
+       });
+       return errorMap;
+    }
 
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) ->{
-
-            String fieldName = ((FieldError) error).getField();
-            String message = error.getDefaultMessage();
-            errors.put(fieldName, message);
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(UnauthorizedException.class)
+    public Map<String, String> handleUnauthorizedRequest(
+            UnauthorizedException ex) {
+        Map<String, String> errorMap = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error-> {
+            errorMap.put(error.getField(), error.getDefaultMessage());
         });
-        return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
+        return errorMap;
     }
 
     // Generic 501
