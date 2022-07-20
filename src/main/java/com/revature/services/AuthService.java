@@ -117,6 +117,10 @@ public class AuthService {
         return tokenService.generateToken(prin);
     }
 
+    /**
+     * Verifies that this is a valid token.
+     * @param token The auth token to verify.
+     */
     public void verifyToken(String token) {
         tokenService.extractTokenDetails(token);
     }
@@ -143,16 +147,16 @@ public class AuthService {
      * @return java.lang.String
      */
     public String generatePassword(String password) {
-        SecretKeyFactory factory;
+        SecretKeyFactory factory; // a factory that holds various secret keys
 
-        KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt.getBytes(), 65536, 128);
+        KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt.getBytes(), 65536, 128); // converts the password into something a keyfactory can handle
 
         try {
-            factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            byte[] hash = factory.generateSecret(keySpec).getEncoded();
-            return Base64.encodeBase64String(hash);
+            factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1"); // grabs the PBKDF2 standard
+            byte[] hash = factory.generateSecret(keySpec).getEncoded(); // encodes it into a random byte[]
+            return Base64.encodeBase64String(hash); // converts this into a friendlier base64 string
         } catch (Throwable e) {
-            throw new RuntimeException();
+            throw new RuntimeException(); // unnecessary as PBKDF2 is part of the core java library, but good to have
         }
     }
 
