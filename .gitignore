@@ -12,7 +12,7 @@ target/
 .settings
 .springBeans
 .sts4-cache
-.dockerignore
+
 
 ### IntelliJ IDEA ###
 .idea
@@ -32,3 +32,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+### Docker ###
+push.sh
+.dockerignore
