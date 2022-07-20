@@ -62,6 +62,8 @@ public class Product {
         this.imageUrlM = imageUrlM;
     }
 
+
+
     // getters
     public Integer getProductId() { return productId; }
     public String getName() { return name; }

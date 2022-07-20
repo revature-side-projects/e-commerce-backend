@@ -1,5 +1,6 @@
 package com.revature.services;
 
+import com.revature.models.Category;
 import com.revature.models.Product;
 import com.revature.repositories.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +17,8 @@ class ProductServiceTest {
 
     private ProductService sut; // SUT: System Under Test
     private ProductRepository mockProductRepository = mock(ProductRepository.class);
+    private Category category;
+
 
     @BeforeEach
     public void setup() {
@@ -27,13 +30,14 @@ class ProductServiceTest {
     public void test_findAll_returnsListOfProduct_providedRepositoryReturnsProducts() {
 
         //  Given:  requested
+        Category category = new Category("Sun");
         List<Product> mockProducts = Arrays.asList(
-                new Product(1, 1, 10.00, "description-1", "image-1", "name-1"),
-                new Product(2, 2, 20.00, "description-2", "image-2", "name-2"),
-                new Product(3, 3, 30.00, "description-3", "image-3", "name-3"),
-                new Product(4, 4, 40.00, "description-4", "image-4", "name-4"),
-                new Product(5, 5, 50.00, "description-5", "image-5", "name-5"),
-                new Product(6, 6, 60.00, "description-6", "image-6", "name-6")
+                new Product(category,"name 1", "description-1", 10.00, "image-1", "image-11"),
+                new Product(category,"name 2", "description-2", 20.00, "image-2", "image-22"),
+                new Product(category,"name 3", "description-3", 30.00, "image-3", "image-33"),
+                new Product(category,"name 4", "description-4", 40.00, "image-4", "image-44"),
+                new Product(category,"name 5", "description-5", 50.00, "image-5", "image-55"),
+                new Product(category,"name 6", "description-6", 60.00, "image-6", "image-66")
         );
         when(mockProductRepository.findAll()).thenReturn(mockProducts); //  here we invoke the findAll method for testing.
 
@@ -49,7 +53,7 @@ class ProductServiceTest {
     void checkIfFoundById() {
 
         //  Given:  requested
-        Product expected = new Product(1, 1, 10.00, "description-1", "image-1", "name-1");
+        Product expected = new Product(category, "name 1", "description-1", 10.00, "image-1", "name-11");
 
         sut.save(expected);
 
