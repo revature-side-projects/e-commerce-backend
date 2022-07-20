@@ -105,7 +105,7 @@ public class AuthService {
         tokenService.extractTokenDetails(token);
     }
 
-    public void adminCheck(String token) {
+    public void adminCheck(String token) { // could this be better as a bool?
         Principal prin = tokenService.extractTokenDetails(token);
         System.out.println("Checking if admin: "+prin);
         User user = userService.findByIdAndEmailIgnoreCase(prin.getAuthUserId(), prin.getAuthUserEmail())
@@ -117,6 +117,11 @@ public class AuthService {
         // no errors thrown, execution of program can continue
     }
 
+    /**
+     * Generates a PBKDF2-hashed password.
+     * @param password The password to hash
+     * @return java.lang.String
+     */
     public String generatePassword(String password) {
         SecretKeyFactory factory;
 
@@ -134,6 +139,13 @@ public class AuthService {
         return (string == null) ? null : Hashing.sha256().
                 hashString(string, StandardCharsets.UTF_8).toString();
     }
+
+    /**
+     * Updates a user password through the use of a token.
+     * @param token The token to pass through
+     * @param resetRequest The request to expect
+     * @return com.revature.dto.ResponseEntity
+     */
     public ResponseEntity updateUser(String token, ResetRequest resetRequest) {
         Principal principal = tokenService.extractTokenDetails(token); // get the principal from provided token
         User user = userRepo.getById(principal.getAuthUserId()); // find user by principal id
