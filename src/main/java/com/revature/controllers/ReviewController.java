@@ -1,6 +1,8 @@
 package com.revature.controllers;
 
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
@@ -17,7 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.annotations.Authorized;
 import com.revature.dtos.ReviewRequest;
+import com.revature.models.Product;
+import com.revature.models.Review;
 import com.revature.models.User;
+import com.revature.services.ProductService;
+import com.revature.services.ReviewService;
 
 @RestController
 @RequestMapping("/api/review")
@@ -25,27 +31,31 @@ import com.revature.models.User;
 public class ReviewController {
 
 	// TODO: Integrate review service
+	private ReviewService reviewService;
+	private ProductService productService;
 	
-	public ReviewController() {
-		// TODO: Integrate review service
+	public ReviewController(ReviewService reviewService, ProductService productService) {
+		super();
+		this.reviewService = reviewService;
+		this.productService = productService;
 	}
 	
 	// Get All
 	@GetMapping
 	public ResponseEntity<List<Review>> getReviews() {
-		return ResponseEntity.ok(/* TODO: Call review service */);
+		return ResponseEntity.ok(null /* TODO: Call review service */);
 	}
 	
 	// Get all reviews about a given product
 	@GetMapping("/product/{productId}")
 	public ResponseEntity<List<Review>> getReviewsOfProduct(@PathVariable("productId") int productId) {
-		return ResponseEntity.ok(/* TODO: Call review service */);
+		return ResponseEntity.ok(null /* TODO: Call review service */);
 	}
 	
 	// Get all reviews written by a given user
 	@GetMapping("/user/{userId}")
 	public ResponseEntity<List<Review>> getReviewsByUser(@PathVariable("userId") int userId) {
-		return ResponseEntity.ok(/* TODO: Call review service */);
+		return ResponseEntity.ok(null /* TODO: Call review service */);
 	}
 	
 	/**
@@ -57,10 +67,24 @@ public class ReviewController {
 	@Authorized
 	@PostMapping
 	public ResponseEntity<Review> addReview(@RequestBody ReviewRequest reviewRequest, HttpSession session) {
-		int userId = ((User) session.getAttribute("user")).getId(); // May need to try catch - but this shouldn't execute if 
+		User u = (User) session.getAttribute("user"); // May need to try catch - but this shouldn't execute if 
 																	// "user" session attribute is null anyway
 		// TODO: Call review service
-		return null;
+		Optional<Product> optP = productService.findById(reviewRequest.getProductId());
+		if(optP.isPresent()) {
+			Review r = new Review(
+					reviewRequest.getStars(), 
+					reviewRequest.getTitle(), 
+					reviewRequest.getReview(),
+					new Timestamp(System.currentTimeMillis()),
+					null,
+					u,
+					optP.get()
+				);
+			return ResponseEntity.ok(reviewService.save(r));
+		} else {
+			return null;
+		}
 	}
 	
 	/**
