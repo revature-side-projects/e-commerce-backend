@@ -1,4 +1,4 @@
-package com.revature.dtos;
+package com.revature.annotations.dtos;
 
 import com.revature.models.ProductReview;
 import lombok.Data;

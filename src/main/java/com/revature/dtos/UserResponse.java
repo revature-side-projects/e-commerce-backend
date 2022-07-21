@@ -1,4 +1,4 @@
-package com.revature.dtos;
+package com.revature.annotations.dtos;
 
 import com.revature.models.User;
 import com.revature.models.UserRole;
