@@ -1,4 +1,4 @@
-package com.revature.annotations.dtos;
+package com.revature.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
