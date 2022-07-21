@@ -5,6 +5,7 @@ import com.revature.exceptions.*;
 import org.apache.catalina.filters.ExpiresFilter;
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.http.HttpHeaders;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -77,6 +78,18 @@ public class RestExceptionHandler {
 
 //     Specific 401
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ErrorResponse handleTokenExpirationException(Throwable t) {
+        t.printStackTrace();
+        String message = "Login session expired. Please login again.";
+        List<String> listOfErrorMessages = new ArrayList<>();
+        listOfErrorMessages.add(message);
+        return new ErrorResponse(HttpStatus.UNAUTHORIZED.value(),
+                listOfErrorMessages);
+    }
+
+    // Specific 401
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(TokenParseException.class)
     public ErrorResponse handleTokenParseException(Throwable t) {
         t.printStackTrace();
@@ -109,6 +122,15 @@ public class RestExceptionHandler {
         listOfErrorMessages.add(message);
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(),
                 listOfErrorMessages);
+    }
+
+    // Invalid ID 404
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(NumberFormatException.class)
+    public ErrorResponse handleNumberFormatException(Throwable t){
+        t.printStackTrace();
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(),
+                "Invalid ID");
     }
 
     // Generic 409
