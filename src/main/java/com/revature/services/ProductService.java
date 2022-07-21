@@ -2,6 +2,7 @@ package com.revature.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.dtos.CreationResponse;
 import com.revature.dtos.ProductInfo;
 import com.revature.dtos.ReviewResponse;
 import com.revature.exceptions.BadRequestException;
@@ -80,9 +81,19 @@ public class ProductService {
 
     }
 
-    public ResponseEntity save(Product product) {
-        return null;
+    /**
+     * This method is used to persist a new product to the database
+     * @param product takes a Product that was mapped from the CreateProduct DTO
+     * @return a new CreationResponse DTO
+     */
+    public CreationResponse save(Product product) {
+        productRepo.save(product);
+        return new CreationResponse(product.getProductId());
     }
+
+//    public ResponseEntity save(Product product) {
+//        return null;
+//    }
     
     public ResponseEntity saveAll(List<Product> productList, List<ProductInfo> metadata) {
         return null;

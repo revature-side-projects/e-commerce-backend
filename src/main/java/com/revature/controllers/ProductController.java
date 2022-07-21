@@ -1,8 +1,10 @@
 package com.revature.controllers;
 
 import com.revature.annotations.AdminOnly;
+import com.revature.dtos.CreateProduct;
 import com.revature.dtos.ProductInfo;
 import com.revature.exceptions.NotImplementedException;
+import com.revature.models.Product;
 import com.revature.services.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,5 +56,17 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ProductInfo> deleteProduct(@PathVariable("id") int id) {
         throw new NotImplementedException();
+    }
+
+    /**
+     *  POST endpoint that utilizes the ProductService to persist a new product to the database
+     * @param createProduct DTO that maps to the product model
+     */
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @PostMapping( value = "/createproduct", consumes = "application/json", produces = "application/json")
+    public void newProduct(@RequestBody CreateProduct createProduct) {
+        Product newProduct = new Product(createProduct);
+        productService.save(newProduct);
+
     }
 }
