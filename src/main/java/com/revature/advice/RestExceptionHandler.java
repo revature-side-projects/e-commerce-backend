@@ -129,8 +129,11 @@ public class RestExceptionHandler {
     @ExceptionHandler(NumberFormatException.class)
     public ErrorResponse handleNumberFormatException(Throwable t){
         t.printStackTrace();
+        String message = "Invalid ID";
+        List<String> listOfErrorMessages = new ArrayList<>();
+        listOfErrorMessages.add(message);
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(),
-                "Invalid ID");
+                listOfErrorMessages);
     }
 
     // Generic 409
