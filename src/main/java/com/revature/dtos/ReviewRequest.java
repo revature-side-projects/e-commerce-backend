@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class ReviewRequest {
 
 	private int productId;
-	private int rating;
+	private int stars;
 	private String title;
 	private String review;
 	
