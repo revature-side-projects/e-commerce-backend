@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Data @AllArgsConstructor @NoArgsConstructor
 public class Review {
 	@Id
-	@Column(name = "id")
+	@Column(name = "review_id")
 	@GeneratedValue
 	private int id;
 
@@ -45,11 +45,11 @@ public class Review {
 	private Timestamp updated;
 
 	@ManyToOne
-	@JoinColumn(name = "id", nullable = false)
+	@JoinColumn(name = "User.id", nullable = false)
 	private User userId;
 
 	@ManyToOne
-	@JoinColumn(name = "id", nullable = false)
+	@JoinColumn(name = "Product.id", nullable = false)
 	private Product productId;
 
 	public Review(@NotBlank int stars, @Length(max = 100) String title, @Length(max = 400) String review,
