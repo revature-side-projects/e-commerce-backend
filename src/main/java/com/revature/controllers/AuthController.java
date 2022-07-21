@@ -38,7 +38,7 @@ public class AuthController {
     }
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping(value = "/reset", consumes = "application/json")
-    public ResponseEntity resetPassword(@RequestBody @Valid ResetRequest resetRequest, @RequestHeader(name = "Authorization") String token) {
-        return authService.updateUser(token, resetRequest);
+    public void resetPassword(@RequestBody @Valid ResetRequest resetRequest, @RequestHeader(name = "Authorization") String token) {
+        authService.updateUser(token, resetRequest);
     }
 }
