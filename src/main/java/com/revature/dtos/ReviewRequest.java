@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReviewRequest {
 
-	private int userId;
 	private int productId;
 	private int rating;
 	private String title;
