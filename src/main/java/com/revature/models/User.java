@@ -17,6 +17,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
+import org.hibernate.validator.constraints.Length;
+
 @Data
 @Entity
 @NoArgsConstructor
@@ -30,7 +32,7 @@ public class User {
     private int id;
     
     @NotBlank
-    @Unique
+    @Column(unique=true)
     @Email
     private String email;
     

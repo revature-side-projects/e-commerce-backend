@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
@@ -37,7 +38,7 @@ public class Address {
 	@NotBlank
 	private String zip;
 	
-	@ManyToMany(mappedby="user_id")
+	@ManyToMany(mappedBy="user_id")
 	private List<User> residents;
 
 }
