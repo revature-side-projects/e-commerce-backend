@@ -24,6 +24,7 @@ public class AuthAspect {
     }
 
     // Some other change
+    // git demo change
 
     // This advice will execute around any method annotated with @Authorized
     // If the user is not logged in, an exception will be thrown and handled
