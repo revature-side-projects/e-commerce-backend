@@ -44,9 +44,9 @@ public class ProductController {
     @AuthorizedAdmin
     @PutMapping("/create-update")
     public ResponseEntity<Product> upsert(@RequestBody Product product) {
-    	Optional<Product> curr_pd = productService.findById(product.getId());
-    	if(curr_pd.isPresent()) {
-    		Product updatePd = curr_pd.get();
+    	Optional<Product> currPd = productService.findById(product.getId());
+    	if(currPd.isPresent()) {
+    		Product updatePd = currPd.get();
     		updatePd.setName(product.getName());
     		updatePd.setPrice(product.getPrice());
     		updatePd.setQuantity(product.getQuantity());
