@@ -58,6 +58,12 @@ public class ReviewController {
 		return ResponseEntity.ok(null /* TODO: Call review service */);
 	}
 	
+	@GetMapping("/{id}")
+	public ResponseEntity<Review> getReviewById(@PathVariable("id") int id) {
+		Optional<Review> optR = reviewService.findById(id);
+		return ResponseEntity.ok(optR.isPresent() ? optR.get() : null);
+	}
+	
 	/**
 	 * Create a new review tied to the logged in User
 	 * @param reviewRequest
@@ -68,7 +74,7 @@ public class ReviewController {
 	@PostMapping
 	public ResponseEntity<Review> addReview(@RequestBody ReviewRequest reviewRequest, HttpSession session) {
 		User u = (User) session.getAttribute("user"); // May need to try catch - but this shouldn't execute if 
-																	// "user" session attribute is null anyway
+													  // "user" session attribute is null anyway
 		// TODO: Call review service
 		Optional<Product> optP = productService.findById(reviewRequest.getProductId());
 		if(optP.isPresent()) {
@@ -98,8 +104,20 @@ public class ReviewController {
 	@PutMapping("/{id}")
 	public ResponseEntity<Review> updateReview(@RequestBody ReviewRequest reviewRequest, @PathVariable("id") int id, HttpSession session) {
 		int userId = ((User) session.getAttribute("user")).getId();
-		// TODO: Call review service
-		return null;
+		Optional<Review> optR = reviewService.findById(id);
+		if(optR.isPresent()) {
+			Review r = optR.get();
+			if(r.getUserId().getId() == userId) {
+				r.setUpdated(new Timestamp(System.currentTimeMillis()));
+				r.setStars(reviewRequest.getStars());
+				r.setTitle(reviewRequest.getTitle());
+				r.setReview(reviewRequest.getReview());
+				return ResponseEntity.ok(reviewService.save(r));
+			}
+			return null; // User does not own this review
+		} else {
+			return null; // Review not found
+		}
 	}
 	
 	/**
@@ -112,7 +130,16 @@ public class ReviewController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Review> deleteReview(@PathVariable("id") int id, HttpSession session) {
 		int userId = ((User) session.getAttribute("user")).getId();
-		// TODO: Call review service
-		return null;
+		Optional<Review> optR = reviewService.findById(id);
+		if(optR.isPresent()) {
+			Review r = optR.get();
+			if(r.getUserId().getId() == userId) {
+				reviewService.delete(id);
+				return ResponseEntity.ok(r);
+			}
+			return null; // User does not own this review
+		} else {
+			return null; // Review not found
+		}
 	}
 }
