@@ -1,5 +1,7 @@
 package com.revature.exceptions;
 
+//Exception to be thrown by the AuthAspect
+//Will be handled by a Spring Exception Handler to return a 403
 public class InvalidRoleException extends RuntimeException{
 	
     public InvalidRoleException() {

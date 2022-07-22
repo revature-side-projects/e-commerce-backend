@@ -63,6 +63,9 @@ public class AuthAspect {
 
         return pjp.proceed(pjp.getArgs()); // Call the originally intended method
     }
+    // This advice will execute around any method annotated with @AuthorizedAdmin
+    // It will check the role of user, if role of user is not ADMIN, an an exception 
+    // will be thrown and handled. Otherwise, the original method will be invoked as normal.
     @Around("@annotation(authorized)")
     public Object authenticateAdmin(ProceedingJoinPoint pjp, AuthorizedAdmin authorized) throws Throwable {
 
@@ -70,9 +73,10 @@ public class AuthAspect {
 
 
         
-        User loggedInUser = (User) session.getAttribute("user");
-        Role userRole = loggedInUser.getRole();
-        if(authorized.value().equals(AuthRestriction.ADMIN) && !Role.ADMIN.equals(userRole)) {
+        User loggedInUser = (User) session.getAttribute("user"); // get the user from session
+        Role userRole = loggedInUser.getRole(); // get the role of user
+        // check the role of user
+        if(authorized.value().equals(AuthRestriction.ADMIN) && !Role.ADMIN.equals(userRole)) { 
         	throw new InvalidRoleException("Must be logged in as a Admin to perform this action");
         }
 
