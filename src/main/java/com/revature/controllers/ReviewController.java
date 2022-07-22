@@ -107,8 +107,7 @@ public class ReviewController {
 		Optional<Review> optR = reviewService.findById(id);
 		if(optR.isPresent()) {
 			Review r = optR.get();
-			if(r.getUserId().getId() == userId) {
-				r.setUpdated(new Timestamp(System.currentTimeMillis()));
+			if(r.getUser().getId() == userId) {
 				r.setStars(reviewRequest.getStars());
 				r.setTitle(reviewRequest.getTitle());
 				r.setReview(reviewRequest.getReview());
@@ -133,7 +132,7 @@ public class ReviewController {
 		Optional<Review> optR = reviewService.findById(id);
 		if(optR.isPresent()) {
 			Review r = optR.get();
-			if(r.getUserId().getId() == userId) {
+			if(r.getUser().getId() == userId) {
 				reviewService.delete(id);
 				return ResponseEntity.ok(r);
 			}
