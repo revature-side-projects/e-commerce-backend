@@ -34,16 +34,14 @@ public class ReviewService {
     }
     
     public Review add(ReviewRequest reviewRequest, User user) {
-    	Optional<Product> optP = productService.findById(reviewRequest.getProductId());
-		if(optP.isPresent()) {
+    	Optional<Product> optionalProduct = productService.findById(reviewRequest.getProductId());
+		if(optionalProduct.isPresent()) {
 			Review r = new Review(
 					reviewRequest.getStars(), 
 					reviewRequest.getTitle(), 
 					reviewRequest.getReview(),
-					new Timestamp(System.currentTimeMillis()),
-					null,
 					user,
-					optP.get()
+					optionalProduct.get()
 				);
 			return reviewRepository.save(r);
 		} else {
@@ -56,19 +54,19 @@ public class ReviewService {
     }
     
     public List<Review> findByProductId(int productId) {
-    	Optional<Product> optP = this.productService.findById(productId);
-    	if(optP.isEmpty()) {
+    	Optional<Product> optionalProduct = this.productService.findById(productId);
+    	if(!optionalProduct.isPresent()) {
     		throw new ResourceAccessException("No product found with ID " + productId);
     	}
-    	return reviewRepository.findByProduct(optP.get());
+    	return reviewRepository.findByProduct(optionalProduct.get());
     }
     
     public List<Review> findByUserId(int userId) {
-    	Optional<User> optU = this.userService.findById(userId);
-    	if(optU.isEmpty()) {
+    	Optional<User> optionalUser = this.userService.findById(userId);
+    	if(!optionalUser.isPresent()) {
     		throw new ResourceAccessException("No user found with ID " + userId);
     	}
-    	return reviewRepository.findByUser(optU.get());
+    	return reviewRepository.findByUser(optionalUser.get());
     }
     
     public Optional<Review> findById(int id) {
@@ -80,9 +78,9 @@ public class ReviewService {
     }
     
     public Review update(ReviewRequest reviewRequest, int id, int userId) {
-    	Optional<Review> optR = reviewRepository.findById(id);
-    	if(optR.isPresent()) {
-    		Review review = optR.get();
+    	Optional<Review> optionalReview = reviewRepository.findById(id);
+    	if(optionalReview.isPresent()) {
+    		Review review = optionalReview.get();
         	if(review.getUser().getId() == userId) {
         		review.setStars(reviewRequest.getStars());
         		review.setTitle(reviewRequest.getTitle());
@@ -97,9 +95,9 @@ public class ReviewService {
     }
     
     public Review delete(int id, int userId) {
-    	Optional<Review> optR = reviewRepository.findById(id);
-		if(optR.isPresent()) {
-			Review r = optR.get();
+    	Optional<Review> optionalReview = reviewRepository.findById(id);
+		if(optionalReview.isPresent()) {
+			Review r = optionalReview.get();
 			if(r.getUser().getId() == userId) {
 				reviewRepository.deleteById(id);
 				return r;

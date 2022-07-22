@@ -8,10 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewRequest {
-
 	private int productId;
 	private int stars;
 	private String title;
 	private String review;
-	
 }

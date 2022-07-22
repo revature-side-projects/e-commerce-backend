@@ -1,13 +1,12 @@
 package com.revature.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.istack.NotNull;
 import lombok.*;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.LinkedHashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -38,11 +37,14 @@ public class Product {
 
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "product_id")
+
+    @JsonBackReference
     @ToString.Exclude
     private Set<Review> reviews = new LinkedHashSet<>();
 
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "product_id")
+    @JsonBackReference
     @ToString.Exclude
     private Set<Purchase> purchases = new LinkedHashSet<>();
 
