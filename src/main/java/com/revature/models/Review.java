@@ -1,30 +1,17 @@
 package com.revature.models;
 
-import java.sql.Timestamp;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.sun.istack.NotNull;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.Length;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.sun.istack.NotNull;
-import lombok.*;
-
-
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import java.sql.Timestamp;
 
 @Getter
 @Setter
@@ -70,8 +57,7 @@ public class Review {
     @NotNull
     @JsonManagedReference
     private User user;
-    public Review(@NotBlank int stars, @Length(max = 100) String title, @Length(max = 400) String review,
-			Timestamp posted, Timestamp updated, User user, Product product) {
+    public Review(@NotBlank int stars, @Length(max = 100) String title, @Length(max = 400) String review, User user, Product product) {
 		super();
 		this.stars = stars;
 		this.title = title;
@@ -79,4 +65,9 @@ public class Review {
 		this.user = user;
 		this.product = product;
 	}
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
