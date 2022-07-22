@@ -49,7 +49,7 @@ INSERT INTO users (id, email, password, first_name, last_name) VALUES (
 
 INSERT INTO users (id, email, password, first_name, last_name, role) VALUES (
     2,
-    'admind@gmail.com',
+    'admin@gmail.com',
     'password',
     'TestAdmin',
     'User',
