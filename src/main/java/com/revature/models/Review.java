@@ -1,15 +1,29 @@
 package com.revature.models;
 
+import java.sql.Timestamp;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.validator.constraints.Length;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sun.istack.NotNull;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.stereotype.Component;
-
-import javax.persistence.*;
-import java.sql.Timestamp;
 
 @Data
 @Entity
@@ -24,8 +38,9 @@ public class Review {
     private int id;
 
     @NotNull
-    // min and max
-    private int stars;
+    @Min(value = 0)
+	@Max(value = 5)
+	private int stars;
 
     @NotNull
     private String title;
@@ -42,11 +57,25 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "product_id")
     @NotNull
+    @JsonManagedReference
     private Product product;
+    
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     @NotNull
+    @JsonManagedReference
     private User user;
+    
+    
+    public Review(@NotBlank int stars, @Length(max = 100) String title, @Length(max = 400) String review,
+			Timestamp posted, Timestamp updated, User user, Product product) {
+		super();
+		this.stars = stars;
+		this.title = title;
+		this.review = review;
+		this.user = user;
+		this.product = product;
+	}
 
 }
