@@ -1,6 +1,5 @@
 package com.revature.controllers;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,10 +20,8 @@ import org.springframework.web.client.ResourceAccessException;
 
 import com.revature.annotations.Authorized;
 import com.revature.dtos.ReviewRequest;
-import com.revature.models.Product;
 import com.revature.models.Review;
 import com.revature.models.User;
-import com.revature.services.ProductService;
 import com.revature.services.ReviewService;
 
 @RestController
@@ -34,12 +31,10 @@ public class ReviewController {
 
 	// TODO: Integrate review service
 	private ReviewService reviewService;
-	private ProductService productService;
 	
-	public ReviewController(ReviewService reviewService, ProductService productService) {
+	public ReviewController(ReviewService reviewService) {
 		super();
 		this.reviewService = reviewService;
-		this.productService = productService;
 	}
 	
 	// Get All
@@ -75,7 +70,13 @@ public class ReviewController {
 	@GetMapping("/{id}")
 	public ResponseEntity<Review> getReviewById(@PathVariable("id") int id) {
 		Optional<Review> optR = reviewService.findById(id);
-		return ResponseEntity.ok(optR.isPresent() ? optR.get() : null);
+		if(optR.isPresent()) {
+			return ResponseEntity.ok(optR.get());
+		} else {
+			return ResponseEntity
+					.status(HttpStatus.NOT_FOUND)
+					.body(null);
+		}
 	}
 	
 	/**
@@ -90,20 +91,12 @@ public class ReviewController {
 		User u = (User) session.getAttribute("user"); // May need to try catch - but this shouldn't execute if 
 													  // "user" session attribute is null anyway
 		// TODO: Call review service
-		Optional<Product> optP = productService.findById(reviewRequest.getProductId());
-		if(optP.isPresent()) {
-			Review r = new Review(
-					reviewRequest.getStars(), 
-					reviewRequest.getTitle(), 
-					reviewRequest.getReview(),
-					new Timestamp(System.currentTimeMillis()),
-					null,
-					u,
-					optP.get()
-				);
-			return ResponseEntity.ok(reviewService.save(r));
-		} else {
-			return null;
+		try {
+			return ResponseEntity.ok(reviewService.add(reviewRequest, u));
+		} catch(ResourceAccessException e) {
+			return ResponseEntity
+					.status(HttpStatus.NOT_FOUND)
+					.body(null);
 		}
 	}
 	

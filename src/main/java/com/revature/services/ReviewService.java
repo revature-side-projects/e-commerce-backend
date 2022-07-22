@@ -1,11 +1,13 @@
 package com.revature.services;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 
+import com.revature.dtos.ReviewRequest;
 import com.revature.models.Product;
 import com.revature.models.Review;
 import com.revature.models.User;
@@ -26,6 +28,24 @@ public class ReviewService {
         this.reviewRepository = reviewRepository;
         this.productService = productService;
         this.userService = userService;
+    }
+    
+    public Review add(ReviewRequest reviewRequest, User user) {
+    	Optional<Product> optP = productService.findById(reviewRequest.getProductId());
+		if(optP.isPresent()) {
+			Review r = new Review(
+					reviewRequest.getStars(), 
+					reviewRequest.getTitle(), 
+					reviewRequest.getReview(),
+					new Timestamp(System.currentTimeMillis()),
+					null,
+					user,
+					optP.get()
+				);
+			return reviewRepository.save(r);
+		} else {
+			throw new ResourceAccessException("No product found with ID " + reviewRequest.getProductId());
+		}
     }
     
     public List<Review> findAll() {
