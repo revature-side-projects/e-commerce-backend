@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import com.revature.annotations.Authorized;
@@ -90,7 +91,6 @@ public class ReviewController {
 	public ResponseEntity<Review> addReview(@RequestBody ReviewRequest reviewRequest, HttpSession session) {
 		User u = (User) session.getAttribute("user"); // May need to try catch - but this shouldn't execute if 
 													  // "user" session attribute is null anyway
-		// TODO: Call review service
 		try {
 			return ResponseEntity.ok(reviewService.add(reviewRequest, u));
 		} catch(ResourceAccessException e) {
@@ -111,18 +111,12 @@ public class ReviewController {
 	@PutMapping("/{id}")
 	public ResponseEntity<Review> updateReview(@RequestBody ReviewRequest reviewRequest, @PathVariable("id") int id, HttpSession session) {
 		int userId = ((User) session.getAttribute("user")).getId();
-		Optional<Review> optR = reviewService.findById(id);
-		if(optR.isPresent()) {
-			Review r = optR.get();
-			if(r.getUser().getId() == userId) {
-				r.setStars(reviewRequest.getStars());
-				r.setTitle(reviewRequest.getTitle());
-				r.setReview(reviewRequest.getReview());
-				return ResponseEntity.ok(reviewService.save(r));
-			}
-			return null; // User does not own this review
-		} else {
-			return null; // Review not found
+		try {
+		 	return ResponseEntity.ok(reviewService.update(reviewRequest, id, userId));
+		} catch(HttpClientErrorException e) {
+			return ResponseEntity
+					.status(e.getStatusCode())
+					.body(null);
 		}
 	}
 	
@@ -136,16 +130,12 @@ public class ReviewController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Review> deleteReview(@PathVariable("id") int id, HttpSession session) {
 		int userId = ((User) session.getAttribute("user")).getId();
-		Optional<Review> optR = reviewService.findById(id);
-		if(optR.isPresent()) {
-			Review r = optR.get();
-			if(r.getUser().getId() == userId) {
-				reviewService.delete(id);
-				return ResponseEntity.ok(r);
-			}
-			return null; // User does not own this review
-		} else {
-			return null; // Review not found
+		try {
+			return ResponseEntity.ok(reviewService.delete(id, userId));
+		} catch(HttpClientErrorException e) {
+			return ResponseEntity
+					.status(e.getStatusCode())
+					.body(null);
 		}
 	}
 }

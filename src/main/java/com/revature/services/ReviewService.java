@@ -4,7 +4,10 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import com.revature.dtos.ReviewRequest;
@@ -76,7 +79,35 @@ public class ReviewService {
     	return reviewRepository.save(review);
     }
     
-    public void delete(int id) {
-        reviewRepository.deleteById(id);
+    public Review update(ReviewRequest reviewRequest, int id, int userId) {
+    	Optional<Review> optR = reviewRepository.findById(id);
+    	if(optR.isPresent()) {
+    		Review review = optR.get();
+        	if(review.getUser().getId() == userId) {
+        		review.setStars(reviewRequest.getStars());
+        		review.setTitle(reviewRequest.getTitle());
+        		review.setReview(reviewRequest.getReview());
+        		return reviewRepository.save(review);
+        	} else {
+        		throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED);
+        	}
+    	} else {
+    		throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+    	}
+    }
+    
+    public Review delete(int id, int userId) {
+    	Optional<Review> optR = reviewRepository.findById(id);
+		if(optR.isPresent()) {
+			Review r = optR.get();
+			if(r.getUser().getId() == userId) {
+				reviewRepository.deleteById(id);
+				return r;
+			} else {
+				throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED); // User does not own this review
+			}
+		} else {
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+		}
     }
 }
