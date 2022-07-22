@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.ResourceAccessException;
 
 import com.revature.annotations.Authorized;
 import com.revature.dtos.ReviewRequest;
@@ -43,19 +45,31 @@ public class ReviewController {
 	// Get All
 	@GetMapping
 	public ResponseEntity<List<Review>> getReviews() {
-		return ResponseEntity.ok(null /* TODO: Call review service */);
+		return ResponseEntity.ok(reviewService.findAll());
 	}
 	
 	// Get all reviews about a given product
 	@GetMapping("/product/{productId}")
 	public ResponseEntity<List<Review>> getReviewsOfProduct(@PathVariable("productId") int productId) {
-		return ResponseEntity.ok(null /* TODO: Call review service */);
+		try {
+			return ResponseEntity.ok(reviewService.findByProductId(productId));
+		} catch(ResourceAccessException e) {
+			return ResponseEntity
+					.status(HttpStatus.NOT_FOUND)
+					.body(null);
+		}
 	}
 	
 	// Get all reviews written by a given user
 	@GetMapping("/user/{userId}")
 	public ResponseEntity<List<Review>> getReviewsByUser(@PathVariable("userId") int userId) {
-		return ResponseEntity.ok(null /* TODO: Call review service */);
+		try {
+			return ResponseEntity.ok(reviewService.findByUserId(userId));
+		} catch(ResourceAccessException e) {
+			return ResponseEntity
+					.status(HttpStatus.NOT_FOUND)
+					.body(null);
+		}
 	}
 	
 	@GetMapping("/{id}")
