@@ -59,7 +59,6 @@ public class AuthController {
                 new HashSet<>(),
                 new HashSet<>()
         );
-
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(created));
     }
 }
