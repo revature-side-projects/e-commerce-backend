@@ -136,17 +136,38 @@ public class AuthService {
     }
 
     // Leaving this to richard to fix (move all the response stuff to Controller class)
-    public ResponseEntity updateUser(String token, ResetRequest resetRequest) {
+
+    public void updateUser(String token, ResetRequest resetRequest) {
+
         Principal principal = tokenService.extractTokenDetails(token); // get the principal from provided token
-        User user = userRepo.getById(principal.getAuthUserId()); // find user by principal id
+        User user = userRepo.findByUserIdAndEmailIgnoreCase(principal.getAuthUserId(), principal.getAuthUserEmail()).orElseThrow(UnauthorizedException::new);
         String hashedOldPassword = generatePassword(resetRequest.getOldPassword());
 
         if (!hashedOldPassword.equals(user.getPassword())) { // if the old password doesn't match what we have on record...
             throw new UnauthorizedException(); // invalid password. possibly better exception could be used?
         }
-        user.setPassword(generatePassword(resetRequest.getNewPassword())); // otherwise, generate the password
-        userRepo.save(user); // save the repo
-        return makeResp(user, HttpStatus.OK.value()); // all is good
+
+        String hashedNewPassword = generatePassword(resetRequest.getNewPassword());
+        user.setPassword(hashedNewPassword);
+
+        if (!resetRequest.getNewFirstname().trim().isEmpty()) {
+            user.setFirstName(resetRequest.getNewFirstname());
+        }
+
+        if (!resetRequest.getNewLastname().trim().isEmpty()) {
+            user.setLastName(resetRequest.getNewLastname());
+        }
+
+        if (!resetRequest.getNewEmail().trim().isEmpty()) {
+            if (userRepo.existsByEmailIgnoreCase(resetRequest.getNewEmail())) {
+                throw new ConflictException();
+            }
+            else {
+                user.setEmail(resetRequest.getNewEmail());
+            }
+
+        }
+        userRepo.save(user);
     }
 }
 
