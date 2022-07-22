@@ -17,7 +17,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -54,12 +55,12 @@ public class User {
 
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "user_id")
-    @JsonManagedReference
+    @JsonBackReference
     private Set<Purchase> purchases = new LinkedHashSet<>();
 
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "user_id")
-    @JsonManagedReference
+    @JsonBackReference
     private Set<Review> reviews = new LinkedHashSet<>();
 
     @ManyToMany(cascade = { CascadeType.ALL })
@@ -68,5 +69,6 @@ public class User {
             joinColumns = { @JoinColumn(name = "user_id") },
             inverseJoinColumns = { @JoinColumn(name = "address_id") }
     )
+    @JsonIgnore
     private Set<Address> addresses = new HashSet<>();
 }

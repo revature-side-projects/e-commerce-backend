@@ -12,7 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sun.istack.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -45,10 +45,11 @@ public class Product {
 
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "product_id")
-    @JsonManagedReference
+    @JsonBackReference
     private Set<Review> reviews = new LinkedHashSet<>();
 
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "product_id")
+    @JsonBackReference
     private Set<Purchase> purchases = new LinkedHashSet<>();
 }

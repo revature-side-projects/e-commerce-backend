@@ -18,7 +18,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.Length;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sun.istack.NotNull;
 
@@ -58,14 +57,16 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "product_id")
     @NotNull
-    @JsonBackReference
+    @JsonManagedReference
     private Product product;
+    
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     @NotNull
-    @JsonBackReference
+    @JsonManagedReference
     private User user;
+    
     
     public Review(@NotBlank int stars, @Length(max = 100) String title, @Length(max = 400) String review,
 			Timestamp posted, Timestamp updated, User user, Product product) {
