@@ -1,16 +1,17 @@
 package com.revature.models;
 
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Entity
 @NoArgsConstructor
 @RequiredArgsConstructor
@@ -37,5 +38,4 @@ public class Purchase {
     @JoinColumn(name = "user_id")
     @NotNull
     private User ownerUser;
-
 }
