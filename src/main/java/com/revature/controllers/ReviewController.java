@@ -1,11 +1,11 @@
 package com.revature.controllers;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 import com.revature.annotations.Authorized;
 import com.revature.dtos.ReviewRequest;
-import com.revature.models.Product;
 import com.revature.models.Review;
 import com.revature.models.User;
-import com.revature.services.ProductService;
 import com.revature.services.ReviewService;
 
 @RestController
@@ -32,36 +32,52 @@ public class ReviewController {
 
 	// TODO: Integrate review service
 	private ReviewService reviewService;
-	private ProductService productService;
 	
-	public ReviewController(ReviewService reviewService, ProductService productService) {
+	public ReviewController(ReviewService reviewService) {
 		super();
 		this.reviewService = reviewService;
-		this.productService = productService;
 	}
 	
 	// Get All
 	@GetMapping
 	public ResponseEntity<List<Review>> getReviews() {
-		return ResponseEntity.ok(null /* TODO: Call review service */);
+		return ResponseEntity.ok(reviewService.findAll());
 	}
 	
 	// Get all reviews about a given product
 	@GetMapping("/product/{productId}")
 	public ResponseEntity<List<Review>> getReviewsOfProduct(@PathVariable("productId") int productId) {
-		return ResponseEntity.ok(null /* TODO: Call review service */);
+		try {
+			return ResponseEntity.ok(reviewService.findByProductId(productId));
+		} catch(ResourceAccessException e) {
+			return ResponseEntity
+					.status(HttpStatus.NOT_FOUND)
+					.body(null);
+		}
 	}
 	
 	// Get all reviews written by a given user
 	@GetMapping("/user/{userId}")
 	public ResponseEntity<List<Review>> getReviewsByUser(@PathVariable("userId") int userId) {
-		return ResponseEntity.ok(null /* TODO: Call review service */);
+		try {
+			return ResponseEntity.ok(reviewService.findByUserId(userId));
+		} catch(ResourceAccessException e) {
+			return ResponseEntity
+					.status(HttpStatus.NOT_FOUND)
+					.body(null);
+		}
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Review> getReviewById(@PathVariable("id") int id) {
 		Optional<Review> optR = reviewService.findById(id);
-		return ResponseEntity.ok(optR.isPresent() ? optR.get() : null);
+		if(optR.isPresent()) {
+			return ResponseEntity.ok(optR.get());
+		} else {
+			return ResponseEntity
+					.status(HttpStatus.NOT_FOUND)
+					.body(null);
+		}
 	}
 	
 	/**
@@ -75,21 +91,12 @@ public class ReviewController {
 	public ResponseEntity<Review> addReview(@RequestBody ReviewRequest reviewRequest, HttpSession session) {
 		User u = (User) session.getAttribute("user"); // May need to try catch - but this shouldn't execute if 
 													  // "user" session attribute is null anyway
-		// TODO: Call review service
-		Optional<Product> optP = productService.findById(reviewRequest.getProductId());
-		if(optP.isPresent()) {
-			Review r = new Review(
-					reviewRequest.getStars(), 
-					reviewRequest.getTitle(), 
-					reviewRequest.getReview(),
-					new Timestamp(System.currentTimeMillis()),
-					null,
-					u,
-					optP.get()
-				);
-			return ResponseEntity.ok(reviewService.save(r));
-		} else {
-			return null;
+		try {
+			return ResponseEntity.ok(reviewService.add(reviewRequest, u));
+		} catch(ResourceAccessException e) {
+			return ResponseEntity
+					.status(HttpStatus.NOT_FOUND)
+					.body(null);
 		}
 	}
 	
@@ -104,19 +111,12 @@ public class ReviewController {
 	@PutMapping("/{id}")
 	public ResponseEntity<Review> updateReview(@RequestBody ReviewRequest reviewRequest, @PathVariable("id") int id, HttpSession session) {
 		int userId = ((User) session.getAttribute("user")).getId();
-		Optional<Review> optR = reviewService.findById(id);
-		if(optR.isPresent()) {
-			Review r = optR.get();
-			if(r.getUserId().getId() == userId) {
-				r.setUpdated(new Timestamp(System.currentTimeMillis()));
-				r.setStars(reviewRequest.getStars());
-				r.setTitle(reviewRequest.getTitle());
-				r.setReview(reviewRequest.getReview());
-				return ResponseEntity.ok(reviewService.save(r));
-			}
-			return null; // User does not own this review
-		} else {
-			return null; // Review not found
+		try {
+		 	return ResponseEntity.ok(reviewService.update(reviewRequest, id, userId));
+		} catch(HttpClientErrorException e) {
+			return ResponseEntity
+					.status(e.getStatusCode())
+					.body(null);
 		}
 	}
 	
@@ -130,16 +130,12 @@ public class ReviewController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Review> deleteReview(@PathVariable("id") int id, HttpSession session) {
 		int userId = ((User) session.getAttribute("user")).getId();
-		Optional<Review> optR = reviewService.findById(id);
-		if(optR.isPresent()) {
-			Review r = optR.get();
-			if(r.getUserId().getId() == userId) {
-				reviewService.delete(id);
-				return ResponseEntity.ok(r);
-			}
-			return null; // User does not own this review
-		} else {
-			return null; // Review not found
+		try {
+			return ResponseEntity.ok(reviewService.delete(id, userId));
+		} catch(HttpClientErrorException e) {
+			return ResponseEntity
+					.status(e.getStatusCode())
+					.body(null);
 		}
 	}
 }
