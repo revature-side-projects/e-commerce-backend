@@ -46,12 +46,3 @@ INSERT INTO users (id, email, password, first_name, last_name) VALUES (
     'Test',
     'User'
 );
-
-INSERT INTO users (id, email, password, first_name, last_name, role) VALUES (
-    2,
-    'admin@gmail.com',
-    'password',
-    'TestAdmin',
-    'User',
-    'ADMIN'
-);

@@ -1,6 +1,7 @@
 package com.revature.controllers;
 
 import com.revature.annotations.Authorized;
+import com.revature.annotations.AuthorizedAdmin;
 import com.revature.dtos.ProductInfo;
 import com.revature.models.Product;
 import com.revature.services.ProductService;
@@ -40,11 +41,24 @@ public class ProductController {
     }
 
     @Authorized
-    @PutMapping
+    @AuthorizedAdmin
+    @PutMapping("/create-update")
     public ResponseEntity<Product> upsert(@RequestBody Product product) {
+    	Optional<Product> currPd = productService.findById(product.getId());
+    	if(currPd.isPresent()) {
+    		Product updatePd = currPd.get();
+    		updatePd.setName(product.getName());
+    		updatePd.setPrice(product.getPrice());
+    		updatePd.setQuantity(product.getQuantity());
+    		updatePd.setDescription(product.getDescription());
+    		updatePd.setImage(product.getImage());
+    		productService.save(updatePd);
+    		
+    	}
+    	
         return ResponseEntity.ok(productService.save(product));
     }
-
+    
     @Authorized
     @PatchMapping
     public ResponseEntity<List<Product>> purchase(@RequestBody List<ProductInfo> metadata) { 	
