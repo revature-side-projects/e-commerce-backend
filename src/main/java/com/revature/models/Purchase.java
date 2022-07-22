@@ -23,7 +23,8 @@ public class Purchase {
     @NotNull
     private int id;
 
-    @NotNull
+//    @NotNull
+    @CreationTimestamp
     @Column(name = "order_placed")
     private Timestamp orderPlaced;
 

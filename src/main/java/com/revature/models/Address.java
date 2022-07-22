@@ -22,10 +22,13 @@ public class Address {
     @NotNull
     private String street;
     private String secondary;
+
     @NotNull
     private String city;
     @NotNull
     private String zip;
+    @NotNull
+    private String state;
 
     @ManyToMany
     @JoinTable(name = "users_addresses",

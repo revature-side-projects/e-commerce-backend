@@ -30,8 +30,8 @@ public class User {
     private String firstName;
     @NotNull
     private String lastName;
-//    @NotNull
-//    private String role;
+    @NotNull
+    private String role;
 
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "user_id")

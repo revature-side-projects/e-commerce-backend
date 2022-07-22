@@ -39,31 +39,33 @@ INSERT INTO products (product_id, quantity, price, description, image, name) VAL
     'Coat'
 );
 
-INSERT INTO users (user_id, email, password, first_name, last_name)
+INSERT INTO users (user_id, email, password, first_name, last_name, role)
 VALUES (
            1,
-           'testuser@gmail.com',
+           'admin@gmail.com',
            'password',
-           'Test',
-           'User'
+           'testAdmin',
+           'User',
+           'ADMIN'
        );
 
-INSERT INTO purchases (purchase_id, order_placed,product_id, user_id)
+INSERT INTO purchases (purchase_id,product_id, user_id)
 VALUES (
            1,
-           CURRENT_TIMESTAMP(),
            1,
            1
        );
 
-INSERT INTO addresses (address_id, street, secondary, city, zip)
+INSERT INTO addresses (address_id, street, secondary, city, zip, state)
 VALUES (
            1,
            '844 california street',
            '',
            'Los Angeles',
-           '39999'
+           '39999',
+           'CA'
        );
+
 INSERT INTO users_addresses (address_id, user_id)
 VALUES (
            1,
