@@ -1,12 +1,19 @@
 package com.revature.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.istack.NotNull;
 import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Entity
 @NoArgsConstructor
 @RequiredArgsConstructor
@@ -15,6 +22,7 @@ import java.util.*;
         name = "users",
         uniqueConstraints = @UniqueConstraint(columnNames={"email"})
 )
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "purchases", "reviews", "addresses" })
 public class User {
 
     @Id
@@ -35,10 +43,12 @@ public class User {
 
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "user_id")
+    @ToString.Exclude
     private Set<Purchase> purchases = new LinkedHashSet<>();
 
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "user_id")
+    @ToString.Exclude
     private Set<Review> reviews = new LinkedHashSet<>();
 
     @ManyToMany(cascade = { CascadeType.ALL })
@@ -47,5 +57,11 @@ public class User {
             joinColumns = { @JoinColumn(name = "user_id") },
             inverseJoinColumns = { @JoinColumn(name = "address_id") }
     )
+    @ToString.Exclude
     private Set<Address> addresses = new HashSet<>();
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
