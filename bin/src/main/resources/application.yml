@@ -13,5 +13,3 @@ spring:
     password: password
   h2:
     console.enabled: true
-    console:
-      path: /h2
