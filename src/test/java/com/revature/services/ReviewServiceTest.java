@@ -1,11 +1,14 @@
 package com.revature.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
@@ -85,15 +88,37 @@ class ReviewServiceTest {
 	}
 
 	@Test
-	@Disabled("Not yet implemented")
 	void testFindAll() {
-		fail("Not yet implemented");
+		User user2 = new User(0, "user2@revature.com", "qwerty123", "Another", "User", "Customer");
+		List<Review> expected = new LinkedList<>();
+		expected.add(this.dummyReview);
+		expected.add(new Review(2, 4, "Another review", "Some review body text", null, null, this.dummyProduct,
+				user2));
+
+		given(this.mockReviewRepo.findAll()).willReturn(expected);
+
+		List<Review> actual = this.rServ.findAll();
+
+		assertEquals(expected, actual);
+		assertTrue(expected.containsAll(actual));
+		assertEquals(expected.size(), actual.size());
+		verify(this.mockReviewRepo, times(1)).findAll();
 	}
 
 	@Test
-	@Disabled("Not yet implemented")
 	void testFindByProductId_Success() {
-		fail("Not yet implemented");
+		int id = this.dummyProduct.getId();
+		List<Review> expected = new LinkedList<>();
+		expected.add(this.dummyReview);
+
+		given(this.pServ.findById(id)).willReturn(Optional.of(this.dummyProduct));
+		given(this.mockReviewRepo.findByProduct(this.dummyProduct)).willReturn(expected);
+
+		List<Review> actual = this.rServ.findByProductId(id);
+
+		assertEquals(expected, actual);
+		assertTrue(actual.containsAll(expected));
+		verify(this.mockReviewRepo, times(1)).findByProduct(this.dummyProduct);
 	}
 
 	@Test
@@ -103,9 +128,19 @@ class ReviewServiceTest {
 	}
 
 	@Test
-	@Disabled("Not yet implemented")
 	void testFindByUserId_Success() {
-		fail("Not yet implemented");
+		int id = this.dummyUser.getId();
+		List<Review> expected = new LinkedList<>();
+		expected.add(this.dummyReview);
+
+		given(this.uServ.findById(id)).willReturn(Optional.of(this.dummyUser));
+		given(this.mockReviewRepo.findByUser(this.dummyUser)).willReturn(expected);
+
+		List<Review> actual = this.rServ.findByUserId(id);
+
+		assertEquals(expected, actual);
+		assertTrue(actual.containsAll(expected));
+		verify(this.mockReviewRepo, times(1)).findByUser(this.dummyUser);
 	}
 
 	@Test
@@ -115,15 +150,26 @@ class ReviewServiceTest {
 	}
 
 	@Test
-	@Disabled("Not yet implemented")
 	void testFindById() {
-		fail("Not yet implemented");
+		int id = this.dummyReview.getId();
+		given(this.mockReviewRepo.findById(id)).willReturn(Optional.of(this.dummyReview));
+
+		Review expected = this.dummyReview;
+		Review actual = this.rServ.findById(id).get();
+
+		assertEquals(expected, actual);
+		verify(this.mockReviewRepo, times(1)).findById(id);
 	}
 
 	@Test
-	@Disabled("Not yet implemented")
 	void testSave() {
-		fail("Not yet implemented");
+		given(this.mockReviewRepo.save(this.dummyReview)).willReturn(this.dummyReview);
+
+		Review expected = this.dummyReview;
+		Review actual = this.rServ.save(this.dummyReview);
+
+		assertEquals(expected, actual);
+		verify(this.mockReviewRepo, times(1)).save(this.dummyReview);
 	}
 
 	@Test
