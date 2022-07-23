@@ -40,7 +40,7 @@ public class ProductController {
     @Authorized
     @AuthorizedAdmin
     @PutMapping("/create-update")
-    public ResponseEntity<Product> updateAndInsert(@RequestBody Product product) {
+    public ResponseEntity<Product> upsert(@RequestBody Product product) {
         return ResponseEntity.ok(productService.save(product));
     }
     
