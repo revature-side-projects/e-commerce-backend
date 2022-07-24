@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.revature.annotations.Authorized;
 import com.revature.models.User;
 import com.revature.services.UserService;
 
@@ -25,6 +26,7 @@ public class UserController {
 		this.userv = userv;
 	}
 	
+	@Authorized
 	@GetMapping("/{userId}")
 	public ResponseEntity<User> getUserById(@PathVariable("userId") int userId) {
 	
@@ -33,6 +35,7 @@ public class UserController {
 		return ResponseEntity.ok(optionalUser.get());
 	}
 	
+	@Authorized
 	@PutMapping
 	public ResponseEntity<User> update(@RequestBody User user) {
 		return ResponseEntity.ok(userv.save(user));
