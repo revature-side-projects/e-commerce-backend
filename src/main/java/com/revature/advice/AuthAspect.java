@@ -74,7 +74,7 @@ public class AuthAspect {
 
         
         User loggedInUser = (User) session.getAttribute("user"); // get the user from session
-        Role userRole = loggedInUser.getRole(); // get the role of user
+        String userRole = loggedInUser.getRole(); // get the role of user
         // check the role of user
         if(authorized.value().equals(AuthRestriction.ADMIN) && !Role.ADMIN.equals(userRole)) { 
         	throw new InvalidRoleException("Must be logged in as a Admin to perform this action");

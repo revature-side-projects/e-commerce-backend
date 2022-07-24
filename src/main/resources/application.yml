@@ -15,3 +15,16 @@ spring:
     console.enabled: true
     console:
       path: /h2
+cloud:
+  aws:
+    credentials:
+      access-key: AKIAXYAL34JPGSRKUR7Y
+      secret-key: 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
+    region:
+      static: us-east-1
+    stack:
+      auto: false
+      
+application:
+  bucket:
+    name: revature-image-bucket
