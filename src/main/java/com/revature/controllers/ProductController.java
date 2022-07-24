@@ -23,7 +23,7 @@ import com.revature.services.ProductService;
 import com.revature.services.StorageService;
 
 @RestController
-@RequestMapping("/api/product")
+@RequestMapping("/api/product" )
 @CrossOrigin(origins = {"http://localhost:4200", "http://localhost:3000"}, allowCredentials = "true")
 public class ProductController {
 

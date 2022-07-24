@@ -38,13 +38,13 @@ public class Product {
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "product_id")
 
-    @JsonBackReference
+
     @ToString.Exclude
     private Set<Review> reviews = new LinkedHashSet<>();
 
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "product_id")
-    @JsonBackReference
+    
     @ToString.Exclude
     private Set<Purchase> purchases = new LinkedHashSet<>();
 
