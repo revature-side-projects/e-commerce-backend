@@ -39,6 +39,7 @@ INSERT INTO products (product_id, quantity, price, description, image, name) VAL
     'Coat'
 );
 
+
 INSERT INTO users (user_id, email, password, first_name, last_name, role)
 VALUES (
            1,
@@ -81,3 +82,4 @@ VALUES (
            1,
            1
        );
+
