@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/product")
+@RequestMapping("/api/product" )
 @CrossOrigin(origins = {"http://localhost:4200", "http://localhost:3000"}, allowCredentials = "true")
 public class ProductController {
 
@@ -34,28 +34,13 @@ public class ProductController {
     public ResponseEntity<Product> getProductById(@PathVariable("id") int id) {
         Optional<Product> optional = productService.findById(id);
 
-        if(!optional.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(optional.get());
+        return optional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @Authorized
     @AuthorizedAdmin
     @PutMapping("/create-update")
     public ResponseEntity<Product> upsert(@RequestBody Product product) {
-    	Optional<Product> currPd = productService.findById(product.getId());
-    	if(currPd.isPresent()) {
-    		Product updatePd = currPd.get();
-    		updatePd.setName(product.getName());
-    		updatePd.setPrice(product.getPrice());
-    		updatePd.setQuantity(product.getQuantity());
-    		updatePd.setDescription(product.getDescription());
-    		updatePd.setImage(product.getImage());
-    		productService.save(updatePd);
-    		
-    	}
-    	
         return ResponseEntity.ok(productService.save(product));
     }
     
