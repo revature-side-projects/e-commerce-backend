@@ -2,6 +2,9 @@ package com.revature.controllers;
 
 import com.revature.dtos.LoginRequest;
 import com.revature.dtos.RegisterRequest;
+import com.revature.models.Address;
+import com.revature.models.Purchase;
+import com.revature.models.Review;
 import com.revature.models.User;
 import com.revature.services.AuthService;
 import org.springframework.http.HttpStatus;
@@ -9,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/auth")
@@ -26,6 +31,9 @@ public class AuthController {
     public ResponseEntity<User> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
         Optional<User> optional = authService.findByCredentials(loginRequest.getEmail(), loginRequest.getPassword());
 
+        System.out.println(loginRequest.getEmail());
+        System.out.println(loginRequest.getPassword());
+        System.out.println(optional);
         if(!optional.isPresent()) {
             return ResponseEntity.badRequest().build();
         }
@@ -48,8 +56,12 @@ public class AuthController {
                 registerRequest.getEmail(),
                 registerRequest.getPassword(),
                 registerRequest.getFirstName(),
-                registerRequest.getLastName());
-
+                registerRequest.getLastName(),
+                "CUSTOMER",
+                new HashSet<>(),
+                new HashSet<>(),
+                new HashSet<>()
+        );
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(created));
     }
 }

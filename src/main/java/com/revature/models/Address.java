@@ -1,44 +1,49 @@
 package com.revature.models;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sun.istack.NotNull;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
+import javax.persistence.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "addresses")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "users" })
 public class Address {
-	
-	@Id
-    @Column(name="address_id")
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "address_id")
     private int id;
-	
-	@NotBlank
-	private String street;
-	
-	private String secondary;
-	
-	@NotBlank
-	private String city;
-	
-	@NotBlank
-	private String zip;
-	
-	@ManyToMany(mappedBy="user_id")
-	private List<User> residents;
+    @NotNull
+    private String street;
+    private String secondary;
 
+    @NotNull
+    private String city;
+    @NotNull
+    private String zip;
+    @NotNull
+    private String state;
+
+    @ManyToMany
+    @JoinTable(name = "users_addresses",
+            joinColumns = @JoinColumn(name = "address_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JsonIgnore
+    @ToString.Exclude
+    private Set<User> users = new LinkedHashSet<>();
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
