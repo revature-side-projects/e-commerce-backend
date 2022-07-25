@@ -1,8 +1,8 @@
 package com.revature.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -13,12 +13,13 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 import com.revature.dtos.ReviewRequest;
 import com.revature.models.Product;
@@ -82,9 +83,18 @@ class ReviewServiceTest {
 	}
 
 	@Test
-	@Disabled("Not yet implemented")
 	void testAdd_Failure_ProductNotFound() {
-		fail("Not yet implemented");
+		ReviewRequest request = new ReviewRequest(this.dummyProduct.getId(), 1, "Not working",
+				"It doesn't work as advertised. I am dissatisfied with this product.");
+		Review newReview = new Review(request.getStars(), request.getTitle(), request.getReview(), this.dummyUser,
+				this.dummyProduct);
+		int productId = this.dummyProduct.getId();
+		given(this.pServ.findById(request.getProductId())).willReturn(Optional.empty());
+
+		assertThrows(ResourceAccessException.class, () -> this.rServ.add(request, this.dummyUser),
+				"No product found with ID " + productId);
+		verify(this.pServ, times(1)).findById(productId);
+
 	}
 
 	@Test
@@ -121,9 +131,13 @@ class ReviewServiceTest {
 	}
 
 	@Test
-	@Disabled("Not yet implemented")
 	void testFindByProductId_Failure_ProductIdNotFound() {
-		fail("Not yet implemented");
+		int id = this.dummyProduct.getId();
+		given(this.pServ.findById(id)).willReturn(Optional.empty());
+
+		assertThrows(ResourceAccessException.class, () -> this.rServ.findByProductId(id),
+				"No product found with ID " + id);
+		verify(this.pServ, times(1)).findById(id);
 	}
 
 	@Test
@@ -143,9 +157,13 @@ class ReviewServiceTest {
 	}
 
 	@Test
-	@Disabled("Not yet implemented")
 	void testFindByUserId_Failure_UserIdNotFound() {
-		fail("Not yet implemented");
+		int id = this.dummyUser.getId();
+		given(this.uServ.findById(id)).willReturn(Optional.empty());
+
+		// TODO assert if exception messages are equal
+		assertThrows(ResourceAccessException.class, () -> this.rServ.findByUserId(id));
+		verify(this.uServ, times(1)).findById(id);
 	}
 
 	@Test
@@ -189,9 +207,27 @@ class ReviewServiceTest {
 	}
 
 	@Test
-	@Disabled("Not yet implemented")
 	void testUpdate_Failure_UnauthorizedUserId() {
-		fail("Not yet implemented");
+		int id = this.dummyReview.getId();
+		User author = this.dummyReview.getUser();
+		ReviewRequest updatedReview = new ReviewRequest(this.dummyProduct.getId(), 3, "Updated review",
+				"Updated review body text");
+		given(this.mockReviewRepo.findById(id)).willReturn(Optional.of(this.dummyReview));
+
+		assertThrows(HttpClientErrorException.class, () -> this.rServ.update(updatedReview, id, author.getId() + 1));
+		verify(this.mockReviewRepo, times(1)).findById(id);
+	}
+
+	@Test
+	void testUpdate_Failure_ReviewIdNotFound() {
+		int id = this.dummyReview.getId();
+		User author = this.dummyReview.getUser();
+		ReviewRequest updatedReview = new ReviewRequest(this.dummyProduct.getId(), 1, "Updated review",
+				"Updated review body text");
+		given(this.mockReviewRepo.findById(id)).willReturn(Optional.empty());
+
+		assertThrows(HttpClientErrorException.class, () -> this.rServ.update(updatedReview, id, author.getId()));
+		verify(this.mockReviewRepo, times(1)).findById(id);
 	}
 
 	@Test
@@ -204,9 +240,22 @@ class ReviewServiceTest {
 	}
 
 	@Test
-	@Disabled("Not yet implemented")
 	void testDelete_Failure_UnauthorizedUserId() {
-		fail("Not yet implemented");
+		int id = this.dummyReview.getId();
+		int userId = this.dummyReview.getUser().getId() + 1;
+		given(this.mockReviewRepo.findById(id)).willReturn(Optional.of(this.dummyReview));
+
+		assertThrows(HttpClientErrorException.class, () -> this.rServ.delete(id, userId));
+		verify(this.mockReviewRepo, times(1)).findById(id);
+	}
+
+	@Test
+	void testDelete_Failure_ReviewIdNotFound() {
+		int id = this.dummyReview.getId();
+		given(this.mockReviewRepo.findById(id)).willReturn(Optional.empty());
+
+		assertThrows(HttpClientErrorException.class, () -> this.rServ.delete(id, this.dummyReview.getUser().getId()));
+		verify(this.mockReviewRepo, times(1)).findById(id);
 	}
 
 }
