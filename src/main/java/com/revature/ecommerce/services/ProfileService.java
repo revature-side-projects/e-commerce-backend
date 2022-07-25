@@ -1,13 +1,20 @@
 package com.revature.ecommerce.services;
 
+
 import java.util.List;
+import java.util.Optional;
+
+
+
 import java.util.Optional;
 
 
 import org.springframework.stereotype.Service;
 
-import com.revature.ecommerce.models.User;
-import com.revature.ecommerce.repositories.UserRepository;
+
+
+import com.revature.models.User;
+import com.revature.repositories.UserRepository;
 
 
 
@@ -21,8 +28,9 @@ public class ProfileService {
     }
 
 
-    public Optional<User> getProfileById(int id) {
-        return userRepository.findById(id);
+    public Optional<User> getProfileByEmail(String email) {
+		return userRepository.getProfileByEmail(email);
+        
     }
 
     public User editProfile(User user) {
