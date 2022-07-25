@@ -3,14 +3,19 @@ package com.revature.services;
 import com.revature.dtos.CreateProductRequest;
 import com.revature.dtos.CreationResponse;
 import com.revature.dtos.ProductInfo;
+import com.revature.dtos.ProductRequest;
 import com.revature.dtos.ReviewResponse;
 import com.revature.exceptions.NotFoundException;
+import com.revature.exceptions.UnprocessableEntityException;
+import com.revature.models.Category;
 import com.revature.exceptions.NotImplementedException;
 import com.revature.models.Product;
 import com.revature.models.ProductReview;
+import com.revature.repositories.CategoryRepository;
 import com.revature.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,9 +23,11 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private final ProductRepository productRepo;
+    private final CategoryRepository categoryRepo;
 
-    public ProductService(ProductRepository productRepo) {
+    public ProductService(ProductRepository productRepo, CategoryRepository categoryRepo) {
         this.productRepo = productRepo;
+        this.categoryRepo = categoryRepo;
     }
 
     public List<ProductInfo> findAll() {
@@ -50,6 +57,49 @@ public class ProductService {
     public ProductInfo findById(int id){
         return productRepo.findById(id).map(ProductInfo::new).orElseThrow(NotFoundException::new);
 
+    }
+
+    /**
+     * attempts to update based off a product
+     * @param product product to be updated
+     */
+    public void updateProduct(ProductRequest product) {
+
+        StringBuilder errorMessage = new StringBuilder("Issue(s) with this request:");
+        boolean passed = true;
+
+        if (!productRepo.findById(product.getId()).isPresent()) {
+            errorMessage.append(" - No product found for this id");
+            passed = false;
+        }
+
+        if (!categoryRepo.findById(product.getCategory()).isPresent()) {
+            errorMessage.append(" - No category found");
+            passed = false;
+        }
+
+        if (BigDecimal.valueOf(product.getPrice()).scale() > 2) {
+            errorMessage.append(" - Price too long of a decimal number");
+            passed = false;
+        }
+
+        if (BigDecimal.valueOf(product.getPrice()).precision() > 8) {
+            errorMessage.append(" - Price length is too long");
+            passed = false;
+        }
+
+        if (product.getName().length() > 50) {
+            errorMessage.append(" - Name is more then 50 characters");
+            passed = false;
+        }
+
+        if (passed) {
+            Category updateCategory = categoryRepo.getById(product.getCategory());
+            Product updateProduct = new Product(product, updateCategory);
+            productRepo.save(updateProduct);
+        } else {
+            throw new UnprocessableEntityException(errorMessage.toString());
+        }
     }
 
     /**

@@ -3,6 +3,7 @@ package com.revature.controllers;
 import com.revature.annotations.AdminOnly;
 import com.revature.dtos.CreateProductRequest;
 import com.revature.dtos.ProductInfo;
+import com.revature.dtos.ProductRequest;
 import com.revature.dtos.ProductReviewRequest;
 import com.revature.dtos.ReviewResponse;
 import com.revature.exceptions.NotImplementedException;
@@ -82,19 +83,28 @@ public class ProductController {
         return productService.findById(id);
     }
 
+
+
     /**
-     * Will insert product information
-     * @param product
+     * put endpoint to update a product
+     * @param product receives a product Json
      */
-    @AdminOnly
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping(consumes = "application/json")
-    public void insert(
-            @RequestHeader(AUTHORIZATION) String token,
-            @RequestBody ProductInfo product
-    )
-    {
-        throw new NotImplementedException();
+    public void update(@RequestBody ProductRequest product) {
+        /*
+        //example json
+        {
+            "id":1,
+            "name":"limit 50 char",
+            "description":"no limit",
+            "price":123456.12,
+            "imageUrlS":"url",
+            "imageUrlM":"url",
+            "category":1
+        }
+        */
+        productService.updateProduct(product);
     }
 
     /**
