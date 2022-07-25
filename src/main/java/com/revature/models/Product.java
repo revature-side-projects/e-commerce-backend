@@ -1,21 +1,23 @@
 package com.revature.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Entity
 @NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Table(name = "products")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "reviews", "purchases" })
 public class Product {
 
     @Id
@@ -35,9 +37,19 @@ public class Product {
 
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "product_id")
+
+    @JsonBackReference
+    @ToString.Exclude
     private Set<Review> reviews = new LinkedHashSet<>();
 
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "product_id")
+    @JsonBackReference
+    @ToString.Exclude
     private Set<Purchase> purchases = new LinkedHashSet<>();
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
