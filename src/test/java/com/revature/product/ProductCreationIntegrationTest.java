@@ -2,7 +2,6 @@ package com.revature.product;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.dtos.CreateProductRequest;
-import com.revature.models.Category;
 import com.revature.repositories.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +39,8 @@ public class ProductCreationIntegrationTest {
         createProductRequest.setPrice(4.99);
         createProductRequest.setImageUrlS("This is a small test image url");
         createProductRequest.setImageUrlM("This is a medium test image url");
-        createProductRequest.setCategory(new Category(8));
+        createProductRequest.setCategory(8);
+
 
         String requestPayload = mapper.writeValueAsString(createProductRequest);
 

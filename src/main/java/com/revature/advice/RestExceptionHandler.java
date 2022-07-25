@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import java.util.Collections;
@@ -59,6 +60,12 @@ public class RestExceptionHandler {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(),
                 listOfErrorMessages
         );
+    }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(PersistanceException.class)
+    public ErrorResponse handlePersistanceException(PersistanceException e) {
+        e.printStackTrace();
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), Collections.singletonList(e.getMessage()));
     }
 
     // Specific 400
