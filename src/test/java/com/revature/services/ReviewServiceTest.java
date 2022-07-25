@@ -1,8 +1,8 @@
 package com.revature.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -50,10 +50,6 @@ class ReviewServiceTest {
 		this.dummyUser = new User(1, "dummy@revature.com", "asdf", "Dummy", "User", "Customer", null, null, null);
 		this.dummyReview = new Review(1, 5, "Review title", "Review body sample text", null, null, this.dummyProduct,
 				this.dummyUser);
-
-		// Set<Review> reviews = new LinkedHashSet<>();
-		// reviews.add(this.dummyReview);
-		// this.dummyProduct.setReviews(reviews);
 	}
 
 	@AfterEach
@@ -91,10 +87,13 @@ class ReviewServiceTest {
 		int productId = this.dummyProduct.getId();
 		given(this.pServ.findById(request.getProductId())).willReturn(Optional.empty());
 
-		assertThrows(ResourceAccessException.class, () -> this.rServ.add(request, this.dummyUser),
-				"No product found with ID " + productId);
-		verify(this.pServ, times(1)).findById(productId);
-
+		try {
+			this.rServ.add(request, this.dummyUser);
+			fail("Expected a ResourceAccessException to be thrown");
+		} catch (Exception e) {
+			assertEquals("No product found with ID " + productId, e.getMessage());
+			verify(this.pServ, times(1)).findById(productId);
+		}
 	}
 
 	@Test
@@ -135,9 +134,13 @@ class ReviewServiceTest {
 		int id = this.dummyProduct.getId();
 		given(this.pServ.findById(id)).willReturn(Optional.empty());
 
-		assertThrows(ResourceAccessException.class, () -> this.rServ.findByProductId(id),
-				"No product found with ID " + id);
-		verify(this.pServ, times(1)).findById(id);
+		try {
+			this.rServ.findByProductId(id);
+			fail("Expected a ResourceAccessException to be thrown");
+		} catch (ResourceAccessException e) {
+			assertEquals("No product found with ID " + id, e.getMessage());
+			verify(this.pServ, times(1)).findById(id);
+		}
 	}
 
 	@Test
@@ -161,9 +164,13 @@ class ReviewServiceTest {
 		int id = this.dummyUser.getId();
 		given(this.uServ.findById(id)).willReturn(Optional.empty());
 
-		// TODO assert if exception messages are equal
-		assertThrows(ResourceAccessException.class, () -> this.rServ.findByUserId(id));
-		verify(this.uServ, times(1)).findById(id);
+		try {
+			this.rServ.findByUserId(id);
+			fail("Expected a ResourceAccessException to be thrown");
+		} catch (ResourceAccessException e) {
+			assertEquals("No user found with ID " + id, e.getMessage());
+			verify(this.uServ, times(1)).findById(id);
+		}
 	}
 
 	@Test
@@ -210,24 +217,35 @@ class ReviewServiceTest {
 	void testUpdate_Failure_UnauthorizedUserId() {
 		int id = this.dummyReview.getId();
 		User author = this.dummyReview.getUser();
+		int wrongUserId = author.getId() + 1;
 		ReviewRequest updatedReview = new ReviewRequest(this.dummyProduct.getId(), 3, "Updated review",
 				"Updated review body text");
 		given(this.mockReviewRepo.findById(id)).willReturn(Optional.of(this.dummyReview));
 
-		assertThrows(HttpClientErrorException.class, () -> this.rServ.update(updatedReview, id, author.getId() + 1));
-		verify(this.mockReviewRepo, times(1)).findById(id);
+		try {
+			this.rServ.update(updatedReview, id, wrongUserId);
+			fail("Expected a HttpClientErrorException with status code of 401");
+		} catch (HttpClientErrorException e) {
+			assertEquals(401, e.getRawStatusCode());
+			verify(this.mockReviewRepo, times(1)).findById(id);
+		}
 	}
 
 	@Test
 	void testUpdate_Failure_ReviewIdNotFound() {
 		int id = this.dummyReview.getId();
-		User author = this.dummyReview.getUser();
+		int authorId = this.dummyReview.getUser().getId();
 		ReviewRequest updatedReview = new ReviewRequest(this.dummyProduct.getId(), 1, "Updated review",
 				"Updated review body text");
 		given(this.mockReviewRepo.findById(id)).willReturn(Optional.empty());
 
-		assertThrows(HttpClientErrorException.class, () -> this.rServ.update(updatedReview, id, author.getId()));
-		verify(this.mockReviewRepo, times(1)).findById(id);
+		try {
+			this.rServ.update(updatedReview, id, authorId);
+			fail("Expected a HttpClientErrorException with status code of 404");
+		} catch (HttpClientErrorException e) {
+			assertEquals(404, e.getRawStatusCode());
+			verify(this.mockReviewRepo, times(1)).findById(id);
+		}
 	}
 
 	@Test
@@ -241,21 +259,32 @@ class ReviewServiceTest {
 
 	@Test
 	void testDelete_Failure_UnauthorizedUserId() {
-		int id = this.dummyReview.getId();
+		int reviewId = this.dummyReview.getId();
 		int userId = this.dummyReview.getUser().getId() + 1;
-		given(this.mockReviewRepo.findById(id)).willReturn(Optional.of(this.dummyReview));
+		given(this.mockReviewRepo.findById(reviewId)).willReturn(Optional.of(this.dummyReview));
 
-		assertThrows(HttpClientErrorException.class, () -> this.rServ.delete(id, userId));
-		verify(this.mockReviewRepo, times(1)).findById(id);
+		try {
+			this.rServ.delete(reviewId, userId);
+			fail("Expected a HttpClientErrorException with status code of 401");
+		} catch (HttpClientErrorException e) {
+			assertEquals(401, e.getRawStatusCode());
+			verify(this.mockReviewRepo, times(1)).findById(reviewId);
+		}
 	}
 
 	@Test
 	void testDelete_Failure_ReviewIdNotFound() {
-		int id = this.dummyReview.getId();
-		given(this.mockReviewRepo.findById(id)).willReturn(Optional.empty());
+		int reviewId = this.dummyReview.getId();
+		int authorId = this.dummyReview.getUser().getId();
+		given(this.mockReviewRepo.findById(reviewId)).willReturn(Optional.empty());
 
-		assertThrows(HttpClientErrorException.class, () -> this.rServ.delete(id, this.dummyReview.getUser().getId()));
-		verify(this.mockReviewRepo, times(1)).findById(id);
+		try {
+			this.rServ.delete(reviewId, authorId);
+			fail("Expected a HttpClientErrorException with status code of 404");
+		} catch (HttpClientErrorException e) {
+			assertEquals(404, e.getRawStatusCode());
+			verify(this.mockReviewRepo, times(1)).findById(reviewId);
+		}
 	}
 
 }
