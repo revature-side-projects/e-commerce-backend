@@ -62,6 +62,8 @@ public class RestExceptionHandler {
                 listOfErrorMessages
         );
     }
+    
+    // Specific 400
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(PersistanceException.class)
     public ErrorResponse handlePersistanceException(PersistanceException e) {
@@ -81,7 +83,7 @@ public class RestExceptionHandler {
                 listOfErrorMessages
         );
     }
-
+    
     // Specific 400
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -94,6 +96,7 @@ public class RestExceptionHandler {
                 listOfErrorMessages
         );
     }
+
 
     // Generic 401
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
