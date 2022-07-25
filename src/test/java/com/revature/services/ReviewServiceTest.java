@@ -92,8 +92,7 @@ class ReviewServiceTest {
 		User user2 = new User(0, "user2@revature.com", "qwerty123", "Another", "User", "Customer");
 		List<Review> expected = new LinkedList<>();
 		expected.add(this.dummyReview);
-		expected.add(new Review(2, 4, "Another review", "Some review body text", null, null, this.dummyProduct,
-				user2));
+		expected.add(new Review(2, 4, "Another review", "Some review body text", null, null, this.dummyProduct, user2));
 
 		given(this.mockReviewRepo.findAll()).willReturn(expected);
 
@@ -173,9 +172,20 @@ class ReviewServiceTest {
 	}
 
 	@Test
-	@Disabled("Not yet implemented")
 	void testUpdate_Success() {
-		fail("Not yet implemented");
+		int id = this.dummyReview.getId();
+		User author = this.dummyReview.getUser();
+		ReviewRequest updatedReview = new ReviewRequest(this.dummyProduct.getId(), 1, "Updated review",
+				"Updated review body text");
+		given(this.mockReviewRepo.findById(id)).willReturn(Optional.of(this.dummyReview));
+
+		Review expected = new Review(id, updatedReview.getStars(), updatedReview.getTitle(), updatedReview.getReview(),
+				null, null, this.dummyReview.getProduct(), author);
+		given(this.mockReviewRepo.save(expected)).willReturn(expected);
+		Review actual = this.rServ.update(updatedReview, id, author.getId());
+
+		assertEquals(expected, actual);
+		verify(this.mockReviewRepo, times(1)).save(expected);
 	}
 
 	@Test
@@ -185,9 +195,12 @@ class ReviewServiceTest {
 	}
 
 	@Test
-	@Disabled("Not yet implemented")
 	void testDelete_Success() {
-		fail("Not yet implemented");
+		int id = this.dummyReview.getId();
+		given(this.mockReviewRepo.findById(id)).willReturn(Optional.of(this.dummyReview));
+
+		this.rServ.delete(id, this.dummyReview.getUser().getId());
+		verify(this.mockReviewRepo, times(1)).deleteById(id);
 	}
 
 	@Test
