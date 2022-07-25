@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.Collections;
+
 @RestControllerAdvice
 public class RestExceptionHandler {
     /**
@@ -140,6 +142,13 @@ public class RestExceptionHandler {
         listOfErrorMessages.add(message);
         return new ErrorResponse(HttpStatus.CONFLICT.value(),
                 listOfErrorMessages);
+    }
+
+    // Generic 422
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(UnprocessableEntityException.class)
+    public ErrorResponse handleUnprocessableEntityException(UnprocessableEntityException e) {
+        return new ErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(), Collections.singletonList(e.getMessage()));
     }
 
     // Generic 500
