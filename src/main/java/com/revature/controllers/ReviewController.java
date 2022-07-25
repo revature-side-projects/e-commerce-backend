@@ -93,9 +93,9 @@ public class ReviewController {
 													  // "user" session attribute is null anyway
 		try {
 			return ResponseEntity.ok(reviewService.add(reviewRequest, u));
-		} catch(ResourceAccessException e) {
+		} catch(HttpClientErrorException e) {
 			return ResponseEntity
-					.status(HttpStatus.NOT_FOUND)
+					.status(e.getStatusCode())
 					.body(null);
 		}
 	}

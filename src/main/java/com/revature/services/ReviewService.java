@@ -35,16 +35,23 @@ public class ReviewService {
     public Review add(ReviewRequest reviewRequest, User user) {
     	Optional<Product> optionalProduct = productService.findById(reviewRequest.getProductId());
 		if(optionalProduct.isPresent()) {
-			Review r = new Review(
+			Review review = new Review(
 					reviewRequest.getStars(), 
 					reviewRequest.getTitle(), 
 					reviewRequest.getReview(),
 					user,
 					optionalProduct.get()
 				);
-			return reviewRepository.save(r);
+			Product product = optionalProduct.get();
+			Optional<Review> optionalReview = this.findByProductId(product.getId()).stream()
+						.filter(r -> r.getUser().getId() == user.getId())
+						.findFirst();
+			if(optionalReview.isPresent()) {
+				throw new HttpClientErrorException(HttpStatus.CONFLICT);
+			}
+			return reviewRepository.save(review);
 		} else {
-			throw new ResourceAccessException("No product found with ID " + reviewRequest.getProductId());
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
     }
     
