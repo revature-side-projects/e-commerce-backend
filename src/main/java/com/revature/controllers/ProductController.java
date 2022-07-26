@@ -71,7 +71,7 @@ public class ProductController {
     @Authorized
     @AuthorizedAdmin
     @PutMapping("/uploadFile")
-    public ResponseEntity<String> uploadImage(@RequestPart (value = "data") MultipartFile file){
+    public ResponseEntity<String> uploadImage(@RequestPart (value = "file") MultipartFile file){
     	return this.s3Srv.uploadFile(file);
     }
     
