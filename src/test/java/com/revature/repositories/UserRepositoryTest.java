@@ -44,7 +44,7 @@ class UserRepositoryTest {
     }
 
 
-    
+
     @Test
     void checkIfFoundById() {
 

@@ -194,7 +194,7 @@ public class ProductServiceTest {
 
         when(mockProductRepository.findAll()).thenReturn(mockProducts); //  here we invoke the findAll method for testing.
 
-        //  When:   response is actual or true
+        //  When:   response is actual or tru
         List<ProductInfo> actual = sut.findAll();
 
         //  Then: verify
