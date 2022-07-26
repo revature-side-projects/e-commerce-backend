@@ -1,7 +1,7 @@
 version: '3.1'
 services:
   PostgreSQL:
-    image: ${AWS::AccountId}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/app-postgres
+    image: 657728996878.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/app-postgres
     ports:
       - "5432:5432"
     environment:
@@ -10,7 +10,7 @@ services:
       - POSTGRES_DB=postgres
       
   API:
-    image: ${AWS::AccountId}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/app-api
+    image: 657728996878.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/app-api
     build: ./
     ports:
       - "8080:8080"
