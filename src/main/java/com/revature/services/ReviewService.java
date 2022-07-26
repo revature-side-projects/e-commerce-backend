@@ -1,15 +1,16 @@
 package com.revature.services;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.ResourceAccessException;
 
 import com.revature.dtos.ReviewRequest;
+import com.revature.exceptions.DuplicateReviewException;
+import com.revature.exceptions.ProductNotFoundException;
+import com.revature.exceptions.ReviewNotFoundException;
+import com.revature.exceptions.UnauthorizedReviewAccessException;
+import com.revature.exceptions.UserNotFoundException;
 import com.revature.models.Product;
 import com.revature.models.Review;
 import com.revature.models.User;
@@ -47,11 +48,11 @@ public class ReviewService {
 						.filter(r -> r.getUser().getId() == user.getId())
 						.findFirst();
 			if(optionalReview.isPresent()) {
-				throw new HttpClientErrorException(HttpStatus.CONFLICT);
+				throw new DuplicateReviewException("You have already written a review for this product.");
 			}
 			return reviewRepository.save(review);
 		} else {
-			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+			throw new ProductNotFoundException(String.format("No product found with ID %d", reviewRequest.getProductId()));
 		}
     }
     
@@ -62,7 +63,7 @@ public class ReviewService {
     public List<Review> findByProductId(int productId) {
     	Optional<Product> optionalProduct = this.productService.findById(productId);
     	if(!optionalProduct.isPresent()) {
-    		throw new ResourceAccessException("No product found with ID " + productId);
+    		throw new ProductNotFoundException(String.format("No product found with ID %d", productId));
     	}
     	return reviewRepository.findByProduct(optionalProduct.get());
     }
@@ -70,13 +71,17 @@ public class ReviewService {
     public List<Review> findByUserId(int userId) {
     	Optional<User> optionalUser = this.userService.findById(userId);
     	if(!optionalUser.isPresent()) {
-    		throw new ResourceAccessException("No user found with ID " + userId);
+    		throw new UserNotFoundException("No user found with ID " + userId);
     	}
     	return reviewRepository.findByUser(optionalUser.get());
     }
     
-    public Optional<Review> findById(int id) {
-        return reviewRepository.findById(id);
+    public Review findById(int id) {
+    	Optional<Review> optionalReview = reviewRepository.findById(id);
+    	if(!optionalReview.isPresent()) {
+    		throw new ReviewNotFoundException("No review found with ID " + id);
+    	}
+        return optionalReview.get();
     }
     
     public Review save(Review review) {
@@ -93,10 +98,10 @@ public class ReviewService {
         		review.setReview(reviewRequest.getReview());
         		return reviewRepository.save(review);
         	} else {
-        		throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED);
+        		throw new UnauthorizedReviewAccessException("You are not authorized to modify this review.");
         	}
     	} else {
-    		throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+    		throw new ReviewNotFoundException("No review found with ID " + id);
     	}
     }
     
@@ -108,10 +113,10 @@ public class ReviewService {
 				reviewRepository.deleteById(id);
 				return r;
 			} else {
-				throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED); // User does not own this review
+				throw new UnauthorizedReviewAccessException("You are not authorized to delete this review."); // User does not own this review
 			}
 		} else {
-			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+			throw new ReviewNotFoundException("No review found with ID " + id);
 		}
     }
 }
