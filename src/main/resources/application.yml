@@ -7,7 +7,4 @@ spring:
   application:
     name: skyview
   profiles:
-
-    default: test
-
-
+    default: local
