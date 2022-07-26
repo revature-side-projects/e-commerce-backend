@@ -7,7 +7,7 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR . . .
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin 657728996878.ecr.$AWS_DEFAULT_REGION.amazonaws.com 
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin 657728996878.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com 
   build:
     commands:
       - java -version
