@@ -1,16 +1,19 @@
 package com.revature.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Entity
 @NoArgsConstructor
 @RequiredArgsConstructor
@@ -29,13 +32,14 @@ public class Purchase {
     private Timestamp orderPlaced;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "product_id")
     @NotNull
     private Product product;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "user_id")
     @NotNull
     private User ownerUser;
-
 }

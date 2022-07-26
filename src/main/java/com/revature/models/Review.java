@@ -1,20 +1,26 @@
 package com.revature.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.stereotype.Component;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import java.sql.Timestamp;
 
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 @Table(name = "reviews")
 public class Review {
     @Id
@@ -24,8 +30,9 @@ public class Review {
     private int id;
 
     @NotNull
-    // min and max
-    private int stars;
+    @Min(value = 0)
+	@Max(value = 5)
+	private int stars;
 
     @NotNull
     private String title;
@@ -42,11 +49,22 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "product_id")
     @NotNull
+    @JsonManagedReference
     private Product product;
+    
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     @NotNull
+    @JsonManagedReference
     private User user;
+    public Review(@NotBlank int stars, @Length(max = 100) String title, @Length(max = 400) String review, User user, Product product) {
+		super();
+		this.stars = stars;
+		this.title = title;
+		this.review = review;
+		this.user = user;
+		this.product = product;
+	}
 
 }
