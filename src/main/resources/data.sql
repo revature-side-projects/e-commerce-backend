@@ -91,6 +91,7 @@ VALUES (
            1,
            1
        );
+
 INSERT INTO reviews (review_id, review, stars, title, product_id, user_id)
 VALUES (
            2,
@@ -109,4 +110,4 @@ VALUES (
            2,
            2
        );
-    
+
