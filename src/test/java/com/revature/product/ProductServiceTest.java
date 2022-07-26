@@ -5,10 +5,12 @@ import com.revature.dtos.ProductInfo;
 import com.revature.dtos.ProductRequest;
 import com.revature.exceptions.UnprocessableEntityException;
 import com.revature.models.Category;
+import com.revature.models.Product;
 import com.revature.repositories.CategoryRepository;
 import com.revature.repositories.ProductRepository;
 import com.revature.services.ProductService;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,18 +18,40 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+
+
 @Transactional
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = ECommerceApplication.class)
 public class ProductServiceTest {
 
+    @Autowired
     private final ProductService productService;
+
+    @Autowired
     private final CategoryRepository categoryRepo;
+
+    private ProductService sut; // SUT: System Under Test
+    private ProductRepository mockProductRepository = mock(ProductRepository.class);
+
+    private final CategoryRepository mockCategoryRepository = mock(CategoryRepository.class);
 
     @Autowired
     ProductServiceTest(ProductRepository productRepo, CategoryRepository categoryRepo) {
         this.productService = new ProductService(productRepo, categoryRepo);
         this.categoryRepo = categoryRepo;
+    }
+
+    @BeforeEach
+    public void setup() {
+        reset(mockProductRepository);
+        sut = new ProductService(mockProductRepository, mockCategoryRepository);
     }
 
     @Test
@@ -66,7 +90,7 @@ public class ProductServiceTest {
                 1
         );
 
-        UnprocessableEntityException thrown = Assertions.assertThrows(UnprocessableEntityException.class, ()-> {
+        UnprocessableEntityException thrown = Assertions.assertThrows(UnprocessableEntityException.class, () -> {
             productService.updateProduct(requestProduct);
         });
 
@@ -86,7 +110,7 @@ public class ProductServiceTest {
                 1
         );
 
-        UnprocessableEntityException thrown = Assertions.assertThrows(UnprocessableEntityException.class, ()-> {
+        UnprocessableEntityException thrown = Assertions.assertThrows(UnprocessableEntityException.class, () -> {
             productService.updateProduct(requestProduct);
         });
 
@@ -106,7 +130,7 @@ public class ProductServiceTest {
                 1
         );
 
-        UnprocessableEntityException thrown = Assertions.assertThrows(UnprocessableEntityException.class, ()-> {
+        UnprocessableEntityException thrown = Assertions.assertThrows(UnprocessableEntityException.class, () -> {
             productService.updateProduct(requestProduct);
         });
 
@@ -126,7 +150,7 @@ public class ProductServiceTest {
                 1
         );
 
-        UnprocessableEntityException thrown = Assertions.assertThrows(UnprocessableEntityException.class, ()-> {
+        UnprocessableEntityException thrown = Assertions.assertThrows(UnprocessableEntityException.class, () -> {
             productService.updateProduct(requestProduct);
         });
 
@@ -146,7 +170,7 @@ public class ProductServiceTest {
                 -1
         );
 
-        UnprocessableEntityException thrown = Assertions.assertThrows(UnprocessableEntityException.class, ()-> {
+        UnprocessableEntityException thrown = Assertions.assertThrows(UnprocessableEntityException.class, () -> {
             productService.updateProduct(requestProduct);
         });
 
@@ -154,5 +178,27 @@ public class ProductServiceTest {
 
     }
 
+    @Test
+    void test_findAll_returnsListOfProduct_providedRepositoryReturnsProducts() {
+
+        //  Given:  requested
+        Category category = new Category("Sun");
+        List<Product> mockProducts = Arrays.asList(
+                new Product(category, "name 1", "description-1", 10.00, "image-1", "image-11"),
+                new Product(category, "name 2", "description-2", 20.00, "image-2", "image-22"),
+                new Product(category, "name 3", "description-3", 30.00, "image-3", "image-33"),
+                new Product(category, "name 4", "description-4", 40.00, "image-4", "image-44"),
+                new Product(category, "name 5", "description-5", 50.00, "image-5", "image-55"),
+                new Product(category, "name 6", "description-6", 60.00, "image-6", "image-66")
+        );
+
+        when(mockProductRepository.findAll()).thenReturn(mockProducts); //  here we invoke the findAll method for testing.
+
+        //  When:   response is actual or true
+        List<ProductInfo> actual = sut.findAll();
+
+        //  Then: verify
+        assertEquals(mockProducts.size(), actual.size());
+    }
 
 }

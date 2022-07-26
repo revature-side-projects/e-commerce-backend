@@ -16,7 +16,6 @@ class UserRepositoryTest {
 
     @Autowired
     UserRepository underTest;
-
     @Autowired
     UserRoleRepository roleRepo;
 
@@ -24,8 +23,6 @@ class UserRepositoryTest {
     void checkIfFoundByEmailIgnoreCaseAndPassword() {
 
         // given
-//        String email = "rdub@revature.com";
-//        String password = "RDub123";
         UserRole role = roleRepo.save(new UserRole("Test"));
         User expected = new User(
                 "Reyna",
@@ -45,6 +42,9 @@ class UserRepositoryTest {
         // then
         assertThat(actual).isEqualTo(expected);
     }
+
+
+    
     @Test
     void checkIfFoundById() {
 

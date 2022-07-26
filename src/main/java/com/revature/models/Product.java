@@ -87,6 +87,7 @@ public class Product {
         this.category = createProductRequest.getCategory();
     }
 
+
     // getters
     public Integer getProductId() { return productId; }
     public String getName() { return name; }
