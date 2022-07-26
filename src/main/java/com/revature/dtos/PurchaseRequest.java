@@ -11,9 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PurchaseRequest {
 	
-	private int productId;
-	
-	private int userId;
+	private int id;
 	
 	private int quantity;
 	
