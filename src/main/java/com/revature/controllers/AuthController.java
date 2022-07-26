@@ -1,55 +1,89 @@
 package com.revature.controllers;
 
-import com.revature.dtos.LoginRequest;
-import com.revature.dtos.RegisterRequest;
-import com.revature.models.User;
+import com.revature.dtos.*;
 import com.revature.services.AuthService;
+import com.revature.services.jwt.TokenService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
-import java.util.Optional;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:3000"}, allowCredentials = "true")
 public class AuthController {
 
     private final AuthService authService;
+    private final TokenService tokenService;
+    private static final String AUTHORIZATION = "Authorization";
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, TokenService tokenService) {
         this.authService = authService;
+        this.tokenService = tokenService;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
-        Optional<User> optional = authService.findByCredentials(loginRequest.getEmail(), loginRequest.getPassword());
-
-        if(!optional.isPresent()) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        session.setAttribute("user", optional.get());
-
-        return ResponseEntity.ok(optional.get());
+    @ResponseStatus(HttpStatus.OK) // if successful, sets status of response
+    @PostMapping(
+            path = "/login",
+            consumes = "application/json",
+            produces = "application/json"
+    )
+    // @RequestBody @Valid did not work in service layer.
+    public AuthResponse login(
+            @RequestBody @Valid LoginRequest loginRequest,
+            HttpServletResponse resp
+    )
+    {
+        AuthResponse authResp = authService.login(loginRequest);
+        Principal payload = new Principal( // construct principle from authresp
+                authResp.getId(),
+                authResp.getEmail()
+        );
+        String token = tokenService.generateToken(payload);
+        resp.setHeader(AUTHORIZATION, token);
+        return authResp;
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpSession session) {
-        session.removeAttribute("user");
-
-        return ResponseEntity.ok().build();
+    @ResponseStatus(HttpStatus.CREATED) // if successful, sets status of response
+    @PostMapping(
+            path = "/register",
+            consumes = "application/json",
+            produces = "application/json"
+    )
+    public AuthResponse register(
+            @RequestBody @Valid RegisterRequest registerRequest,
+            HttpServletResponse resp
+    )
+    {
+        AuthResponse authResp = authService.register(registerRequest);
+        Principal payload = new Principal( // construct principle from authresp
+                authResp.getId(),
+                authResp.getEmail()
+        );
+        String token = tokenService.generateToken(payload);
+        resp.setHeader(AUTHORIZATION, token);
+        return authResp;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody RegisterRequest registerRequest) {
-        User created = new User(0,
-                registerRequest.getEmail(),
-                registerRequest.getPassword(),
-                registerRequest.getFirstName(),
-                registerRequest.getLastName());
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(created));
+    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping(
+            path = "/reset",
+            consumes = "application/json",
+            produces = "application/json"
+    )
+    public AuthResponse resetPassword(
+            @RequestBody @Valid ResetRequest resetRequest,
+            @RequestHeader(name = AUTHORIZATION) String tokenProvided,
+            HttpServletResponse resp
+    )
+    {
+        AuthResponse authResp = authService.updateUser(tokenProvided, resetRequest);
+        Principal payload = new Principal( // construct principle from authresp
+                authResp.getId(),
+                authResp.getEmail()
+        );
+        String tokenResponse = tokenService.generateToken(payload);
+        resp.setHeader(AUTHORIZATION, tokenResponse);
+        return authResp;
     }
 }
