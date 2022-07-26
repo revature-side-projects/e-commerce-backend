@@ -39,6 +39,7 @@ public class PurchaseService {
 		Purchase purchase = new Purchase();
 		purchase.setProduct(optionalProduct.get());
 		purchase.setOwnerUser(user);
+		purchase.setQuantity(purchaseRequest.getQuantity());
 		return purchaseRepo.save(purchase);
 	}
 
