@@ -37,7 +37,6 @@ INSERT INTO products (product_id, quantity, price, description, image, name) VAL
     'A nice coat',
     'https://www.pngarts.com/files/3/Women-Jacket-PNG-High-Quality-Image.png',
     'Coat'
- )
 );
 
 INSERT INTO users (user_id, email, password, first_name, last_name, role)
