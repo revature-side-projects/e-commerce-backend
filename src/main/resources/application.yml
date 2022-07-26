@@ -24,6 +24,7 @@ cloud:
       static: us-east-1
     stack:
       auto: false
+    endpoint: https://revazon-image-bucket.s3.amazonaws.com
       
 application:
   bucket:

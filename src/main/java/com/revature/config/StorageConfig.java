@@ -19,6 +19,8 @@ public class StorageConfig {
 	private String secretKey;
 	@Value("${cloud.aws.region.static}")
 	private String region;
+	@Value("{coud.aws.endpoint}")
+	private String endpoint;
 	
 	@Bean
 	public AmazonS3 generateS3client(){

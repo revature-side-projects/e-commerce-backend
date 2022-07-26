@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.revature.annotations.Authorized;
 import com.revature.annotations.AuthorizedAdmin;
@@ -28,9 +30,11 @@ import com.revature.services.StorageService;
 public class ProductController {
 
     private final ProductService productService;
+    private final StorageService s3Srv;
 
     public ProductController(ProductService productService, StorageService storageService) {
         this.productService = productService;
+        this.s3Srv = storageService;
     }
 
     @Authorized
@@ -60,10 +64,15 @@ public class ProductController {
     		updatePd.setDescription(product.getDescription());
     		updatePd.setImage(product.getImage());
     		productService.save(updatePd);
-    		
-    	}
-    	
+    	}    	
         return ResponseEntity.ok(productService.save(product));
+    }
+    
+    @Authorized
+    @AuthorizedAdmin
+    @PutMapping("/uploadFile")
+    public ResponseEntity<String> uploadImage(@RequestPart (value = "data") MultipartFile file){
+    	return this.s3Srv.uploadFile(file);
     }
     
     @Authorized

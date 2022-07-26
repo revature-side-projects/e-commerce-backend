@@ -27,7 +27,7 @@ INSERT INTO products (product_id, quantity, price, description, image, name) VAL
     20,
     10.00,
     'A fancy cap for a fancy person',
-    ''https://revazon-image-bucket.s3.amazonaws.com/cap.png',
+    'https://revazon-image-bucket.s3.amazonaws.com/cap.png',
     'Baseball Cap'
 ),
 (
