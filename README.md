@@ -8,6 +8,7 @@ Technologies used:
   - MySQL
   - Lombok
   - Java 8
+  - JUnit 
   
  How to run this application: 
  
