@@ -70,14 +70,8 @@ public class ReviewController {
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Review> getReviewById(@PathVariable("id") int id) {
-		Optional<Review> optR = reviewService.findById(id);
-		if(optR.isPresent()) {
-			return ResponseEntity.ok(optR.get());
-		} else {
-			return ResponseEntity
-					.status(HttpStatus.NOT_FOUND)
-					.body(null);
-		}
+		Review review = reviewService.findById(id);
+		return ResponseEntity.ok(review);
 	}
 	
 	/**
