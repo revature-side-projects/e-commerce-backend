@@ -4,7 +4,8 @@ phases:
   build:
     commands:
       - java -version
-      - mvn clean package -Djacoco.skip=true
+      - mvn clean -Dmaven.test.skip=true package
+      - docker-compose up -d 
 artifacts:
   files:
     - 'Dockerfile'
