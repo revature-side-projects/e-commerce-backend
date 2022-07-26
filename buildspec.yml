@@ -9,10 +9,11 @@ phases:
       - java -version
       - mvn clean -Dmaven.test.skip=true package
       - docker-compose --file=docker-compose-prod.yml build
-  post_build: 
-    - echo Build completed on `date`
-    - echo Pushing the Docker image... 
-    - docker-compose --file=docker-compose-prod.yml push
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image... 
+      - docker-compose --file=docker-compose-prod.yml push
     
 artifacts:
   files:
