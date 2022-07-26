@@ -1,6 +1,7 @@
 package com.revature.controllers;
 
 import com.revature.annotations.Authorized;
+import com.revature.dtos.PriceRangeRequest;
 import com.revature.dtos.ProductInfo;
 import com.revature.models.Product;
 import com.revature.services.ProductService;
@@ -37,7 +38,7 @@ public class ProductController {
     }
 
     @Authorized
-    @PutMapping
+    @PutMapping("/create-update")
     public ResponseEntity<Product> upsert(@RequestBody Product product) {
         return ResponseEntity.ok(productService.save(product));
     }
@@ -81,4 +82,26 @@ public class ProductController {
 
         return ResponseEntity.ok(optional.get());
     }
+    @Authorized
+    @GetMapping("/partial-search/{name}")
+    public ResponseEntity<List<Product>> getProductsByNameContains(@PathVariable("name") String name) {
+    	
+        return ResponseEntity.ok(productService.findByNameContains(name));
+    }
+    @Authorized
+    @GetMapping("/price-range")
+    public ResponseEntity<List<Product>> getProductsByPriceRange(@RequestBody PriceRangeRequest priceRangeRequest) {
+    	
+        return ResponseEntity.ok(productService.findByPriceRange(priceRangeRequest.getMinPrice(),priceRangeRequest.getMaxPrice()));
+    }
+//    @Authorized
+//    @GetMapping("/price-range")
+//    public ResponseEntity<List<Product>> getProductsByPriceRange(@RequestParam("minPrice") double minPrice,@RequestParam("maxPrice") double maxPrice ) {
+//    	
+//        return ResponseEntity.ok(productService.findByPriceRange(minPrice,maxPrice));
+//    }
+ 
+    
+
+    
 }

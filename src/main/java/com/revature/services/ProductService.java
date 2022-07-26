@@ -36,4 +36,15 @@ public class ProductService {
     public void delete(int id) {
         productRepository.deleteById(id);
     }
+    
+    public List<Product> findByNameContains(String name){
+    	return productRepository.findByNameContains(name);
+    }
+    
+    public List<Product> findByPriceRange(double minPrice, double maxPrice){
+    	return productRepository.findByPriceRange(minPrice,maxPrice);
+    }
+
+
+    
 }
