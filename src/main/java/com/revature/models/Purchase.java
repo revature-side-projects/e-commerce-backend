@@ -1,5 +1,7 @@
 package com.revature.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sun.istack.NotNull;
 import lombok.*;
 import org.hibernate.Hibernate;
@@ -30,11 +32,13 @@ public class Purchase {
     private Timestamp orderPlaced;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "product_id")
     @NotNull
     private Product product;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "user_id")
     @NotNull
     private User ownerUser;
