@@ -44,7 +44,9 @@ public class ProductService {
     public List<Product> findByPriceRange(double minPrice, double maxPrice){
     	return productRepository.findByPriceRange(minPrice,maxPrice);
     }
-
-
+    
+    public List<Product> filterByRating(){
+    	return productRepository.filterByRating();
+    }
     
 }
