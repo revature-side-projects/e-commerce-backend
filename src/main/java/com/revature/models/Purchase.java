@@ -42,4 +42,7 @@ public class Purchase {
     @JoinColumn(name = "user_id")
     @NotNull
     private User ownerUser;
+    
+    @Column(name = "quantity")
+    private int quantity;
 }
