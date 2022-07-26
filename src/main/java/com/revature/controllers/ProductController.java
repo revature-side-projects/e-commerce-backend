@@ -100,7 +100,12 @@ public class ProductController {
 //    	
 //        return ResponseEntity.ok(productService.findByPriceRange(minPrice,maxPrice));
 //    }
- 
+    @Authorized
+    @GetMapping("/filter-rating")
+    public ResponseEntity<List<Product>> filterByRating() {
+    	
+        return ResponseEntity.ok(productService.filterByRating());
+    }
     
 
     
