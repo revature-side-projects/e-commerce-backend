@@ -142,23 +142,4 @@ public class ProductService {
         }
     }
 
-
-    /**
-     * This method is used to persist a new product to the database
-     * @param createProductRequest takes a CreateProductRequest DTO
-     * @return a new CreationResponse DTO
-     */
-    public CreationResponse save(CreateProductRequest createProductRequest) {
-        Product product = new Product(createProductRequest);
-        product = productRepo.save(product);
-        return new CreationResponse(product.getProductId());
-    }
-    
-    public void saveAll(List<Product> productList, List<ProductInfo> metadata) {
-        throw new NotImplementedException();
-    }
-
-    public void delete(int id) {
-        throw new NotImplementedException();
-    }
 }
