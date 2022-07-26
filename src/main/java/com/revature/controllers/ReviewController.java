@@ -47,25 +47,13 @@ public class ReviewController {
 	// Get all reviews about a given product
 	@GetMapping("/product/{productId}")
 	public ResponseEntity<List<Review>> getReviewsOfProduct(@PathVariable("productId") int productId) {
-		try {
-			return ResponseEntity.ok(reviewService.findByProductId(productId));
-		} catch(ResourceAccessException e) {
-			return ResponseEntity
-					.status(HttpStatus.NOT_FOUND)
-					.body(null);
-		}
+		return ResponseEntity.ok(reviewService.findByProductId(productId));
 	}
 	
 	// Get all reviews written by a given user
 	@GetMapping("/user/{userId}")
 	public ResponseEntity<List<Review>> getReviewsByUser(@PathVariable("userId") int userId) {
-		try {
-			return ResponseEntity.ok(reviewService.findByUserId(userId));
-		} catch(ResourceAccessException e) {
-			return ResponseEntity
-					.status(HttpStatus.NOT_FOUND)
-					.body(null);
-		}
+		return ResponseEntity.ok(reviewService.findByUserId(userId));
 	}
 	
 	@GetMapping("/{id}")
@@ -85,13 +73,7 @@ public class ReviewController {
 	public ResponseEntity<Review> addReview(@RequestBody ReviewRequest reviewRequest, HttpSession session) {
 		User u = (User) session.getAttribute("user"); // May need to try catch - but this shouldn't execute if 
 													  // "user" session attribute is null anyway
-		try {
-			return ResponseEntity.ok(reviewService.add(reviewRequest, u));
-		} catch(HttpClientErrorException e) {
-			return ResponseEntity
-					.status(e.getStatusCode())
-					.body(null);
-		}
+		return ResponseEntity.ok(reviewService.add(reviewRequest, u));
 	}
 	
 	/**
@@ -105,13 +87,7 @@ public class ReviewController {
 	@PutMapping("/{id}")
 	public ResponseEntity<Review> updateReview(@RequestBody ReviewRequest reviewRequest, @PathVariable("id") int id, HttpSession session) {
 		int userId = ((User) session.getAttribute("user")).getId();
-		try {
-		 	return ResponseEntity.ok(reviewService.update(reviewRequest, id, userId));
-		} catch(HttpClientErrorException e) {
-			return ResponseEntity
-					.status(e.getStatusCode())
-					.body(null);
-		}
+	 	return ResponseEntity.ok(reviewService.update(reviewRequest, id, userId));
 	}
 	
 	/**
@@ -124,12 +100,6 @@ public class ReviewController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Review> deleteReview(@PathVariable("id") int id, HttpSession session) {
 		int userId = ((User) session.getAttribute("user")).getId();
-		try {
-			return ResponseEntity.ok(reviewService.delete(id, userId));
-		} catch(HttpClientErrorException e) {
-			return ResponseEntity
-					.status(e.getStatusCode())
-					.body(null);
-		}
+		return ResponseEntity.ok(reviewService.delete(id, userId));
 	}
 }
