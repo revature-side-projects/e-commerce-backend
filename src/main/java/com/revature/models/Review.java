@@ -20,6 +20,7 @@ import java.sql.Timestamp;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 @Table(name = "reviews")
 public class Review {
     @Id
@@ -65,9 +66,4 @@ public class Review {
 		this.user = user;
 		this.product = product;
 	}
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }
