@@ -32,7 +32,7 @@ public class LoggingAdvice {
 			log.info(String.format("method invoked %1$s : %2$s () : arguments : %3$s", className, methodName, mapper.writeValueAsString(methodArgs)));
 			o = pjp.proceed();
 		} catch (Throwable e) {
-			e.printStackTrace();
+			log.error("logger unable to parse methodArgs");
 		}
 		
 		return o;

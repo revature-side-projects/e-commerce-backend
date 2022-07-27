@@ -20,7 +20,7 @@ public class UserService {
     	Optional<User> optionalUser = userRepository.findByEmailAndPassword(email, password);
     	
     	if(!optionalUser.isPresent()) {
-    		throw new UserNotFoundException(String.format("No user found with email %d", email));
+    		throw new UserNotFoundException(String.format("No user found with email %s", email));
     	}
     		
         return optionalUser;
