@@ -2,6 +2,8 @@ package com.revature.controllers;
 
 import java.util.Optional;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.annotations.Authorized;
+import com.revature.dtos.UserRequest;
 import com.revature.models.User;
+import com.revature.services.AddressService;
 import com.revature.services.UserService;
 
 @RestController
@@ -26,7 +30,7 @@ public class UserController {
 		this.userv = userv;
 	}
 	
-	@Authorized
+//	@Authorized
 	@GetMapping("/{userId}")
 	public ResponseEntity<User> getUserById(@PathVariable("userId") int userId) {
 	
@@ -37,7 +41,16 @@ public class UserController {
 	
 	@Authorized
 	@PutMapping
-	public ResponseEntity<User> update(@RequestBody User user) {
-		return ResponseEntity.ok(userv.save(user));
+	public ResponseEntity<User> update(@RequestBody UserRequest user, HttpSession session) {
+		
+		User curUser = (User) session.getAttribute("user");
+
+		curUser.setEmail(user.getEmail());
+		curUser.setPassword(user.getPassword());
+		curUser.setFirstName(user.getFirstName());
+		curUser.setLastName(user.getLastName());
+		curUser.setAddresses(user.getAddresses());
+		
+		return ResponseEntity.ok(userv.save(curUser));
 	}
 }
