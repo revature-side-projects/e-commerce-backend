@@ -94,11 +94,6 @@ public class ProductController {
 				
 				
 				return ResponseEntity.ok(productService.save(updatePd));
-		
-
-				
-			
-    		
     	}
     	Product newPd;
 		try {
