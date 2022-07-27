@@ -8,9 +8,9 @@ spring:
     defer-datasource-initialization: true
   datasource:
     platform: postgres
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: ${SPRING_DATASOURCE_URL}
     driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: postgres
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
   h2:
     console.enabled: true
