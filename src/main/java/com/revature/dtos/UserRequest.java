@@ -22,4 +22,5 @@ public class UserRequest {
 	private String role;
 //	private Set<Purchase> purchases;
 //	private Set<Review> reviews;
+	private Set<Address> addresses;
 }

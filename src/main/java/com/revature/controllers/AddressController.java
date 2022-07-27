@@ -51,7 +51,9 @@ public class AddressController {
 	@PutMapping
 	public ResponseEntity<Address> updateAddress(@RequestBody AddressRequest addressRequest, HttpSession session) {
 		
-		return ResponseEntity.ok(aserv.update(addressRequest));
+		User u = (User) session.getAttribute("user");
+		
+		return ResponseEntity.ok(aserv.update(addressRequest, u));
 	}
 	
 	

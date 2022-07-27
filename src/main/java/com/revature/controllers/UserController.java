@@ -43,14 +43,13 @@ public class UserController {
 	@PutMapping
 	public ResponseEntity<User> update(@RequestBody UserRequest user, HttpSession session) {
 		
-		System.out.println("Updating user");
-		
 		User curUser = (User) session.getAttribute("user");
 
 		curUser.setEmail(user.getEmail());
 		curUser.setPassword(user.getPassword());
 		curUser.setFirstName(user.getFirstName());
 		curUser.setLastName(user.getLastName());
+		curUser.setAddresses(user.getAddresses());
 		
 		return ResponseEntity.ok(userv.save(curUser));
 	}
