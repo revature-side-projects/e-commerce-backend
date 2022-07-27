@@ -34,11 +34,12 @@ public class PurchaseService {
 	}
 	
 	public Purchase add(PurchaseRequest purchaseRequest, User user) {
-		Optional<Product> optionalProduct = pserv.findById(purchaseRequest.getProductId());
+		Optional<Product> optionalProduct = pserv.findById(purchaseRequest.getId());
 		
 		Purchase purchase = new Purchase();
 		purchase.setProduct(optionalProduct.get());
 		purchase.setOwnerUser(user);
+		purchase.setQuantity(purchaseRequest.getQuantity());
 		return purchaseRepo.save(purchase);
 	}
 
