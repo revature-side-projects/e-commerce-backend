@@ -3,8 +3,6 @@ package com.revature.services;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.revature.dtos.ReviewRequest;
@@ -20,8 +18,6 @@ import com.revature.repositories.ReviewRepository;
 
 @Service
 public class ReviewService {
-	
-	Logger logger = LoggerFactory.getLogger(ReviewService.class);
 	
 	private final ReviewRepository reviewRepository;
 	private final ProductService productService;
@@ -56,11 +52,9 @@ public class ReviewService {
 			}
 			review = reviewRepository.save(review);
 		
-			logger.info(String.format("Review with ID: %d successfully submitted", review.getId()));
 			return review;
 		} else {
-			logger.warn(String.format("No product found with ID %d", reviewRequest.getProductId()));
-			throw new ProductNotFoundException(reviewRequest.getProductId());
+			throw new ProductNotFoundException(String.format("No product found with ID %d", reviewRequest.getProductId()));
 		}
     }
     
@@ -71,32 +65,26 @@ public class ReviewService {
     public List<Review> findByProductId(int productId) {
     	Optional<Product> optionalProduct = this.productService.findById(productId);
     	if(!optionalProduct.isPresent()) {
-    		logger.warn(String.format("No product found with ID %d", productId));
-    		throw new ProductNotFoundException(productId);
+    		throw new ProductNotFoundException(String.format("No product found with ID %d", productId));
     	}
     	
-    	logger.info(String.format("Product with ID: %d successfully found", optionalProduct.get().getId()));
     	return reviewRepository.findByProduct(optionalProduct.get());
     }
     
     public List<Review> findByUserId(int userId) {
     	Optional<User> optionalUser = this.userService.findById(userId);
     	if(!optionalUser.isPresent()) {
-    		logger.warn(String.format("No user found with ID %d", userId));
-    		throw new UserNotFoundException(userId);
+    		throw new UserNotFoundException(String.format("No user found with ID %d", userId));
     	}
     	
-    	logger.info(String.format("User with ID: %d successfully found", optionalUser.get().getId()));
     	return reviewRepository.findByUser(optionalUser.get());
     }
     
     public Review findById(int id) {
     	Optional<Review> optionalReview = reviewRepository.findById(id);
     	if(!optionalReview.isPresent()) {
-    		logger.warn(String.format("No review found with ID %d", id));
-    		throw new ReviewNotFoundException(id);
+    		throw new ReviewNotFoundException(String.format("No review found with ID %d", id));
     	}
-    	logger.info(String.format("Review with ID: %d successfully found", optionalReview.get().getId()));
         return optionalReview.get();
     }
     
@@ -112,15 +100,12 @@ public class ReviewService {
         		review.setStars(reviewRequest.getStars());
         		review.setTitle(reviewRequest.getTitle());
         		review.setReview(reviewRequest.getReview());
-        		logger.info(String.format("Review with ID: %d successfully updated", optionalReview.get().getId()));
         		return reviewRepository.save(review);
         	} else {
-        		logger.warn("You are not authorized to modify this review.");
         		throw new UnauthorizedReviewAccessException("You are not authorized to modify this review.");
         	}
     	} else {
-    		logger.warn(String.format("No review found with ID %d", id));
-    		throw new ReviewNotFoundException(id);
+    		throw new ReviewNotFoundException(String.format("No review found with ID %d", id));
     	}
     }
     
@@ -130,15 +115,12 @@ public class ReviewService {
 			Review r = optionalReview.get();
 			if(r.getUser().getId() == userId) {
 				reviewRepository.deleteById(id);
-				logger.info("Review with ID: %d successfully deleted", optionalReview.get().getId());
 				return r;
 			} else {
-				logger.warn("You are not authorized to delete this review.");
 				throw new UnauthorizedReviewAccessException("You are not authorized to delete this review."); // User does not own this review
 			}
 		} else {
-			logger.warn(String.format("No review found with ID %d", id));
-			throw new ReviewNotFoundException(id);
+			throw new ReviewNotFoundException(String.format("No review found with ID %d", id));
 		}
     }
 }

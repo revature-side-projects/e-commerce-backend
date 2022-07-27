@@ -1,5 +1,6 @@
 package com.revature.services;
 
+import com.revature.exceptions.UserNotFoundException;
 import com.revature.models.User;
 import com.revature.repositories.UserRepository;
 import org.springframework.stereotype.Service;
@@ -16,11 +17,23 @@ public class UserService {
     }
 
     public Optional<User> findByCredentials(String email, String password) {
-        return userRepository.findByEmailAndPassword(email, password);
+    	Optional<User> optionalUser = userRepository.findByEmailAndPassword(email, password);
+    	
+    	if(!optionalUser.isPresent()) {
+    		throw new UserNotFoundException(String.format("No user found with email %s", email));
+    	}
+    		
+        return optionalUser;
     }
     
     public Optional<User> findById(int id) {
-    	return userRepository.findById(id);
+    	Optional<User> optionalUser = userRepository.findById(id);
+    	
+    	if(!optionalUser.isPresent()) {
+    		throw new UserNotFoundException(String.format("No user found with ID %d", id));
+    	}
+    	
+    	return optionalUser;
     }
 
     public User save(User user) {
