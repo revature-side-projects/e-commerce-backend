@@ -1,14 +1,14 @@
 package com.revature.services;
 
-import com.revature.models.User;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
-import java.net.URI;
-import java.util.Optional;
+import com.revature.models.User;
 
 @Service
 public class AuthService {
-
+	
     private final UserService userService;
 
     public AuthService(UserService userService) {
