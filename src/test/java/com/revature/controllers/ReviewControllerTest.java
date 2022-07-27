@@ -63,6 +63,7 @@ class ReviewControllerTest {
 	@InjectMocks
 	private ReviewController controller;
 
+	private final String MAPPING_ROOT = "/api/review";
 	private Review dummyReview;
 	private User dummyUser;
 	private Product dummyProduct;
@@ -91,8 +92,8 @@ class ReviewControllerTest {
 
 		given(this.rServ.findAll()).willReturn(reviews);
 
-		MockHttpServletResponse response = this.mvc.perform(get("/api/review").accept(MediaType.APPLICATION_JSON))
-				.andReturn().getResponse();
+		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT).accept(MediaType.APPLICATION_JSON);
+		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		assertEquals(this.jsonReviewList.write(reviews).getJson(), response.getContentAsString());
@@ -104,7 +105,8 @@ class ReviewControllerTest {
 		List<Review> expected = new LinkedList<>();
 		given(this.rServ.findAll()).willReturn(expected);
 
-		MockHttpServletResponse response = this.mvc.perform(get("/api/review")).andReturn().getResponse();
+		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT).accept(MediaType.APPLICATION_JSON);
+		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
 		assertEquals(this.jsonReviewList.write(expected).getJson(), response.getContentAsString());
@@ -118,9 +120,9 @@ class ReviewControllerTest {
 		reviews.add(this.dummyReview);
 		given(this.rServ.findByProductId(productId)).willReturn(reviews);
 
-		MockHttpServletResponse response = this.mvc
-				.perform(get("/api/review/product/" + productId).accept(MediaType.APPLICATION_JSON)).andReturn()
-				.getResponse();
+		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/product/" + productId)
+				.accept(MediaType.APPLICATION_JSON);
+		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		assertEquals(this.jsonReviewList.write(reviews).getJson(), response.getContentAsString());
@@ -140,9 +142,9 @@ class ReviewControllerTest {
 		reviews.add(this.dummyReview);
 		given(this.rServ.findByUserId(userId)).willReturn(reviews);
 
-		MockHttpServletResponse response = this.mvc
-				.perform(get("/api/review/user/" + userId).accept(MediaType.APPLICATION_JSON)).andReturn()
-				.getResponse();
+		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/user/" + userId)
+				.accept(MediaType.APPLICATION_JSON);
+		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		assertEquals(this.jsonReviewList.write(reviews).getJson(), response.getContentAsString());
@@ -160,7 +162,8 @@ class ReviewControllerTest {
 		int id = this.dummyReview.getId();
 		given(this.rServ.findById(id)).willReturn(Optional.of(this.dummyReview));
 
-		MockHttpServletResponse response = this.mvc.perform(get("/api/review/" + id)).andReturn().getResponse();
+		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/" + id).accept(MediaType.APPLICATION_JSON);
+		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		assertEquals(this.jsonReview.write(this.dummyReview).getJson(), response.getContentAsString());
@@ -172,7 +175,9 @@ class ReviewControllerTest {
 		int id = this.dummyReview.getId();
 		given(this.rServ.findById(id)).willReturn(Optional.empty());
 
-		MockHttpServletResponse response = this.mvc.perform(get("/api/review/" + id)).andReturn().getResponse();
+		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/" + id).accept(MediaType.APPLICATION_JSON);
+		MockHttpServletResponse response = this.mvc.perform(request).andReturn()
+				.getResponse();
 
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 		verify(this.rServ, times(1)).findById(id);
@@ -185,7 +190,7 @@ class ReviewControllerTest {
 		given(this.rServ.add(newReview, this.dummyUser)).willReturn(this.dummyReview);
 
 		String jsonContent = this.jsonReviewRequest.write(newReview).getJson();
-		MockHttpServletRequestBuilder request = post("/api/review").contentType(MediaType.APPLICATION_JSON)
+		MockHttpServletRequestBuilder request = post(this.MAPPING_ROOT).contentType(MediaType.APPLICATION_JSON)
 				.content(jsonContent).sessionAttr("user", this.dummyUser);
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
@@ -219,8 +224,8 @@ class ReviewControllerTest {
 		given(this.rServ.update(updatedReview, reviewId, authorId)).willReturn(this.dummyReview);
 
 		String jsonContent = this.jsonReviewRequest.write(updatedReview).getJson();
-		MockHttpServletRequestBuilder request = put("/api/review/" + reviewId).contentType(MediaType.APPLICATION_JSON)
-				.content(jsonContent).sessionAttr("user", this.dummyUser);
+		MockHttpServletRequestBuilder request = put(this.MAPPING_ROOT + "/" + reviewId)
+				.contentType(MediaType.APPLICATION_JSON).content(jsonContent).sessionAttr("user", this.dummyUser);
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -250,7 +255,7 @@ class ReviewControllerTest {
 	void testDeleteReview_Success() throws Exception {
 		int reviewId = this.dummyReview.getId();
 
-		MockHttpServletRequestBuilder request = delete("/api/review/" + reviewId)
+		MockHttpServletRequestBuilder request = delete(this.MAPPING_ROOT + "/" + reviewId)
 				.contentType(MediaType.APPLICATION_JSON).sessionAttr("user", this.dummyUser);
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
