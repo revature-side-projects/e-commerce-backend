@@ -55,4 +55,17 @@ public class ProductService {
     	}
         
     }
+    
+    public List<Product> findByNameContains(String name){
+    	return productRepository.findByNameContains(name);
+    }
+    
+    public List<Product> findByPriceRange(double minPrice, double maxPrice){
+    	return productRepository.findByPriceRange(minPrice,maxPrice);
+    }
+    
+    public List<Product> filterByRating(){
+    	return productRepository.filterByRating();
+    }
+    
 }
