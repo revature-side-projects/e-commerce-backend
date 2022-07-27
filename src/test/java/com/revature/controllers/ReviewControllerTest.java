@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -25,7 +25,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import com.revature.dtos.ReviewRequest;
 import com.revature.models.Product;
 import com.revature.models.Review;
 import com.revature.models.User;
@@ -51,6 +53,9 @@ class ReviewControllerTest {
 
 	@Autowired
 	private JacksonTester<List<Review>> jsonReviewList;
+
+	@Autowired
+	private JacksonTester<ReviewRequest> jsonReviewRequest;
 
 	@MockBean
 	private ReviewService rServ;
@@ -174,9 +179,19 @@ class ReviewControllerTest {
 	}
 
 	@Test
-	@Disabled("Not yet implemented")
 	void testAddReview_Success() throws Exception {
-		fail("Not yet implemented");
+		ReviewRequest newReview = new ReviewRequest(this.dummyProduct.getId(), this.dummyReview.getStars(),
+				this.dummyReview.getTitle(), this.dummyReview.getReview());
+		given(this.rServ.add(newReview, this.dummyUser)).willReturn(this.dummyReview);
+
+		String jsonContent = this.jsonReviewRequest.write(newReview).getJson();
+		MockHttpServletRequestBuilder request = post("/api/review").contentType(MediaType.APPLICATION_JSON)
+				.content(jsonContent).sessionAttr("user", this.dummyUser);
+		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
+
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(this.jsonReview.write(this.dummyReview).getJson(), response.getContentAsString());
+		verify(this.rServ, times(1)).add(newReview, this.dummyUser);
 	}
 
 	@Test
@@ -192,9 +207,25 @@ class ReviewControllerTest {
 	}
 
 	@Test
-	@Disabled("Not yet implemented")
-	void testUpdateReview_Success() {
-		fail("Not yet implemented");
+	void testUpdateReview_Success() throws Exception {
+		int reviewId = this.dummyReview.getId();
+		int authorId = this.dummyUser.getId();
+		ReviewRequest updatedReview = new ReviewRequest(this.dummyProduct.getId(), 5, "Updated review",
+				"This new version of the product made it a lot better");
+		this.dummyReview.setTitle(updatedReview.getTitle());
+		this.dummyReview.setReview(updatedReview.getReview());
+		this.dummyReview.setStars(updatedReview.getStars());
+
+		given(this.rServ.update(updatedReview, reviewId, authorId)).willReturn(this.dummyReview);
+
+		String jsonContent = this.jsonReviewRequest.write(updatedReview).getJson();
+		MockHttpServletRequestBuilder request = put("/api/review/" + reviewId).contentType(MediaType.APPLICATION_JSON)
+				.content(jsonContent).sessionAttr("user", this.dummyUser);
+		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
+
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(this.jsonReview.write(this.dummyReview).getJson(), response.getContentAsString());
+		verify(this.rServ, times(1)).update(updatedReview, reviewId, authorId);
 	}
 
 	@Test
@@ -216,9 +247,15 @@ class ReviewControllerTest {
 	}
 
 	@Test
-	@Disabled("Not yet implemented")
-	void testDeleteReview_Success() {
-		fail("Not yet implemented");
+	void testDeleteReview_Success() throws Exception {
+		int reviewId = this.dummyReview.getId();
+
+		MockHttpServletRequestBuilder request = delete("/api/review/" + reviewId)
+				.contentType(MediaType.APPLICATION_JSON).sessionAttr("user", this.dummyUser);
+		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
+
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		verify(this.rServ, times(1)).delete(reviewId, this.dummyUser.getId());
 	}
 
 	@Test
