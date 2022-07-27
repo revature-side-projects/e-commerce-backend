@@ -37,6 +37,7 @@ public class AuthController {
         return ResponseEntity.ok(optional.get());
     }
 
+
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpSession session) {
         session.removeAttribute("user");
@@ -54,4 +55,7 @@ public class AuthController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(created));
     }
+
+
+
 }
