@@ -50,13 +50,6 @@ VALUES (
            'ADMIN'
        );
 
-INSERT INTO purchases (purchase_id,product_id, user_id)
-VALUES (
-           1,
-           1,
-           1
-       );
-
 INSERT INTO addresses (address_id, street, secondary, city, zip, state)
 VALUES (
            1,
