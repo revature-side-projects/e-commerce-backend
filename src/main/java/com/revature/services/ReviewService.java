@@ -60,7 +60,7 @@ public class ReviewService {
 			return review;
 		} else {
 			logger.warn(String.format("No product found with ID %d", reviewRequest.getProductId()));
-			throw new ProductNotFoundException(String.format("No product found with ID %d", reviewRequest.getProductId()));
+			throw new ProductNotFoundException(reviewRequest.getProductId());
 		}
     }
     
@@ -72,7 +72,7 @@ public class ReviewService {
     	Optional<Product> optionalProduct = this.productService.findById(productId);
     	if(!optionalProduct.isPresent()) {
     		logger.warn(String.format("No product found with ID %d", productId));
-    		throw new ProductNotFoundException(String.format("No product found with ID %d", productId));
+    		throw new ProductNotFoundException(productId);
     	}
     	
     	logger.info(String.format("Product with ID: %d successfully found", optionalProduct.get().getId()));
@@ -83,7 +83,7 @@ public class ReviewService {
     	Optional<User> optionalUser = this.userService.findById(userId);
     	if(!optionalUser.isPresent()) {
     		logger.warn(String.format("No user found with ID %d", userId));
-    		throw new UserNotFoundException(String.format("No user found with ID %d", userId));
+    		throw new UserNotFoundException(userId);
     	}
     	
     	logger.info(String.format("User with ID: %d successfully found", optionalUser.get().getId()));
@@ -94,7 +94,7 @@ public class ReviewService {
     	Optional<Review> optionalReview = reviewRepository.findById(id);
     	if(!optionalReview.isPresent()) {
     		logger.warn(String.format("No review found with ID %d", id));
-    		throw new ReviewNotFoundException(String.format("No review found with ID %d", id));
+    		throw new ReviewNotFoundException(id);
     	}
     	logger.info(String.format("Review with ID: %d successfully found", optionalReview.get().getId()));
         return optionalReview.get();
@@ -120,7 +120,7 @@ public class ReviewService {
         	}
     	} else {
     		logger.warn(String.format("No review found with ID %d", id));
-    		throw new ReviewNotFoundException(String.format("No review found with ID %d", id));
+    		throw new ReviewNotFoundException(id);
     	}
     }
     
@@ -138,7 +138,7 @@ public class ReviewService {
 			}
 		} else {
 			logger.warn(String.format("No review found with ID %d", id));
-			throw new ReviewNotFoundException(String.format("No review found with ID %d", id));
+			throw new ReviewNotFoundException(id);
 		}
     }
 }
