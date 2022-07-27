@@ -50,6 +50,7 @@ public class ProductService {
     	if(optionalProduct.isPresent()) {
     		productRepository.deleteById(id);
     	}else {
+    		logger.warn(String.format("No Product found with ID %d", id));
     		throw new ProductNotFoundException(String.format("No product found with ID %d", id));
     	}
         
