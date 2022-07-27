@@ -14,3 +14,14 @@ spring:
     password: postgres
 #  h2:
 #    console.enabled: true
+#
+#    url: jdbc:postgresql://${RDS_HOSTNAME}:${RDS_PORT}/${RDS_DB_NAME}
+#    driver-class-name: org.postgresql.Driver
+#    username: ${RDS_USERNAME}
+#    password: ${RDS_PASSWORD}
+#  h2:
+#    console.enabled: true
+#  sql:
+#    init:
+#      platform: postgres
+#

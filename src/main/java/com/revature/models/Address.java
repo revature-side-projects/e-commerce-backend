@@ -38,7 +38,7 @@ public class Address {
     @JoinTable(name = "users_addresses",
             joinColumns = @JoinColumn(name = "address_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    @JsonIgnore
+//    @JsonIgnore
     @ToString.Exclude
     private Set<User> users = new LinkedHashSet<>();
 

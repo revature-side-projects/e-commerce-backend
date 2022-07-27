@@ -1,20 +1,11 @@
 version: 0.2
 
 phases:
-  install:
-    runtime-versions:
-      docker: 18
   build:
     commands:
       - java -version
-      - mvn clean -Dmaven.test.skip=true package
-      - docker-compose --file=docker-compose-prod.yml build
-  post_build:
-    commands:
-      - echo Build completed on `date`
-      - echo Pushing the Docker image... 
-      - docker-compose --file=docker-compose-prod.yml push
-    
+      - mvn clean install -DskipTests
 artifacts:
   files:
-    - 'Dockerrun.aws.json'
+    - 'Dockerfile'
+    - target/e-commerce-0.0.1-SNAPSHOT.jar

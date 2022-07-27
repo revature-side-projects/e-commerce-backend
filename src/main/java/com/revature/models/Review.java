@@ -49,14 +49,14 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "product_id")
     @NotNull
-    @JsonManagedReference
+//    @JsonManagedReference
     private Product product;
     
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     @NotNull
-    @JsonManagedReference
+//    @JsonManagedReference
     private User user;
     public Review(@NotBlank int stars, @Length(max = 100) String title, @Length(max = 400) String review, User user, Product product) {
 		super();

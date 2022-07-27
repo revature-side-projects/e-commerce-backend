@@ -49,11 +49,12 @@ VALUES (
            'ADMIN'
        );
 
-INSERT INTO purchases (purchase_id,product_id, user_id)
+INSERT INTO purchases (purchase_id,product_id, user_id, quantity)
 VALUES (
            1,
            1,
-           1
+           1,
+        10
        );
 
 INSERT INTO addresses (address_id, street, secondary, city, zip, state)

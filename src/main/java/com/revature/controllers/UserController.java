@@ -45,7 +45,7 @@ public class UserController {
 		return ResponseEntity.ok(optionalUser.get());
 	}
 
-	@Authorized
+//	@Authorized
 	@PutMapping
 	public ResponseEntity<User> update(@RequestBody User user) {
 		return ResponseEntity.ok(userv.save(user));

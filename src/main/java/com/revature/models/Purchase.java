@@ -1,6 +1,7 @@
 package com.revature.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sun.istack.NotNull;
 import lombok.*;
@@ -19,11 +20,12 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Table(name = "purchases")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "product", "ownerUser" })
 public class Purchase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "purchase_id")
-    @NotNull
+//    @NotNull
     private int id;
 
 //    @NotNull
@@ -32,13 +34,13 @@ public class Purchase {
     private Timestamp orderPlaced;
 
     @ManyToOne
-    @JsonManagedReference
+//    @JsonManagedReference
     @JoinColumn(name = "product_id")
     @NotNull
     private Product product;
 
     @ManyToOne
-    @JsonManagedReference
+//    @JsonManagedReference
     @JoinColumn(name = "user_id")
     @NotNull
     private User ownerUser;
