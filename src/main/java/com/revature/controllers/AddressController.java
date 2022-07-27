@@ -24,42 +24,42 @@ import com.revature.services.UserService;
 
 @RestController
 @RequestMapping("/api/addresses")
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:3000"}, allowCredentials = "true")
+@CrossOrigin(origins = { "http://localhost:4200", "http://localhost:3000" }, allowCredentials = "true")
 public class AddressController {
-	
+
 	private final AddressService aserv;
 	private final UserService userv;
-	
+
 	public AddressController(AddressService aserv, UserService userv) {
 		this.aserv = aserv;
 		this.userv = userv;
 	}
-	
+
 	@GetMapping("/{userId}")
 	public ResponseEntity<Set<Address>> getUserAddresses(@PathVariable("userId") int userId) {
-		
-		Optional<User> optionalUser =  userv.findById(userId);
-		
+
+		Optional<User> optionalUser = userv.findById(userId);
+
 		if (optionalUser.isPresent()) {
-			
+
 			return ResponseEntity.ok(aserv.findUsersAddresses(optionalUser.get()));
 		} else {
 			return ResponseEntity.ok(new HashSet<Address>());
 		}
 	}
-	
+
 	@PutMapping
 	public ResponseEntity<Address> updateAddress(@RequestBody AddressRequest addressRequest, HttpSession session) {
-		
+
 		User u = (User) session.getAttribute("user");
-		
+
 		return ResponseEntity.ok(aserv.update(addressRequest, u));
+
 	}
-	
-	
+
 	@PostMapping
 	public ResponseEntity<Address> addAddress(@RequestBody AddressRequest addressRequest, HttpSession session) {
-		
+
 		return ResponseEntity.ok(aserv.addAddress(addressRequest));
 	}
 }
