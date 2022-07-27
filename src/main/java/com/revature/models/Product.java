@@ -44,7 +44,6 @@ public class Product {
 
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "product_id")
-
     @ToString.Exclude
     private Set<Purchase> purchases = new LinkedHashSet<>();
 
@@ -63,5 +62,4 @@ public class Product {
 		this.name = name;
 
 	}
-    
 }
