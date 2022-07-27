@@ -37,7 +37,7 @@ public class StorageService {
 		}
 		}
 		catch (Exception e) {
-			log.error(e.getMessage());;
+			log.error(e.getMessage());
 		}
 		return new ResponseEntity<String>(fileName, HttpStatus.OK);
 	}
