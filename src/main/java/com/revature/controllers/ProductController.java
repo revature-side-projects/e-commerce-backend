@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,15 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.revature.annotations.Authorized;
 import com.revature.annotations.AuthorizedAdmin;
 import com.revature.dtos.CreateUpdateRequest;
-import com.revature.dtos.ProductInfo;
 import com.revature.exceptions.InvalidProductInputException;
 import com.revature.exceptions.InvalidRoleException;
-import com.revature.models.Product;
-import com.revature.services.ProductService;
 import com.revature.services.StorageService;
 
 @RestController
