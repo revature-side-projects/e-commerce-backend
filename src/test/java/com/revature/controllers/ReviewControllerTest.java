@@ -107,9 +107,19 @@ class ReviewControllerTest {
 	}
 
 	@Test
-	@Disabled("Not yet implemented")
 	void testGetReviewsOfProduct_Success() throws Exception {
-		fail("Not yet implemented");
+		int productId = this.dummyProduct.getId();
+		List<Review> reviews = new LinkedList<>();
+		reviews.add(this.dummyReview);
+		given(this.rServ.findByProductId(productId)).willReturn(reviews);
+
+		MockHttpServletResponse response = this.mvc
+				.perform(get("/api/review/product/" + productId).accept(MediaType.APPLICATION_JSON)).andReturn()
+				.getResponse();
+
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(this.jsonReviewList.write(reviews).getJson(), response.getContentAsString());
+		verify(this.rServ, times(1)).findByProductId(productId);
 	}
 
 	@Test
@@ -119,9 +129,19 @@ class ReviewControllerTest {
 	}
 
 	@Test
-	@Disabled("Not yet implemented")
 	void testGetReviewsByUser_Success() throws Exception {
-		fail("Not yet implemented");
+		int userId = this.dummyUser.getId();
+		List<Review> reviews = new LinkedList<>();
+		reviews.add(this.dummyReview);
+		given(this.rServ.findByUserId(userId)).willReturn(reviews);
+
+		MockHttpServletResponse response = this.mvc
+				.perform(get("/api/review/user/" + userId).accept(MediaType.APPLICATION_JSON)).andReturn()
+				.getResponse();
+
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(this.jsonReviewList.write(reviews).getJson(), response.getContentAsString());
+		verify(this.rServ, times(1)).findByUserId(userId);
 	}
 
 	@Test
