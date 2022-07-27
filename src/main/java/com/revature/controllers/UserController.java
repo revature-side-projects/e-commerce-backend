@@ -25,16 +25,26 @@ public class UserController {
 	public UserController(UserService userv) {
 		this.userv = userv;
 	}
-	
+
 	@Authorized
 	@GetMapping("/{userId}")
 	public ResponseEntity<User> getUserById(@PathVariable("userId") int userId) {
 	
 		Optional<User> optionalUser = userv.findById(userId);
 		
+		return optionalUser.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+	}
+
+
+	@Authorized
+	@GetMapping("/email/{userEmail}")
+	public ResponseEntity<User> getUserByEmail(@PathVariable("userEmail") String userEmail) {
+		System.out.println(userEmail);
+		Optional<User> optionalUser = userv.findByEmail(userEmail);
+
 		return ResponseEntity.ok(optionalUser.get());
 	}
-	
+
 	@Authorized
 	@PutMapping
 	public ResponseEntity<User> update(@RequestBody User user) {

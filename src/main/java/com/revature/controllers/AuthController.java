@@ -27,18 +27,35 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
-        Optional<User> optional = authService.findByCredentials(loginRequest.getEmail(), loginRequest.getPassword());
+//    @PostMapping("/login")
+//    public ResponseEntity<User> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
+//        Optional<User> optional = authService.findByCredentials(loginRequest.getEmail(), loginRequest.getPassword());
+//
+//        System.out.println(loginRequest.getEmail());
+//        System.out.println(loginRequest.getPassword());
+//        System.out.println(optional);
+//        if(!optional.isPresent()) {
+//            return ResponseEntity.badRequest().build();
+//        }
+//
+//        session.setAttribute("user", optional.get());
+//
+//        return ResponseEntity.ok(optional.get());
+//    }
+
+    @PostMapping("/loginEmail")
+    public ResponseEntity<User> loginByEmail(@RequestBody LoginRequest loginRequest, HttpSession session) {
+        Optional<User> optional = authService.findByEmail(loginRequest.getEmail());
 
         System.out.println(loginRequest.getEmail());
-        System.out.println(loginRequest.getPassword());
+//        System.out.println(loginRequest.getPassword());
         System.out.println(optional);
         if(!optional.isPresent()) {
             return ResponseEntity.badRequest().build();
         }
 
         session.setAttribute("user", optional.get());
+        System.out.println(session.getAttribute("user"));
 
         return ResponseEntity.ok(optional.get());
     }

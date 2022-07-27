@@ -18,9 +18,12 @@ public class UserService {
     public Optional<User> findByCredentials(String email, String password) {
         return userRepository.findByEmailAndPassword(email, password);
     }
-    
+
     public Optional<User> findById(int id) {
-    	return userRepository.findById(id);
+        return userRepository.findById(id);
+    }
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     public User save(User user) {

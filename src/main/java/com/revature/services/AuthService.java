@@ -19,6 +19,11 @@ public class AuthService {
         return userService.findByCredentials(email, password);
     }
 
+    public Optional<User> findByEmail(String email) {
+        return userService.findByEmail(email);
+    }
+
+
     public User register(User user) {
         return userService.save(user);
     }
