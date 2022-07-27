@@ -59,9 +59,10 @@ VALUES (
            'CUSTOMER'
        );
 
-INSERT INTO purchases (purchase_id,product_id, user_id)
+INSERT INTO purchases (quantity, order_placed, product_id, user_id)
 VALUES (
            1,
+           CURRENT_TIMESTAMP(),
            1,
            1
        );
