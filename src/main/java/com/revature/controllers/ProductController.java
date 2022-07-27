@@ -58,22 +58,22 @@ public class ProductController {
     	
 				Product updatePd = currPd.get();
 				updatePd.setId(id);
-				if(!(name == null)) {
+				if(name != null) {
 					updatePd.setName(name );
 				}
 				
-				if(price!= 0.0) {
+				if(price > 0) {
 					updatePd.setPrice(price);
 				}
   	
-				if(quantity!=0) {
+				if(quantity > 0) {
   
 					updatePd.setQuantity(quantity);    			
 				}
-				if(!(description == null)) {
+				if(description != null) {
 					updatePd.setDescription(description);
 				}
-				if(!(image== null)) {
+				if(image!= null) {
 					updatePd.setImage(image);
 					
 				}
@@ -81,7 +81,7 @@ public class ProductController {
 				
 				return ResponseEntity.ok(productService.save(updatePd));
 		
-				// TODO Auto-generated catch block
+
 				
 			
     		
@@ -90,7 +90,7 @@ public class ProductController {
 		try {
 			newPd = new Product(quantity,price,description,image,name);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+		
 			throw new InvalidProductInputException("Null value is not allowed");
 		}
     	
