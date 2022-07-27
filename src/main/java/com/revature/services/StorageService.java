@@ -32,7 +32,10 @@ public class StorageService {
 		File fileObj = convertMultipartToFile(file);
 		fileName = file.getOriginalFilename();
 		s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
-		fileObj.delete();}
+		if(fileObj.delete()) {
+			log.info(fileName + "was deleted after sending to s3");
+		}
+		}
 		catch (Exception e) {
 			log.error(e.getMessage());;
 		}
