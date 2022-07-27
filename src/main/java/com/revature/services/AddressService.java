@@ -26,19 +26,20 @@ public class AddressService {
 		address.setCity(addressRequest.getCity());
 		address.setState(addressRequest.getState());
 		address.setZip(addressRequest.getZip());
-		address.getUsers().add(addressRequest.getUser());
+//		address.getUsers().add(addressRequest.getUser());
 		return addressRepo.save(address);
 	}
 	
-	public Address update(AddressRequest addressRequest) {
+	public Address update(AddressRequest addressRequest, User u) {
 		
 		Address address = new Address();
+		address.setId(addressRequest.getId());
 		address.setStreet(addressRequest.getStreet());
 		address.setSecondary(addressRequest.getSecondary());
 		address.setCity(addressRequest.getCity());
 		address.setState(addressRequest.getState());
 		address.setZip(addressRequest.getZip());
-		address.getUsers().add(addressRequest.getUser());
+		address.getUsers().add(u);
 		
 		return addressRepo.save(address);
 	}

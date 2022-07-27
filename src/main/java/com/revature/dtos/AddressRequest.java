@@ -11,10 +11,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AddressRequest {
 	
+	private int id;
 	private String street;
 	private String secondary;
 	private String city;
 	private String zip;
 	private String state;
-	private User user;
+//	private User user;
 }
