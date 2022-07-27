@@ -1,12 +1,16 @@
 package com.revature.ecommerce.controllers;
 
 import com.revature.ecommerce.annotations.Authorized;
+import com.revature.ecommerce.dtos.LoginRequest;
 import com.revature.ecommerce.dtos.ProductInfo;
 import com.revature.ecommerce.models.Product;
+import com.revature.ecommerce.models.User;
 import com.revature.ecommerce.services.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.revature.ecommerce.services.AuthService;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +29,8 @@ public class ProductController {
     @Authorized
     @GetMapping
     public ResponseEntity<List<Product>> getInventory() {
-        return ResponseEntity.ok(productService.findAll());
+
+      return ResponseEntity.ok(productService.findAll());
     }
 
     @Authorized
@@ -39,6 +44,7 @@ public class ProductController {
         return ResponseEntity.ok(optional.get());
     }
 
+
     @Authorized
     @PutMapping
     public ResponseEntity<Product> upsert(@RequestBody Product product) {
@@ -47,9 +53,9 @@ public class ProductController {
 
     @Authorized
     @PatchMapping
-    public ResponseEntity<List<Product>> purchase(@RequestBody List<ProductInfo> metadata) { 	
+    public ResponseEntity<List<Product>> purchase(@RequestBody List<ProductInfo> metadata) {
     	List<Product> productList = new ArrayList<Product>();
-    	
+
     	for (int i = 0; i < metadata.size(); i++) {
     		Optional<Product> optional = productService.findById(metadata.get(i).getId());
 
@@ -62,11 +68,11 @@ public class ProductController {
     		if(product.getQuantity() - metadata.get(i).getQuantity() < 0) {
     			return ResponseEntity.badRequest().build();
     		}
-    		
+
     		product.setQuantity(product.getQuantity() - metadata.get(i).getQuantity());
     		productList.add(product);
     	}
-        
+
         productService.saveAll(productList, metadata);
 
         return ResponseEntity.ok(productList);
