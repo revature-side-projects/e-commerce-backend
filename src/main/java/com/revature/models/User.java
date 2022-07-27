@@ -42,7 +42,7 @@ public class User {
     @NotNull
     private String role;
 
-    @OneToMany(orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "user_id")
     @JsonBackReference
     @ToString.Exclude
@@ -54,13 +54,13 @@ public class User {
     @ToString.Exclude
     private Set<Review> reviews = new LinkedHashSet<>();
 
-    @ManyToMany(cascade = { CascadeType.ALL })
+    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     @JoinTable(
             name = "users_addresses",
             joinColumns = { @JoinColumn(name = "user_id") },
             inverseJoinColumns = { @JoinColumn(name = "address_id") }
     )
-    @JsonIgnore
+    @JsonBackReference
     @ToString.Exclude
     private Set<Address> addresses = new HashSet<>();
 
