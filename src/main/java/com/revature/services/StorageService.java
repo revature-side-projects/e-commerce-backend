@@ -26,9 +26,7 @@ public class StorageService {
 	@Autowired
 	private AmazonS3 s3Client;
 	
-	// when uploading the file set the components image url to the endpoint + /filename and make sure it isnt empty
 	public ResponseEntity<String> uploadFile(MultipartFile file) {
-		System.out.println("Made it to the upload");
 		String fileName = "";
 		try {
 		File fileObj = convertMultipartToFile(file);
@@ -36,7 +34,7 @@ public class StorageService {
 		s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
 		fileObj.delete();}
 		catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage());;
 		}
 		return new ResponseEntity<String>(fileName, HttpStatus.OK);
 	}
