@@ -7,10 +7,10 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     defer-datasource-initialization: true
   datasource:
-    url: jdbc:postgresql://postgres.clbbpo0zoa9k.us-west-2.rds.amazonaws.com:5432/postgres
+    url: jdbc:postgresql://${RDS_HOSTNAME}:${RDS_PORT}/${RDS_DB_NAME}
     driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: ui1RY0nWFAzwRkWwmZKS
+    username: ${RDS_USERNAME}
+    password: ${RDS_PASSWORD}
   h2:
     console.enabled: true
   sql:
