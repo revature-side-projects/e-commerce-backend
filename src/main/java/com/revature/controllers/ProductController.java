@@ -40,13 +40,11 @@ public class ProductController {
         this.s3Srv = storageService;
     }
 
-    //@Authorized
     @GetMapping
     public ResponseEntity<List<Product>> getInventory() {
         return ResponseEntity.ok(productService.findAll());
     }
 
-    //@Authorized
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable("id") int id) {
         Optional<Product> optional = productService.findById(id);
@@ -153,7 +151,6 @@ public class ProductController {
 
         return ResponseEntity.ok(optional.get());
     }
-    @Authorized
     @GetMapping("/partial-search/{name}")
     public ResponseEntity<List<Product>> getProductsByNameContains(@PathVariable("name") String name) {
     	

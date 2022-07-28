@@ -1,8 +1,6 @@
 package com.revature.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sun.istack.NotNull;
 import lombok.*;
 
@@ -24,22 +22,25 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "address_id")
     private int id;
-    @NotNull
+    @NotNull    @NonNull
+
     private String street;
     private String secondary;
 
-    @NotNull
+    @NotNull    @NonNull
+
     private String city;
-    @NotNull
+    @NotNull    @NonNull
+
     private String zip;
-    @NotNull
+    @NotNull    @NonNull
+
     private String state;
 
     @ManyToMany
     @JoinTable(name = "users_addresses",
             joinColumns = @JoinColumn(name = "address_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    @JsonManagedReference
     @ToString.Exclude
     private Set<User> users = new LinkedHashSet<>();
 

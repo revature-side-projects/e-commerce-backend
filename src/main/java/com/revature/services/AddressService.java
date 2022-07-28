@@ -33,7 +33,7 @@ public class AddressService {
 	public Address update(AddressRequest addressRequest, User u) {
 		
 		Address address = new Address();
-		address.setId(addressRequest.getId());
+//		address.setId(addressRequest.getId());
 		address.setStreet(addressRequest.getStreet());
 		address.setSecondary(addressRequest.getSecondary());
 		address.setCity(addressRequest.getCity());
