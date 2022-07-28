@@ -6,6 +6,11 @@ spring:
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 #    defer-datasource-initialization: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-famcs6az.us.auth0.com/
   datasource:
 #    platform: postgres
     url: jdbc:postgresql://localhost:5432/postgres
@@ -33,3 +38,6 @@ cloud:
 application:
   bucket:
     name: revature-image-bucket
+
+auth0:
+  audience: http://backend-env.eba-g9uchpeu.us-west-2.elasticbeanstalk.com/

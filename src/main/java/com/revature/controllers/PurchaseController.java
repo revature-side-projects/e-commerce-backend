@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.ResourceAccessException;
 
-import com.revature.annotations.Authorized;
+
 import com.revature.dtos.PurchaseRequest;
 import com.revature.models.Purchase;
 import com.revature.models.User;
@@ -33,19 +33,16 @@ public class PurchaseController {
 		this.pserv = pserv;
 	}
 	
-	@Authorized
 	@GetMapping
 	public ResponseEntity<List<Purchase>> getAllPurchases() {
 		return ResponseEntity.ok(pserv.findAll());
 	}
 	
-	@Authorized
 	@GetMapping("user/{user}")
 	public ResponseEntity<List<Purchase>> getPurchasesByOwner(@PathVariable("user") User user) {
 		return ResponseEntity.ok(pserv.findByOwner(user));
 	}
 	
-	@Authorized
 	@PostMapping
 	public ResponseEntity<List<Purchase>> addPurchase(@RequestBody List<PurchaseRequest> purchaseRequests, HttpSession session) {
 		User u = (User) session.getAttribute("user");

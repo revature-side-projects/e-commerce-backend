@@ -1,7 +1,5 @@
 package com.revature.controllers;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
@@ -9,10 +7,10 @@ import javax.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.revature.annotations.Authorized;
+
 import com.revature.dtos.UserRequest;
 import com.revature.models.User;
-import com.revature.services.AddressService;
+
 import com.revature.services.UserService;
 
 @RestController
@@ -35,7 +33,6 @@ public class UserController {
 	}
 
 
-	@Authorized
 	@GetMapping("/email/{userEmail}")
 	public ResponseEntity<User> getUserByEmail(@PathVariable("userEmail") String userEmail) {
 		System.out.println(userEmail);
@@ -44,7 +41,6 @@ public class UserController {
 		return ResponseEntity.ok(optionalUser.get());
 	}
 
-	@Authorized
 	@PutMapping
 	public ResponseEntity<User> update(@RequestBody UserRequest user, HttpSession session) {
 		

@@ -1,15 +1,11 @@
 package com.revature.controllers;
 
-import com.revature.annotations.Authorized;
-import com.revature.dtos.PriceRangeRequest;
-import com.revature.dtos.ProductInfo;
-import com.revature.models.Product;
-import com.revature.services.ProductService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,10 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import com.revature.annotations.AuthorizedAdmin;
+
 import com.revature.dtos.CreateUpdateRequest;
+import com.revature.dtos.PriceRangeRequest;
+import com.revature.dtos.ProductInfo;
 import com.revature.exceptions.InvalidProductInputException;
-import com.revature.exceptions.InvalidRoleException;
+import com.revature.models.Product;
+import com.revature.services.ProductService;
 import com.revature.services.StorageService;
 
 @RestController
@@ -52,8 +51,6 @@ public class ProductController {
         return optional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
     
-    @Authorized
-    @AuthorizedAdmin
     @PutMapping("/create-update")
     public ResponseEntity<Product> insertAndUpdate(@RequestBody CreateUpdateRequest createupdateRequest) {
     	int id =createupdateRequest.getId();
@@ -105,14 +102,12 @@ public class ProductController {
     }
 
     
-    @Authorized
-    @AuthorizedAdmin
     @PutMapping("/uploadFile")
     public ResponseEntity<String> uploadImage(@RequestPart (value = "file") MultipartFile file){
     	return this.s3Srv.uploadFile(file);
     }
     
-    @Authorized
+
     @PatchMapping
     public ResponseEntity<List<Product>> purchase(@RequestBody List<ProductInfo> metadata) { 	
     	List<Product> productList = new ArrayList<Product>();
@@ -139,7 +134,7 @@ public class ProductController {
         return ResponseEntity.ok(productList);
     }
 
-    @Authorized
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Product> deleteProduct(@PathVariable("id") int id) {
         Optional<Product> optional = productService.findById(id);
@@ -156,19 +151,19 @@ public class ProductController {
     	
         return ResponseEntity.ok(productService.findByNameContains(name));
     }
-    @Authorized
+
     @GetMapping("/price-range")
     public ResponseEntity<List<Product>> getProductsByPriceRange(@RequestBody PriceRangeRequest priceRangeRequest) {
     	
         return ResponseEntity.ok(productService.findByPriceRange(priceRangeRequest.getMinPrice(),priceRangeRequest.getMaxPrice()));
     }
-//    @Authorized
+//
 //    @GetMapping("/price-range")
 //    public ResponseEntity<List<Product>> getProductsByPriceRange(@RequestParam("minPrice") double minPrice,@RequestParam("maxPrice") double maxPrice ) {
 //    	
 //        return ResponseEntity.ok(productService.findByPriceRange(minPrice,maxPrice));
 //    }
-    @Authorized
+
     @GetMapping("/filter-rating")
     public ResponseEntity<List<Product>> filterByRating() {
     	
