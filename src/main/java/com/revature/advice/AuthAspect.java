@@ -1,5 +1,6 @@
 	package com.revature.advice;
 
+import com.revature.annotations.AuthRestriction;
 import com.revature.annotations.Authorized;
 import com.revature.annotations.AuthorizedAdmin;
 import com.revature.exceptions.InvalidRoleException;
@@ -76,7 +77,7 @@ public class AuthAspect {
         User loggedInUser = (User) session.getAttribute("user"); // get the user from session
         String userRole = loggedInUser.getRole(); // get the role of user
         // check the role of user
-        if(authorized.value().equals(AuthRestriction.ADMIN) && !"ADMIN".equals(userRole)) { 
+        if(authorized.value().equals(AuthRestriction.ADMIN) && !"ADMIN".equals(userRole)) {
         	throw new InvalidRoleException("Must be logged in as a Admin to perform this action");
         }
 

@@ -151,7 +151,6 @@ public class ProductController {
 
         return ResponseEntity.ok(optional.get());
     }
-    @Authorized
     @GetMapping("/partial-search/{name}")
     public ResponseEntity<List<Product>> getProductsByNameContains(@PathVariable("name") String name) {
     	

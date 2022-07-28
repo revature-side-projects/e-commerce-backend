@@ -49,7 +49,6 @@ public class User {
 
     @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "user_id")
-//    @JsonBackReference
     @ToString.Exclude
     private Set<Purchase> purchases = new LinkedHashSet<>();
 

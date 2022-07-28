@@ -22,15 +22,19 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "address_id")
     private int id;
-    @NotNull
+    @NotNull    @NonNull
+
     private String street;
     private String secondary;
 
-    @NotNull
+    @NotNull    @NonNull
+
     private String city;
-    @NotNull
+    @NotNull    @NonNull
+
     private String zip;
-    @NotNull
+    @NotNull    @NonNull
+
     private String state;
 
     @ManyToMany
