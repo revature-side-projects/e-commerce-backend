@@ -27,7 +27,7 @@ INSERT INTO products (product_id, quantity, price, description, image, name) VAL
     20,
     10.00,
     'A fancy cap for a fancy person',
-    'https://d3o2e4jr3mxnm3.cloudfront.net/Rocket-Vintage-Chill-Cap_66374_1_lg.png',
+    'https://revazon-image-bucket.s3.amazonaws.com/cap.png',
     'Baseball Cap'
 ),
 (
@@ -39,6 +39,7 @@ INSERT INTO products (product_id, quantity, price, description, image, name) VAL
     'Coat'
 );
 
+
 INSERT INTO users (user_id, email, password, first_name, last_name, role)
 VALUES (
            1,
@@ -48,12 +49,15 @@ VALUES (
            'User',
            'ADMIN'
        );
-
-INSERT INTO purchases (purchase_id,product_id, user_id)
+       
+INSERT INTO users (user_id, email, password, first_name, last_name, role)
 VALUES (
-           1,
-           1,
-           1
+           2,
+           'newuser@gmail.com',
+           'password',
+           'testUser',
+           'User',
+           'CUSTOMER'
        );
 
 INSERT INTO addresses (address_id, street, secondary, city, zip, state)
@@ -81,3 +85,23 @@ VALUES (
            1,
            1
        );
+
+INSERT INTO reviews (review_id, review, stars, title, product_id, user_id)
+VALUES (
+           2,
+           'A nice TeeShirt',
+           4,
+           'great stuff man',
+           2,
+           2
+       );
+INSERT INTO reviews (review_id, review, stars, title, product_id, user_id)
+VALUES (
+           3,
+           'A nice TeeShirt',
+           3,
+           'great stuff man',
+           2,
+           2
+       );
+
