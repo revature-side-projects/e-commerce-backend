@@ -4,6 +4,7 @@ import com.revature.models.User;
 import com.revature.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -19,7 +20,18 @@ public class UserService {
         return userRepository.findByEmailAndPassword(email, password);
     }
 
+
     public User save(User user) {
         return userRepository.save(user);
     }
+
+
+
+    public User createUser(User user) {
+
+        return userRepository.save(user);
+    }
 }
+
+
+
