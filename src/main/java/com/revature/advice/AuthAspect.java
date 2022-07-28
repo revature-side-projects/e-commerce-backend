@@ -27,7 +27,8 @@ public class AuthAspect {
     public AuthAspect(HttpServletRequest req) {
         this.req = req;
     }
-
+    /**
+     * 
     // This advice will execute around any method annotated with @Authorized
     // If the user is not logged in, an exception will be thrown and handled
     // Otherwise, the original method will be invoked as normal.
@@ -46,8 +47,9 @@ public class AuthAspect {
     // Then the RestExceptionHandler class can be expanded to include
     // @ExceptionHandler(InvalidRoleException.class)
     // which should return a 403 Forbidden such as:
-    // String errorMessage = "Missing required role to perform this action";
-    // return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorMessage);
+    // @String errorMessage = "Missing required role to perform this action";
+    // @return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorMessage);
+     */
     @Around("@annotation(authorized)")
     public Object authenticate(ProceedingJoinPoint pjp, Authorized authorized) throws Throwable {
 
