@@ -1,6 +1,5 @@
 package com.revature.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.istack.NotNull;
 import lombok.*;
@@ -38,7 +37,6 @@ public class Address {
     @JoinTable(name = "users_addresses",
             joinColumns = @JoinColumn(name = "address_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-//    @JsonIgnore
     @ToString.Exclude
     private Set<User> users = new LinkedHashSet<>();
 

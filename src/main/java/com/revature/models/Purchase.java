@@ -20,27 +20,23 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Table(name = "purchases")
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "product", "ownerUser" })
+//@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "product", "ownerUser" })
 public class Purchase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "purchase_id")
-//    @NotNull
     private int id;
 
-//    @NotNull
     @CreationTimestamp
     @Column(name = "order_placed")
     private Timestamp orderPlaced;
 
     @ManyToOne
-//    @JsonManagedReference
     @JoinColumn(name = "product_id")
     @NotNull
     private Product product;
 
     @ManyToOne
-//    @JsonManagedReference
     @JoinColumn(name = "user_id")
     @NotNull
     private User ownerUser;

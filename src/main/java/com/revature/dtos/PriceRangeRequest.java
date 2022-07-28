@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginRequest {
+public class PriceRangeRequest {
+	double minPrice;
+	double maxPrice;
 
-    private String email;
-    private String password;
 }
