@@ -18,6 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Table(name = "products")
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "reviews", "purchases" })
+@EqualsAndHashCode
 public class Product {
 
     @Id
@@ -49,12 +50,6 @@ public class Product {
     @JoinColumn(name = "product_id")
     @ToString.Exclude
     private Set<Purchase> purchases = new LinkedHashSet<>();
-
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 
 	public Product(int quantity, double price, String description, String image, String name, Set<Review> reviews,
 			Set<Purchase> purchases) {

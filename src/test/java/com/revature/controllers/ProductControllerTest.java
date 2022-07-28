@@ -23,6 +23,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import com.revature.dtos.CreateUpdateRequest;
 import com.revature.dtos.PriceRangeRequest;
 import com.revature.dtos.ProductInfo;
 import com.revature.models.Product;
@@ -55,6 +56,9 @@ class ProductControllerTest {
 
 	@Autowired
 	private JacksonTester<PriceRangeRequest> jsonPriceRangeRequest;
+
+	@Autowired
+	private JacksonTester<CreateUpdateRequest> jsonCreateUpdateRequest;
 
 	@MockBean
 	private ProductService pServ;
@@ -118,14 +122,81 @@ class ProductControllerTest {
 	}
 
 	@Test
+	void testInsertAndUpdate_Success_InsertProduct() throws Exception {
+		int id = this.dummyProduct.getId();
+		CreateUpdateRequest createRequest = new CreateUpdateRequest(id, this.dummyProduct.getQuantity(),
+				this.dummyProduct.getPrice(), this.dummyProduct.getDescription(), this.dummyProduct.getImage(),
+				this.dummyProduct.getName());
+		Product newProduct = new Product(createRequest.getQuantity(), createRequest.getPrice(),
+				createRequest.getDescription(), createRequest.getImage(), createRequest.getName());
+
+		given(this.pServ.findById(id)).willReturn(Optional.empty());
+		given(this.pServ.save(newProduct)).willReturn(this.dummyProduct);
+
+		Product expected = this.dummyProduct;
+		String jsonContent = this.jsonCreateUpdateRequest.write(createRequest).getJson();
+		MockHttpServletRequestBuilder request = put(this.MAPPING_ROOT + "/create-update")
+				.contentType(MediaType.APPLICATION_JSON).content(jsonContent);
+		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
+
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(this.jsonProduct.write(expected).getJson(), response.getContentAsString());
+		verify(this.pServ, times(1)).findById(id);
+		verify(this.pServ, times(1)).save(newProduct);
+	}
+
+	@Test
+	void testInsertAndUpdate_Success_UpdateProduct_AllArgs() throws Exception {
+		int id = this.dummyProduct.getId();
+		CreateUpdateRequest updateRequest = new CreateUpdateRequest(id, this.dummyProduct.getQuantity(),
+				this.dummyProduct.getPrice(), this.dummyProduct.getDescription(), this.dummyProduct.getImage(),
+				this.dummyProduct.getName());
+
+		given(this.pServ.findById(id)).willReturn(Optional.of(this.dummyProduct));
+		given(this.pServ.save(this.dummyProduct)).willReturn(this.dummyProduct);
+
+		Product expected = this.dummyProduct;
+		String jsonContent = this.jsonCreateUpdateRequest.write(updateRequest).getJson();
+		MockHttpServletRequestBuilder request = put(this.MAPPING_ROOT + "/create-update")
+				.contentType(MediaType.APPLICATION_JSON).content(jsonContent);
+		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
+
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(this.jsonProduct.write(expected).getJson(), response.getContentAsString());
+		verify(this.pServ, times(1)).findById(id);
+		verify(this.pServ, times(1)).save(this.dummyProduct);
+	}
+
+	@Test
+	void testGetProductById_Success_UpdateProduct_DefaultArgs() throws Exception {
+		int id = this.dummyProduct.getId();
+		CreateUpdateRequest updateRequest = new CreateUpdateRequest(id, 0, 0, null, null, null);
+		Product updatedProduct = this.dummyProduct;
+
+		given(this.pServ.findById(id)).willReturn(Optional.of(this.dummyProduct));
+		given(this.pServ.save(updatedProduct)).willReturn(this.dummyProduct);
+
+		Product expected = this.dummyProduct;
+		String jsonContent = this.jsonCreateUpdateRequest.write(updateRequest).getJson();
+		MockHttpServletRequestBuilder request = put(this.MAPPING_ROOT + "/create-update")
+				.contentType(MediaType.APPLICATION_JSON).content(jsonContent);
+		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
+
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(this.jsonProduct.write(expected).getJson(), response.getContentAsString());
+		verify(this.pServ, times(1)).findById(id);
+		verify(this.pServ, times(1)).save(updatedProduct);
+	}
+
+	@Test
 	@Disabled("Not yet implemented")
-	void testInsertAndUpdate_Success() throws Exception {
+	void testInsertAndUpdate_Failure_InsertProduct_ProductIdAlreadyExists() throws Exception {
 		fail("Not yet implemented");
 	}
 
 	@Test
 	@Disabled("Not yet implemented")
-	void testInsertAndUpdate_Failure_ProductNotFound() throws Exception {
+	void testInsertAndUpdate_Failure_UpdateProduct_ProductNotFound() throws Exception {
 		fail("Not yet implemented");
 	}
 
