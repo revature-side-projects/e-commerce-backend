@@ -38,7 +38,15 @@ public class ProductController {
 
     @Authorized
     @PutMapping
-    public ResponseEntity<Product> upsert(@RequestBody Product product) {
+    public ResponseEntity<Product> upsert(@RequestBody ProductInfo productInfo) {
+    	
+    	Product product = new Product(
+    			productInfo.getQuantity(), 
+    			productInfo.getPrice(), 
+    			productInfo.getDescription(), 
+    			productInfo.getImage(), 
+    			productInfo.getName());
+    	
         return ResponseEntity.ok(productService.save(product));
     }
 
