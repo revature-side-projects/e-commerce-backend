@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
@@ -98,6 +99,19 @@ class ProductControllerTest {
 	}
 
 	@Test
+	void testGetProductById_Success() throws Exception {
+		int id = this.dummyProduct.getId();
+		given(this.pServ.findById(id)).willReturn(Optional.of(this.dummyProduct));
+
+		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/" + id).accept(MediaType.APPLICATION_JSON);
+		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
+
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(this.jsonProduct.write(this.dummyProduct).getJson(), response.getContentAsString());
+		verify(this.pServ, times(1)).findById(id);
+	}
+
+	@Test
 	@Disabled("Not yet implemented")
 	void testGetProductById_Failure_ProductNotFound() throws Exception {
 		fail("Not yet implemented");
@@ -152,9 +166,17 @@ class ProductControllerTest {
 	}
 
 	@Test
-	@Disabled("Not yet implemented")
 	void testDeleteProduct_Success() throws Exception {
-		fail("Not yet implemented");
+		int productId = this.dummyProduct.getId();
+		given(this.pServ.findById(productId)).willReturn(Optional.of(this.dummyProduct));
+
+		MockHttpServletRequestBuilder request = delete(this.MAPPING_ROOT + "/" + productId)
+				.contentType(MediaType.APPLICATION_JSON);
+		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
+
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(this.jsonProduct.write(this.dummyProduct).getJson(), response.getContentAsString());
+		verify(this.pServ, times(1)).delete(productId);
 	}
 
 	@Test
@@ -170,9 +192,20 @@ class ProductControllerTest {
 	}
 
 	@Test
-	@Disabled("Not yet implemented")
 	void testGetProductsByNameContains_Success() throws Exception {
-		fail("Not yet implemented");
+		String name = "dummy";
+		List<Product> results = new LinkedList<>();
+		results.add(this.dummyProduct);
+		given(this.pServ.findByNameContains(name)).willReturn(results);
+
+		List<Product> expected = results;
+		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/partial-search/" + name)
+				.contentType(MediaType.APPLICATION_JSON);
+		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
+
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(this.jsonProductList.write(expected).getJson(), response.getContentAsString());
+		verify(this.pServ, times(1)).findByNameContains(name);
 	}
 
 	@Test
@@ -182,9 +215,24 @@ class ProductControllerTest {
 	}
 
 	@Test
-	@Disabled("Not yet implemented")
 	void testGetProductsByPriceRange_Success() throws Exception {
-		fail("Not yet implemented");
+		double minPrice = 1.99;
+		double maxPrice = 10.50;
+		PriceRangeRequest range = new PriceRangeRequest(minPrice, maxPrice);
+		List<Product> results = new LinkedList<>();
+		results.add(this.dummyProduct);
+
+		given(this.pServ.findByPriceRange(minPrice, maxPrice)).willReturn(results);
+
+		List<Product> expected = results;
+		String content = this.jsonPriceRangeRequest.write(range).getJson();
+		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/price-range")
+				.contentType(MediaType.APPLICATION_JSON).content(content);
+		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
+
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(this.jsonProductList.write(expected).getJson(), response.getContentAsString());
+		verify(this.pServ, times(1)).findByPriceRange(minPrice, maxPrice);
 	}
 
 	@Test
@@ -194,9 +242,21 @@ class ProductControllerTest {
 	}
 
 	@Test
-	@Disabled("Not yet implemented")
+	@Disabled("Service method implementation is incomplete")
 	void testFilterByRating_Success() throws Exception {
-		fail("Not yet implemented");
+		int rating = 5;
+		List<Product> results = new LinkedList<>();
+		results.add(this.dummyProduct);
+		// given(this.pServ.filterByRating(rating)).willReturn(results);
+
+		List<Product> expected = results;
+		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/filter-rating/" + rating)
+				.contentType(MediaType.APPLICATION_JSON);
+		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
+
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(this.jsonProductList.write(expected).getJson(), response.getContentAsString());
+		// verify(this.pServ, times(1)).filterByRating(rating);
 	}
 
 	@Test
