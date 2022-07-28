@@ -27,7 +27,7 @@ INSERT INTO products (product_id, quantity, price, description, image, name) VAL
     20,
     10.00,
     'A fancy cap for a fancy person',
-    'https://d3o2e4jr3mxnm3.cloudfront.net/Rocket-Vintage-Chill-Cap_66374_1_lg.png',
+    'https://revazon-image-bucket.s3.amazonaws.com/cap.png',
     'Baseball Cap'
 ),
 (
@@ -39,25 +39,17 @@ INSERT INTO products (product_id, quantity, price, description, image, name) VAL
     'Coat'
 );
 
+
 INSERT INTO users (user_id, email, password, first_name, last_name, role)
 VALUES (
            1,
            'admin@gmail.com',
-           'password',
+           'auth0|62e0f8d6a6c5ffa1e877de65',
            'testAdmin',
            'User',
            'ADMIN'
        );
-       
-INSERT INTO users (user_id, email, password, first_name, last_name, role)
-VALUES (
-           2,
-           'newuser@gmail.com',
-           'password',
-           'testUser',
-           'User',
-           'CUSTOMER'
-       );
+
 
 INSERT INTO purchases (purchase_id,product_id, user_id, quantity)
 VALUES (
@@ -66,6 +58,7 @@ VALUES (
            1,
         10
        );
+
 
 INSERT INTO addresses (address_id, street, secondary, city, zip, state)
 VALUES (

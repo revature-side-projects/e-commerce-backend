@@ -66,5 +66,4 @@ public class Review {
 		this.user = user;
 		this.product = product;
 	}
-
 }

@@ -42,6 +42,7 @@ public class User {
     @NotNull
     @NonNull
     private String lastName;
+
     @NotNull
     @NonNull
     private String role;
