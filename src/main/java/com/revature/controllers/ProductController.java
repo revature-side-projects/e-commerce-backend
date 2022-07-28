@@ -1,6 +1,7 @@
 package com.revature.controllers;
 
 import com.revature.annotations.Authorized;
+import com.revature.dtos.PriceRangeRequest;
 import com.revature.dtos.ProductInfo;
 import com.revature.models.Product;
 import com.revature.services.ProductService;
@@ -22,25 +23,22 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @Authorized
+    //@Authorized
     @GetMapping
     public ResponseEntity<List<Product>> getInventory() {
         return ResponseEntity.ok(productService.findAll());
     }
 
-    @Authorized
+    //@Authorized
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable("id") int id) {
         Optional<Product> optional = productService.findById(id);
 
-        if(!optional.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(optional.get());
+        return optional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @Authorized
-    @PutMapping
+    @PutMapping("/create-update")
     public ResponseEntity<Product> upsert(@RequestBody Product product) {
         return ResponseEntity.ok(productService.save(product));
     }
@@ -84,4 +82,31 @@ public class ProductController {
 
         return ResponseEntity.ok(optional.get());
     }
+    @Authorized
+    @GetMapping("/partial-search/{name}")
+    public ResponseEntity<List<Product>> getProductsByNameContains(@PathVariable("name") String name) {
+    	
+        return ResponseEntity.ok(productService.findByNameContains(name));
+    }
+    @Authorized
+    @GetMapping("/price-range")
+    public ResponseEntity<List<Product>> getProductsByPriceRange(@RequestBody PriceRangeRequest priceRangeRequest) {
+    	
+        return ResponseEntity.ok(productService.findByPriceRange(priceRangeRequest.getMinPrice(),priceRangeRequest.getMaxPrice()));
+    }
+//    @Authorized
+//    @GetMapping("/price-range")
+//    public ResponseEntity<List<Product>> getProductsByPriceRange(@RequestParam("minPrice") double minPrice,@RequestParam("maxPrice") double maxPrice ) {
+//    	
+//        return ResponseEntity.ok(productService.findByPriceRange(minPrice,maxPrice));
+//    }
+    @Authorized
+    @GetMapping("/filter-rating")
+    public ResponseEntity<List<Product>> filterByRating() {
+    	
+        return ResponseEntity.ok(productService.filterByRating());
+    }
+    
+
+    
 }

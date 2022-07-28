@@ -1,4 +1,4 @@
-INSERT INTO product (id, quantity, price, description, image, name) VALUES (
+INSERT INTO products (product_id, quantity, price, description, image, name) VALUES (
     1,
     10,
     20.00,
@@ -39,10 +39,75 @@ INSERT INTO product (id, quantity, price, description, image, name) VALUES (
     'Coat'
 );
 
-INSERT INTO users (id, email, password, first_name, last_name) VALUES (
-    1,
-    'testuser@gmail.com',
-    'password',
-    'Test',
-    'User'
-);
+INSERT INTO users (user_id, email, password, first_name, last_name, role)
+VALUES (
+           1,
+           'admin@gmail.com',
+           'password',
+           'testAdmin',
+           'User',
+           'ADMIN'
+       );
+       
+INSERT INTO users (user_id, email, password, first_name, last_name, role)
+VALUES (
+           2,
+           'newuser@gmail.com',
+           'password',
+           'testUser',
+           'User',
+           'CUSTOMER'
+       );
+
+INSERT INTO purchases (purchase_id,product_id, user_id)
+VALUES (
+           1,
+           1,
+           1
+       );
+
+INSERT INTO addresses (address_id, street, secondary, city, zip, state)
+VALUES (
+           1,
+           '844 california street',
+           '',
+           'Los Angeles',
+           '39999',
+           'CA'
+       );
+
+INSERT INTO users_addresses (address_id, user_id)
+VALUES (
+           1,
+           1
+       );
+
+INSERT INTO reviews (review_id, review, stars, title, product_id, user_id)
+VALUES (
+           1,
+           'this pair of headphones is fire',
+           5,
+           'great stuff man',
+           1,
+           1
+       );
+
+INSERT INTO reviews (review_id, review, stars, title, product_id, user_id)
+VALUES (
+           2,
+           'A nice TeeShirt',
+           4,
+           'great stuff man',
+           2,
+           2
+       );
+INSERT INTO reviews (review_id, review, stars, title, product_id, user_id)
+VALUES (
+           3,
+           'A nice TeeShirt',
+           3,
+           'great stuff man',
+           2,
+           2
+       );
+

@@ -1,26 +1,67 @@
 package com.revature.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sun.istack.NotNull;
+import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Entity
 @NoArgsConstructor
+@RequiredArgsConstructor
 @AllArgsConstructor
+@Table(name = "products")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "reviews", "purchases" })
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_id")
     private int id;
+    @NotNull
     private int quantity;
+    @NotNull
     private double price;
+    @NotNull
     private String description;
+    @NotNull
     private String image;
+    @NotNull
     private String name;
+
+    @OneToMany(orphanRemoval = true)
+    @JoinColumn(name = "product_id")
+
+
+    @ToString.Exclude
+    private Set<Review> reviews = new LinkedHashSet<>();
+
+    @OneToMany(orphanRemoval = true)
+    @JoinColumn(name = "product_id")
+
+    @ToString.Exclude
+    private Set<Purchase> purchases = new LinkedHashSet<>();
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+	public Product(int quantity, double price, String description, String image, String name, Set<Review> reviews,
+			Set<Purchase> purchases) {
+		super();
+		this.quantity = quantity;
+		this.price = price;
+		this.description = description;
+		this.image = image;
+		this.name = name;
+
+	}
+    
 }
