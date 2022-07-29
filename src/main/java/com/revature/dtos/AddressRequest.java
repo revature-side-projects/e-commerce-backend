@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddressRequest {
-	private int id;
+//	private int id;
 	private String street;
 	private String secondary;
 	private String city;
