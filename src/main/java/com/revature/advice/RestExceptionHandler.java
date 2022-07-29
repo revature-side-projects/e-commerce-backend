@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.revature.exceptions.DuplicateReviewException;
+import com.revature.exceptions.FileUploadException;
 import com.revature.exceptions.InvalidProductInputException;
 import com.revature.exceptions.InvalidRoleException;
+import com.revature.exceptions.MultipartFileConversionException;
 import com.revature.exceptions.NotLoggedInException;
 import com.revature.exceptions.ProductNotFoundException;
 import com.revature.exceptions.ReviewNotFoundException;
@@ -83,5 +85,25 @@ public class RestExceptionHandler {
     	
     	String errorMessage = unauthorizedReviewAccessException.getMessage();
     	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMessage);
+    }
+	
+	@ExceptionHandler(MultipartFileConversionException.class)
+    public ResponseEntity<Object> handleMultipartFileConversionException(
+		HttpServletRequest request, 
+		MultipartFileConversionException multipartFileConversionException
+	) {
+    	
+    	String errorMessage = multipartFileConversionException.getMessage();
+    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+    }
+	
+	@ExceptionHandler(FileUploadException.class)
+    public ResponseEntity<Object> handleFileUploadException(
+		HttpServletRequest request, 
+		FileUploadException fileUploadException
+	) {
+    	
+    	String errorMessage = fileUploadException.getMessage();
+    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
     }
 }

@@ -16,6 +16,8 @@ import com.revature.models.Review;
 import com.revature.models.User;
 import com.revature.repositories.ReviewRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
 public class ReviewService {
 	
