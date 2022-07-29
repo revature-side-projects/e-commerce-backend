@@ -109,7 +109,7 @@ class ReviewControllerTest {
 		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT).accept(MediaType.APPLICATION_JSON);
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
-		assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		assertEquals(this.jsonReviewList.write(expected).getJson(), response.getContentAsString());
 		verify(this.rServ, times(1)).findAll();
 	}
