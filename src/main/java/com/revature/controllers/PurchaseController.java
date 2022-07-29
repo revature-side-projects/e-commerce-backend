@@ -56,6 +56,7 @@ public class PurchaseController {
 		return ResponseEntity.ok(pserv.findAll());
 	}
 	
+	// FIXME Parameter must be a user's ID value or get the current user from session
 	@Authorized
 	@GetMapping("user/{user}")
 	public ResponseEntity<List<Purchase>> getPurchasesByOwner(@PathVariable("user") int userId) {
