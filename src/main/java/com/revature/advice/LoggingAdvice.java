@@ -16,7 +16,7 @@ public class LoggingAdvice {
 	
 	Logger log = LoggerFactory.getLogger(LoggingAdvice.class);
 	
-	@Pointcut(value="execution(* com.revature.exceptions.*.*(..))")
+	@Pointcut(value="execution(* com.revature.*.*.*(..))")
 	public void pointCut() {
 	}
 	

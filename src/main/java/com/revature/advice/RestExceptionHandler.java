@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.revature.exceptions.AddressNotFoundException;
 import com.revature.exceptions.DuplicateReviewException;
 import com.revature.exceptions.InvalidProductInputException;
 import com.revature.exceptions.InvalidRoleException;
@@ -43,6 +44,13 @@ public class RestExceptionHandler {
 
 	}
 
+	@ExceptionHandler(AddressNotFoundException.class)
+	public ResponseEntity<Object> handleAddressNotFoundException(HttpServletRequest request,
+			AddressNotFoundException addressNotFoundException) {
+		String errorMessage = addressNotFoundException.getMessage();
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+	}
+
 	@ExceptionHandler(ProductNotFoundException.class)
 	public ResponseEntity<Object> handleProductNotFoundException(HttpServletRequest request,
 			ProductNotFoundException productNotFoundException) {
@@ -76,12 +84,10 @@ public class RestExceptionHandler {
 	}
 
 	@ExceptionHandler(UnauthorizedReviewAccessException.class)
-    public ResponseEntity<Object> handleUnauthorizedReviewAccessException(
-		HttpServletRequest request, 
-		UnauthorizedReviewAccessException unauthorizedReviewAccessException
-	) {
-    	
-    	String errorMessage = unauthorizedReviewAccessException.getMessage();
-    	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMessage);
-    }
+	public ResponseEntity<Object> handleUnauthorizedReviewAccessException(HttpServletRequest request,
+			UnauthorizedReviewAccessException unauthorizedReviewAccessException) {
+
+		String errorMessage = unauthorizedReviewAccessException.getMessage();
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMessage);
+	}
 }
