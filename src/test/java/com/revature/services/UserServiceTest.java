@@ -29,10 +29,10 @@ class UserServiceTest {
 
 	User dummyUser;
 
-	/*
-	 * @BeforeEach void setUp() throws Exception { this.dummyUser = new User(1,
-	 * "dummy.admin@revature.com", "asdf", "Dummy", "User", "Admin"); }
-	 */
+	@BeforeEach
+	void setUp() throws Exception {
+		this.dummyUser = new User(1, "dummy.admin@revature.com", "asdf", "Dummy", "User", "Admin", null, null, null);
+	}
 
 	@AfterEach
 	void tearDown() throws Exception {
@@ -74,6 +74,18 @@ class UserServiceTest {
 
 		assertEquals(expected, actual);
 		verify(this.mockUserRepo, times(1)).save(this.dummyUser);
+	}
+
+	@Test
+	void testFindByEmail() {
+		String email = this.dummyUser.getEmail();
+		given(this.mockUserRepo.findByEmail(email)).willReturn(Optional.of(this.dummyUser));
+
+		User expected = this.dummyUser;
+		User actual = this.uServ.findByEmail(email).get();
+
+		assertEquals(expected, actual);
+		verify(this.mockUserRepo, times(1)).findByEmail(email);
 	}
 
 }

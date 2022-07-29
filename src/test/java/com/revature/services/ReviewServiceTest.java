@@ -82,8 +82,6 @@ class ReviewServiceTest {
 	void testAdd_Failure_ProductNotFound() {
 		ReviewRequest request = new ReviewRequest(this.dummyProduct.getId(), 1, "Not working",
 				"It doesn't work as advertised. I am dissatisfied with this product.");
-		Review newReview = new Review(request.getStars(), request.getTitle(), request.getReview(), this.dummyUser,
-				this.dummyProduct);
 		int productId = this.dummyProduct.getId();
 		given(this.pServ.findById(request.getProductId())).willReturn(Optional.empty());
 
@@ -96,21 +94,23 @@ class ReviewServiceTest {
 		}
 	}
 
-	/*
-	 * @Test void testFindAll() { User user2 = new User(0, "user2@revature.com",
-	 * "qwerty123", "Another", "User", "Customer"); List<Review> expected = new
-	 * LinkedList<>(); expected.add(this.dummyReview); expected.add(new Review(2, 4,
-	 * "Another review", "Some review body text", null, null, this.dummyProduct,
-	 * user2));
-	 * 
-	 * given(this.mockReviewRepo.findAll()).willReturn(expected);
-	 * 
-	 * List<Review> actual = this.rServ.findAll();
-	 * 
-	 * assertEquals(expected, actual); assertTrue(expected.containsAll(actual));
-	 * assertEquals(expected.size(), actual.size()); verify(this.mockReviewRepo,
-	 * times(1)).findAll(); }
-	 */
+
+	@Test
+	void testFindAll() {
+		User user2 = new User("user2@revature.com", "qwerty123", "Another", "User", "Customer");
+		List<Review> expected = new LinkedList<>();
+		expected.add(this.dummyReview);
+		expected.add(new Review(2, 4, "Another review", "Some review body text", null, null, this.dummyProduct, user2));
+
+		given(this.mockReviewRepo.findAll()).willReturn(expected);
+
+		List<Review> actual = this.rServ.findAll();
+
+		assertEquals(expected, actual);
+		assertTrue(expected.containsAll(actual));
+		assertEquals(expected.size(), actual.size());
+		verify(this.mockReviewRepo, times(1)).findAll();
+	}
 
 	@Test
 	void testFindByProductId_Success() {
