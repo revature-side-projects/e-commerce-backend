@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.revature.exceptions.AddressNotFoundException;
 import com.revature.exceptions.DuplicateReviewException;
 import com.revature.exceptions.FileUploadException;
 import com.revature.exceptions.InvalidProductInputException;
@@ -45,6 +46,13 @@ public class RestExceptionHandler {
 
 	}
 
+	@ExceptionHandler(AddressNotFoundException.class)
+	public ResponseEntity<Object> handleAddressNotFoundException(HttpServletRequest request,
+			AddressNotFoundException addressNotFoundException) {
+		String errorMessage = addressNotFoundException.getMessage();
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+	}
+
 	@ExceptionHandler(ProductNotFoundException.class)
 	public ResponseEntity<Object> handleProductNotFoundException(HttpServletRequest request,
 			ProductNotFoundException productNotFoundException) {
@@ -62,7 +70,7 @@ public class RestExceptionHandler {
 	}
 
 	@ExceptionHandler(UserNotFoundException.class)
-	public ResponseEntity<Object> handleReviewNotFoundException(HttpServletRequest request,
+	public ResponseEntity<Object> handleUserNotFoundException(HttpServletRequest request,
 			UserNotFoundException userNotFoundException) {
 
 		String errorMessage = userNotFoundException.getMessage();
@@ -70,7 +78,7 @@ public class RestExceptionHandler {
 	}
 
 	@ExceptionHandler(DuplicateReviewException.class)
-	public ResponseEntity<Object> handleReviewNotFoundException(HttpServletRequest request,
+	public ResponseEntity<Object> handleDuplicateReviewException(HttpServletRequest request,
 			DuplicateReviewException duplicateReviewException) {
 
 		String errorMessage = duplicateReviewException.getMessage();
@@ -78,32 +86,29 @@ public class RestExceptionHandler {
 	}
 
 	@ExceptionHandler(UnauthorizedReviewAccessException.class)
-    public ResponseEntity<Object> handleReviewNotFoundException(
-		HttpServletRequest request, 
-		UnauthorizedReviewAccessException unauthorizedReviewAccessException
-	) {
-    	
-    	String errorMessage = unauthorizedReviewAccessException.getMessage();
-    	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMessage);
-    }
-	
+	public ResponseEntity<Object> handleReviewNotFoundException(
+			HttpServletRequest request,
+			UnauthorizedReviewAccessException unauthorizedReviewAccessException) {
+
+		String errorMessage = unauthorizedReviewAccessException.getMessage();
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMessage);
+	}
+
 	@ExceptionHandler(MultipartFileConversionException.class)
-    public ResponseEntity<Object> handleMultipartFileConversionException(
-		HttpServletRequest request, 
-		MultipartFileConversionException multipartFileConversionException
-	) {
-    	
-    	String errorMessage = multipartFileConversionException.getMessage();
-    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
-    }
-	
+	public ResponseEntity<Object> handleMultipartFileConversionException(
+			HttpServletRequest request,
+			MultipartFileConversionException multipartFileConversionException) {
+
+		String errorMessage = multipartFileConversionException.getMessage();
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+	}
+
 	@ExceptionHandler(FileUploadException.class)
-    public ResponseEntity<Object> handleFileUploadException(
-		HttpServletRequest request, 
-		FileUploadException fileUploadException
-	) {
-    	
-    	String errorMessage = fileUploadException.getMessage();
-    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
-    }
+	public ResponseEntity<Object> handleFileUploadException(
+			HttpServletRequest request,
+			FileUploadException fileUploadException) {
+
+		String errorMessage = fileUploadException.getMessage();
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+	}
 }
