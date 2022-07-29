@@ -1,8 +1,8 @@
 package com.revature.advice;
 
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +20,8 @@ public class LoggingAdvice {
 	public void pointCut() {
 	}
 	
-	@Around("pointCut()")
-	public Object appLogger(ProceedingJoinPoint pjp) {
+	@Before("pointCut()")
+	public Object appLogger(JoinPoint pjp) {
 		ObjectMapper mapper = new ObjectMapper();
 		String methodName = pjp.getSignature().getName();
 		String className = pjp.getTarget().getClass().toString();
@@ -30,7 +30,6 @@ public class LoggingAdvice {
 		
 		try {
 			log.info(String.format("method invoked %1$s : %2$s () : arguments : %3$s", className, methodName, mapper.writeValueAsString(methodArgs)));
-			o = pjp.proceed();
 		} catch (Throwable e) {
 			log.error("logger unable to parse methodArgs");
 		}
