@@ -59,6 +59,7 @@ public class Review {
     @NotNull    @NonNull
 
     private User user;
+    
     public Review(@NotBlank int stars, @Length(max = 100) String title, @Length(max = 400) String review, User user, Product product) {
 		super();
 		this.stars = stars;

@@ -177,7 +177,7 @@ class ReviewServiceTest {
 		given(this.mockReviewRepo.findById(id)).willReturn(Optional.of(this.dummyReview));
 
 		Review expected = this.dummyReview;
-		Review actual = this.rServ.findById(id).get();
+		Review actual = this.rServ.findById(id);
 
 		assertEquals(expected, actual);
 		verify(this.mockReviewRepo, times(1)).findById(id);

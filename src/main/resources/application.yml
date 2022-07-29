@@ -11,7 +11,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/postgres
     driver-class-name: org.postgresql.Driver
     username: postgres
-    password: postgres
+    password: f01lb0y
 #    username: ${RDS_USERNAME}
 #    password: ${RDS_PASSWORD}
   h2:

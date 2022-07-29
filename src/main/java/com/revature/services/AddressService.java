@@ -13,13 +13,15 @@ import com.revature.repositories.AddressRepository;
 public class AddressService {
 
 	private final AddressRepository addressRepo;
+	private final UserService userService;
 
-	public AddressService(AddressRepository addressRepo) {
+	public AddressService(AddressRepository addressRepo, UserService userService) {
 		this.addressRepo = addressRepo;
+		this.userService = userService;
+
 	}
 
 	public Address addAddress(AddressRequest addressRequest) {
-
 		Address address = new Address();
 		address.setStreet(addressRequest.getStreet());
 		address.setSecondary(addressRequest.getSecondary());
@@ -46,8 +48,6 @@ public class AddressService {
 	}
 
 	public Set<Address> findUsersAddresses(User u) {
-		
 		return addressRepo.findByUsers(u);
 	}
-
 }
