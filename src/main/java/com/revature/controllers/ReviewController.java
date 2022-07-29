@@ -25,12 +25,19 @@ import com.revature.models.Review;
 import com.revature.models.User;
 import com.revature.services.ReviewService;
 
+/**
+ * This controller handles requests for the "/api/review" endpoint
+ * 
+ * @author CameronMSeibel
+ * @author janderson38
+ * @author JustDamion
+ *
+ */
 @RestController
 @RequestMapping("/api/review")
 @CrossOrigin(origins = {"http://localhost:4200", "http://localhost:3000"}, allowCredentials = "true")
 public class ReviewController {
 
-	// TODO: Integrate review service
 	private ReviewService reviewService;
 	
 	public ReviewController(ReviewService reviewService) {
@@ -47,57 +54,34 @@ public class ReviewController {
 	// Get all reviews about a given product
 	@GetMapping("/product/{productId}")
 	public ResponseEntity<List<Review>> getReviewsOfProduct(@PathVariable("productId") int productId) {
-		try {
-			return ResponseEntity.ok(reviewService.findByProductId(productId));
-		} catch(ResourceAccessException e) {
-			return ResponseEntity
-					.status(HttpStatus.NOT_FOUND)
-					.body(null);
-		}
+		return ResponseEntity.ok(reviewService.findByProductId(productId));
 	}
 	
 	// Get all reviews written by a given user
 	@GetMapping("/user/{userId}")
 	public ResponseEntity<List<Review>> getReviewsByUser(@PathVariable("userId") int userId) {
-		try {
-			return ResponseEntity.ok(reviewService.findByUserId(userId));
-		} catch(ResourceAccessException e) {
-			return ResponseEntity
-					.status(HttpStatus.NOT_FOUND)
-					.body(null);
-		}
+		return ResponseEntity.ok(reviewService.findByUserId(userId));
 	}
 	
+	// Get a review by its ID
 	@GetMapping("/{id}")
 	public ResponseEntity<Review> getReviewById(@PathVariable("id") int id) {
-		Optional<Review> optR = reviewService.findById(id);
-		if(optR.isPresent()) {
-			return ResponseEntity.ok(optR.get());
-		} else {
-			return ResponseEntity
-					.status(HttpStatus.NOT_FOUND)
-					.body(null);
-		}
+		Review review = reviewService.findById(id);
+		return ResponseEntity.ok(review);
 	}
 	
 	/**
 	 * Create a new review tied to the logged in User
 	 * @param reviewRequest
 	 * @param session
-	 * @return
+	 * @return an "ok" ResponseEntity so long as the product being reviewed exists
 	 */
 	@Authorized
 	@PostMapping
 	public ResponseEntity<Review> addReview(@RequestBody ReviewRequest reviewRequest, HttpSession session) {
 		User u = (User) session.getAttribute("user"); // May need to try catch - but this shouldn't execute if 
 													  // "user" session attribute is null anyway
-		try {
-			return ResponseEntity.ok(reviewService.add(reviewRequest, u));
-		} catch(ResourceAccessException e) {
-			return ResponseEntity
-					.status(HttpStatus.NOT_FOUND)
-					.body(null);
-		}
+		return ResponseEntity.ok(reviewService.add(reviewRequest, u));
 	}
 	
 	/**
@@ -105,37 +89,25 @@ public class ReviewController {
 	 * @param reviewRequest
 	 * @param id ID of review to update
 	 * @param session
-	 * @return
+	 * @return an "ok" ResponseEntity so long as the current user authored the review, and the review exists
 	 */
 	@Authorized
 	@PutMapping("/{id}")
 	public ResponseEntity<Review> updateReview(@RequestBody ReviewRequest reviewRequest, @PathVariable("id") int id, HttpSession session) {
 		int userId = ((User) session.getAttribute("user")).getId();
-		try {
-		 	return ResponseEntity.ok(reviewService.update(reviewRequest, id, userId));
-		} catch(HttpClientErrorException e) {
-			return ResponseEntity
-					.status(e.getStatusCode())
-					.body(null);
-		}
+	 	return ResponseEntity.ok(reviewService.update(reviewRequest, id, userId));
 	}
 	
 	/**
 	 * Delete a review given a review's ID, and that the user requesting the delete owns the review
 	 * @param id ID of Review to delete
 	 * @param session Current HTTP session
-	 * @return
+	 * @return an "ok" ResponseEntity so long as the current user authored the review, and the review exists
 	 */
 	@Authorized
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Review> deleteReview(@PathVariable("id") int id, HttpSession session) {
 		int userId = ((User) session.getAttribute("user")).getId();
-		try {
-			return ResponseEntity.ok(reviewService.delete(id, userId));
-		} catch(HttpClientErrorException e) {
-			return ResponseEntity
-					.status(e.getStatusCode())
-					.body(null);
-		}
+		return ResponseEntity.ok(reviewService.delete(id, userId));
 	}
 }

@@ -58,8 +58,8 @@ public class PurchaseController {
 	
 	@Authorized
 	@GetMapping("user/{user}")
-	public ResponseEntity<List<Purchase>> getPurchasesByOwner(@PathVariable("user") User user) {
-		return ResponseEntity.ok(pserv.findByOwner(user));
+	public ResponseEntity<List<Purchase>> getPurchasesByOwner(@PathVariable("user") int userId) {
+		return ResponseEntity.ok(pserv.findByOwner(userId));
 	}
 	
 	/**
@@ -76,15 +76,11 @@ public class PurchaseController {
 	public ResponseEntity<List<Purchase>> addPurchase(@RequestBody List<PurchaseRequest> purchaseRequests, HttpSession session) {
 		User u = (User) session.getAttribute("user");
 		
-		try {
-			List<Purchase> resp = new LinkedList<>();
-			for (PurchaseRequest purchaseRequest : purchaseRequests) {
-				resp.add(pserv.add(purchaseRequest, u));
-			}
-			
-			return ResponseEntity.ok(resp);
-		} catch(ResourceAccessException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		List<Purchase> resp = new LinkedList<>();
+		for (PurchaseRequest purchaseRequest : purchaseRequests) {
+			resp.add(pserv.add(purchaseRequest, u));
 		}
+		
+		return ResponseEntity.ok(resp);
 	}
 }
