@@ -1,16 +1,19 @@
 server:
-  port: 5000
+  port: 8080
 spring:
   jpa:
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    defer-datasource-initialization: true
+#    defer-datasource-initialization: true
   datasource:
-    url: jdbc:postgresql://${RDS_HOSTNAME}:${RDS_PORT}/${RDS_DB_NAME}
+#    platform: postgres
+    url: jdbc:postgresql://localhost:5432/postgres
     driver-class-name: org.postgresql.Driver
-    username: ${RDS_USERNAME}
-    password: ${RDS_PASSWORD}
+    username: postgres
+    password: postgres
+#    username: ${RDS_USERNAME}
+#    password: ${RDS_PASSWORD}
   h2:
     console.enabled: true
   sql:

@@ -44,21 +44,21 @@ INSERT INTO users (user_id, email, password, first_name, last_name, role)
 VALUES (
            1,
            'admin@gmail.com',
-           'password',
+           'auth0|62e0f8d6a6c5ffa1e877de65',
            'testAdmin',
            'User',
            'ADMIN'
        );
-       
-INSERT INTO users (user_id, email, password, first_name, last_name, role)
+
+
+INSERT INTO purchases (purchase_id,product_id, user_id, quantity)
 VALUES (
-           2,
-           'newuser@gmail.com',
-           'password',
-           'testUser',
-           'User',
-           'CUSTOMER'
+           1,
+           1,
+           1,
+        10
        );
+
 
 INSERT INTO addresses (address_id, street, secondary, city, zip, state)
 VALUES (
