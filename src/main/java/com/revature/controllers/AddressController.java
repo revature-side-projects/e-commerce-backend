@@ -48,6 +48,7 @@ public class AddressController {
 		}
 	}
 	
+	// FIXME Needs address ID parameter
 	@PutMapping
 	public ResponseEntity<Address> updateAddress(@RequestBody AddressRequest addressRequest, HttpSession session) {
 		

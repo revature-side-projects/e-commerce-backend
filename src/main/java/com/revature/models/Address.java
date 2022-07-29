@@ -1,10 +1,11 @@
 package com.revature.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.sun.istack.NotNull;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -15,6 +16,7 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 @Table(name = "addresses")
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "users" })
 public class Address {
@@ -44,8 +46,4 @@ public class Address {
     @ToString.Exclude
     private Set<User> users = new LinkedHashSet<>();
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }

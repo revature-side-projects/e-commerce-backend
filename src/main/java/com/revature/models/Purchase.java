@@ -19,6 +19,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 @Table(name = "purchases")
 //@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "product", "ownerUser" })
 public class Purchase {
