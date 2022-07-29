@@ -62,7 +62,6 @@ public class RestExceptionHandler {
 	@ExceptionHandler(ReviewNotFoundException.class)
 	public ResponseEntity<Object> handleReviewNotFoundException(HttpServletRequest request,
 			ReviewNotFoundException reviewNotFoundException) {
-		System.out.println("Review not found!");
 		String errorMessage = reviewNotFoundException.getMessage();
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
 	}
