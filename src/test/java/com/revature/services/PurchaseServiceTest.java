@@ -86,7 +86,7 @@ class PurchaseServiceTest {
 		given(this.mockPurchaseRepo.findByOwnerUser(this.dummyUser)).willReturn(purchases);
 
 		List<Purchase> expected = purchases;
-		List<Purchase> actual = this.purchaseServ.findByOwner(this.dummyUser);
+		List<Purchase> actual = this.purchaseServ.findByOwner(this.dummyUser.getId());
 
 		assertEquals(expected, actual);
 		assertTrue(actual.containsAll(expected));
