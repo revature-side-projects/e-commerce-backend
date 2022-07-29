@@ -1,6 +1,5 @@
 package com.revature.controllers;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.dtos.AddressRequest;
+import com.revature.exceptions.UserNotFoundException;
 import com.revature.models.Address;
 import com.revature.models.User;
 import com.revature.services.AddressService;
@@ -44,10 +44,11 @@ public class AddressController {
 
 			return ResponseEntity.ok(aserv.findUsersAddresses(optionalUser.get()));
 		} else {
-			return ResponseEntity.ok(new HashSet<Address>());
+			throw new UserNotFoundException(userId);
 		}
 	}
-
+	
+	// FIXME Needs address ID parameter
 	@PutMapping
 	public ResponseEntity<Address> updateAddress(@RequestBody AddressRequest addressRequest, HttpSession session) {
 

@@ -84,8 +84,9 @@ public class ReviewService {
     	Optional<Review> optionalReview = reviewRepository.findById(id);
     	if(!optionalReview.isPresent()) {
     		throw new ReviewNotFoundException(String.format("No review found with ID %d", id));
+    	} else {
+            return optionalReview.get();
     	}
-        return optionalReview.get();
     }
     
     public Review save(Review review) {

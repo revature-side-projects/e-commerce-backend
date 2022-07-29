@@ -25,28 +25,31 @@ public class Product {
     @Column(name = "product_id")
     private int id;
     @NotNull
+    @NonNull
     private int quantity;
     @NotNull
+    @NonNull
     private double price;
     @NotNull
+    @NonNull
     private String description;
     @NotNull
+    @NonNull
     private String image;
     @NotNull
+    @NonNull
     private String name;
 
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "product_id")
-
-
     @ToString.Exclude
     private Set<Review> reviews = new LinkedHashSet<>();
 
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "product_id")
-
     @ToString.Exclude
     private Set<Purchase> purchases = new LinkedHashSet<>();
+
 
     @Override
     public int hashCode() {
@@ -63,5 +66,4 @@ public class Product {
 		this.name = name;
 
 	}
-    
 }

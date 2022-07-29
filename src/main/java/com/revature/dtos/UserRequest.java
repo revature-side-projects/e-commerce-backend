@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserRequest {
-	private int id;
+//	private int id;
 	private String email;
 	private String password;
 	private String firstName;
@@ -22,5 +22,5 @@ public class UserRequest {
 	private String role;
 //	private Set<Purchase> purchases;
 //	private Set<Review> reviews;
-	private Set<Address> addresses;
+//	private Set<Address> addresses;
 }
