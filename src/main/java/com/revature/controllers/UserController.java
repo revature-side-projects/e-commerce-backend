@@ -1,17 +1,13 @@
 package com.revature.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.revature.annotations.Authorized;
 import com.revature.dtos.UserRequest;
@@ -29,28 +25,44 @@ public class UserController {
 	public UserController(UserService userv) {
 		this.userv = userv;
 	}
-	
-//	@Authorized
+
 	@GetMapping("/{userId}")
 	public ResponseEntity<User> getUserById(@PathVariable("userId") int userId) {
 	
 		Optional<User> optionalUser = userv.findById(userId);
 		
+		return optionalUser.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+	}
+
+
+	@Authorized
+	@GetMapping("/email/{userEmail}")
+	public ResponseEntity<User> getUserByEmail(@PathVariable("userEmail") String userEmail) {
+		System.out.println(userEmail);
+		Optional<User> optionalUser = userv.findByEmail(userEmail);
+
 		return ResponseEntity.ok(optionalUser.get());
 	}
-	
+
 	@Authorized
 	@PutMapping
 	public ResponseEntity<User> update(@RequestBody UserRequest user, HttpSession session) {
 		
 		User curUser = (User) session.getAttribute("user");
-
+		System.out.println(curUser);
 		curUser.setEmail(user.getEmail());
 		curUser.setPassword(user.getPassword());
 		curUser.setFirstName(user.getFirstName());
 		curUser.setLastName(user.getLastName());
-		curUser.setAddresses(user.getAddresses());
-		
+//		curUser.setAddresses(user.getAddresses());
+		System.out.println(curUser);
+
 		return ResponseEntity.ok(userv.save(curUser));
+	}
+
+	@PostMapping
+	public ResponseEntity<User> registerUser(@RequestBody UserRequest user) {
+		User newUser = new User(user.getEmail(), user.getPassword(), user.getFirstName(), user.getLastName(), user.getRole());
+		return ResponseEntity.ok(userv.save(newUser));
 	}
 }

@@ -3,13 +3,33 @@ server:
 spring:
   jpa:
     hibernate:
-      ddl-auto: create-drop
-    database-platform: org.hibernate.dialect.H2Dialect
-    defer-datasource-initialization: true
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+#    defer-datasource-initialization: true
   datasource:
-    url: jdbc:h2:mem:memdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: password
+#    platform: postgres
+    url: jdbc:postgresql://localhost:5432/postgres
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+#    username: ${RDS_USERNAME}
+#    password: ${RDS_PASSWORD}
   h2:
     console.enabled: true
+  sql:
+    init:
+      platform: postgres
+cloud:
+  aws:
+    credentials:
+      access-key: AKIAXYAL34JPGSRKUR7Y
+      secret-key: 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
+    region:
+      static: us-east-1
+    stack:
+      auto: false
+    endpoint: https://revazon-image-bucket.s3.amazonaws.com
+      
+application:
+  bucket:
+    name: revature-image-bucket

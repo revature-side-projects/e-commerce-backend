@@ -1,8 +1,12 @@
-package com.revature.advice;
+	package com.revature.advice;
 
 import com.revature.annotations.AuthRestriction;
 import com.revature.annotations.Authorized;
+import com.revature.annotations.AuthorizedAdmin;
+import com.revature.exceptions.InvalidRoleException;
 import com.revature.exceptions.NotLoggedInException;
+import com.revature.models.User;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -23,7 +27,8 @@ public class AuthAspect {
     public AuthAspect(HttpServletRequest req) {
         this.req = req;
     }
-
+    /**
+     * 
     // This advice will execute around any method annotated with @Authorized
     // If the user is not logged in, an exception will be thrown and handled
     // Otherwise, the original method will be invoked as normal.
@@ -42,8 +47,9 @@ public class AuthAspect {
     // Then the RestExceptionHandler class can be expanded to include
     // @ExceptionHandler(InvalidRoleException.class)
     // which should return a 403 Forbidden such as:
-    // String errorMessage = "Missing required role to perform this action";
-    // return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorMessage);
+    // @String errorMessage = "Missing required role to perform this action";
+    // @return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorMessage);
+     */
     @Around("@annotation(authorized)")
     public Object authenticate(ProceedingJoinPoint pjp, Authorized authorized) throws Throwable {
 
@@ -52,6 +58,27 @@ public class AuthAspect {
         // If the user is not logged in
         if(session.getAttribute("user") == null) {
             throw new NotLoggedInException("Must be logged in to perform this action");
+        }
+        
+       
+
+        return pjp.proceed(pjp.getArgs()); // Call the originally intended method
+    }
+    // This advice will execute around any method annotated with @AuthorizedAdmin
+    // It will check the role of user, if role of user is not ADMIN, an an exception 
+    // will be thrown and handled. Otherwise, the original method will be invoked as normal.
+    @Around("@annotation(authorized)")
+    public Object authenticateAdmin(ProceedingJoinPoint pjp, AuthorizedAdmin authorized) throws Throwable {
+
+        HttpSession session = req.getSession(); // Get the session (or create one)
+
+
+        
+        User loggedInUser = (User) session.getAttribute("user"); // get the user from session
+        String userRole = loggedInUser.getRole(); // get the role of user
+        // check the role of user
+        if(authorized.value().equals(AuthRestriction.ADMIN) && !"ADMIN".equals(userRole)) {
+        	throw new InvalidRoleException("Must be logged in as a Admin to perform this action");
         }
 
         return pjp.proceed(pjp.getArgs()); // Call the originally intended method

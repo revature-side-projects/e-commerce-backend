@@ -1,7 +1,5 @@
 package com.revature.models;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.sun.istack.NotNull;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -11,6 +9,8 @@ import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import java.sql.Timestamp;
 
 @Getter
@@ -20,6 +20,7 @@ import java.sql.Timestamp;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 @Table(name = "reviews")
 public class Review {
     @Id
@@ -28,12 +29,14 @@ public class Review {
     @Column(name = "review_id")
     private int id;
 
-    @NotNull
+    @NotNull    @NonNull
+
     @Min(value = 0)
 	@Max(value = 5)
-	private int stars;
+    private int stars;
 
-    @NotNull
+    @NotNull    @NonNull
+
     private String title;
 
     @NotNull
@@ -47,15 +50,15 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
-    @NotNull
-    @JsonManagedReference
+    @NotNull    @NonNull
+
     private Product product;
     
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @NotNull
-    @JsonManagedReference
+    @NotNull    @NonNull
+
     private User user;
     public Review(@NotBlank int stars, @Length(max = 100) String title, @Length(max = 400) String review, User user, Product product) {
 		super();
@@ -65,9 +68,4 @@ public class Review {
 		this.user = user;
 		this.product = product;
 	}
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }

@@ -28,28 +28,32 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    @NotNull
     private int id;
+
     @NotNull
+    @NonNull
     private String email;
     @NotNull
+    @NonNull
     private String password;
     @NotNull
+    @NonNull
     private String firstName;
     @NotNull
+    @NonNull
     private String lastName;
+
     @NotNull
+    @NonNull
     private String role;
 
     @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "user_id")
-    @JsonBackReference
     @ToString.Exclude
     private Set<Purchase> purchases = new LinkedHashSet<>();
 
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "user_id")
-    @JsonBackReference
     @ToString.Exclude
     private Set<Review> reviews = new LinkedHashSet<>();
 
@@ -59,9 +63,10 @@ public class User {
             joinColumns = { @JoinColumn(name = "user_id") },
             inverseJoinColumns = { @JoinColumn(name = "address_id") }
     )
-    @JsonBackReference
     @ToString.Exclude
     private Set<Address> addresses = new HashSet<>();
+
+
 
     @Override
     public int hashCode() {
