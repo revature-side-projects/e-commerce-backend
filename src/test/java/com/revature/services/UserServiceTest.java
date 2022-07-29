@@ -29,10 +29,10 @@ class UserServiceTest {
 
 	User dummyUser;
 
-	@BeforeEach
-	void setUp() throws Exception {
-		this.dummyUser = new User(1, "dummy.admin@revature.com", "asdf", "Dummy", "User", "Admin");
-	}
+	/*
+	 * @BeforeEach void setUp() throws Exception { this.dummyUser = new User(1,
+	 * "dummy.admin@revature.com", "asdf", "Dummy", "User", "Admin"); }
+	 */
 
 	@AfterEach
 	void tearDown() throws Exception {
