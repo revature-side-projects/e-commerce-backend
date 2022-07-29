@@ -60,7 +60,7 @@ public class RestExceptionHandler {
 	}
 
 	@ExceptionHandler(UserNotFoundException.class)
-	public ResponseEntity<Object> handleReviewNotFoundException(HttpServletRequest request,
+	public ResponseEntity<Object> handleUserNotFoundException(HttpServletRequest request,
 			UserNotFoundException userNotFoundException) {
 
 		String errorMessage = userNotFoundException.getMessage();
@@ -68,7 +68,7 @@ public class RestExceptionHandler {
 	}
 
 	@ExceptionHandler(DuplicateReviewException.class)
-	public ResponseEntity<Object> handleReviewNotFoundException(HttpServletRequest request,
+	public ResponseEntity<Object> handleDuplicateReviewException(HttpServletRequest request,
 			DuplicateReviewException duplicateReviewException) {
 
 		String errorMessage = duplicateReviewException.getMessage();
@@ -76,7 +76,7 @@ public class RestExceptionHandler {
 	}
 
 	@ExceptionHandler(UnauthorizedReviewAccessException.class)
-    public ResponseEntity<Object> handleReviewNotFoundException(
+    public ResponseEntity<Object> handleUnauthorizedReviewAccessException(
 		HttpServletRequest request, 
 		UnauthorizedReviewAccessException unauthorizedReviewAccessException
 	) {
