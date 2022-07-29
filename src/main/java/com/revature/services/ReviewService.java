@@ -28,7 +28,7 @@ import com.revature.repositories.ReviewRepository;
  */
 @Service
 public class ReviewService {
-	
+
 	private final ReviewRepository reviewRepository;
 	private final ProductService productService;
 	private final UserService userService;
@@ -53,12 +53,11 @@ public class ReviewService {
     	Optional<Product> optionalProduct = productService.findById(reviewRequest.getProductId());
 		if(optionalProduct.isPresent()) {
 			Review review = new Review(
-					reviewRequest.getStars(), 
-					reviewRequest.getTitle(), 
+					reviewRequest.getStars(),
+					reviewRequest.getTitle(),
 					reviewRequest.getReview(),
 					user,
-					optionalProduct.get()
-				);
+					optionalProduct.get());
 			Product product = optionalProduct.get();
 			Optional<Review> optionalReview = this.findByProductId(product.getId()).stream()
 					.filter(r -> r.getUser().getId() == user.getId())
@@ -67,12 +66,13 @@ public class ReviewService {
 				throw new DuplicateReviewException("You have already written a review for this product.");
 			}
 			review = reviewRepository.save(review);
-		
+
 			return review;
 		} else {
-			throw new ProductNotFoundException(String.format("No product found with ID %d", reviewRequest.getProductId()));
+			throw new ProductNotFoundException(
+					String.format("No product found with ID %d", reviewRequest.getProductId()));
 		}
-    }
+	}
     
     /**
      * Retrieve a list of all reviews
@@ -174,14 +174,19 @@ public class ReviewService {
     	Optional<Review> optionalReview = reviewRepository.findById(id);
 		if(optionalReview.isPresent()) {
 			Review r = optionalReview.get();
-			if(r.getUser().getId() == userId) {
+			if (r.getUser().getId() == userId) {
 				reviewRepository.deleteById(id);
 				return r;
 			} else {
-				throw new UnauthorizedReviewAccessException("You are not authorized to delete this review."); // User does not own this review
+				throw new UnauthorizedReviewAccessException("You are not authorized to delete this review."); // User
+																												// does
+																												// not
+																												// own
+																												// this
+																												// review
 			}
 		} else {
 			throw new ReviewNotFoundException(String.format("No review found with ID %d", id));
 		}
-    }
+	}
 }
