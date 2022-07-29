@@ -16,6 +16,16 @@ import com.revature.models.Review;
 import com.revature.models.User;
 import com.revature.repositories.ReviewRepository;
 
+/**
+ * ReviewService acts as a layer between our web controllers and our ReviewRepository.
+ * It handles basic logical processes to determine if the action can be fulfilled, and
+ * informs the controller how to respond.
+ * 
+ * @author CameronMSeibel
+ * @author janderson38
+ * @author JustDamion
+ *
+ */
 @Service
 public class ReviewService {
 	
@@ -33,6 +43,12 @@ public class ReviewService {
         this.userService = userService;
     }
     
+    /**
+     * Create a new review authored by the given user
+     * @param reviewRequest containing relevant review information
+     * @param user who authored the review
+     * @return the new review object
+     */
     public Review add(ReviewRequest reviewRequest, User user) {
     	Optional<Product> optionalProduct = productService.findById(reviewRequest.getProductId());
 		if(optionalProduct.isPresent()) {
@@ -45,8 +61,8 @@ public class ReviewService {
 				);
 			Product product = optionalProduct.get();
 			Optional<Review> optionalReview = this.findByProductId(product.getId()).stream()
-						.filter(r -> r.getUser().getId() == user.getId())
-						.findFirst();
+					.filter(r -> r.getUser().getId() == user.getId())
+					.findFirst();
 			if(optionalReview.isPresent()) {
 				throw new DuplicateReviewException("You have already written a review for this product.");
 			}
@@ -58,10 +74,20 @@ public class ReviewService {
 		}
     }
     
+    /**
+     * Retrieve a list of all reviews
+     * @return a list of all reviews
+     */
     public List<Review> findAll() {
     	return reviewRepository.findAll();
     }
     
+    /**
+     * Retrieve a list of reviews associated with a given product ID
+     * @param productId an int corresponding to the ID of a product
+     * @return a list of reviews about the product
+     * @throws ProductNotFoundException when productId does not map to a product
+     */
     public List<Review> findByProductId(int productId) {
     	Optional<Product> optionalProduct = this.productService.findById(productId);
     	if(!optionalProduct.isPresent()) {
@@ -70,7 +96,13 @@ public class ReviewService {
     	
     	return reviewRepository.findByProduct(optionalProduct.get());
     }
-    
+     
+    /**
+     * Retrive a list of reviews authored by a given user
+     * @param userId ID corresponding to the user whose reviews are to be retrieved
+     * @return a list of reviews
+     * @throws UserNotFoundException when userId does not map to a user
+     */
     public List<Review> findByUserId(int userId) {
     	Optional<User> optionalUser = this.userService.findById(userId);
     	if(!optionalUser.isPresent()) {
@@ -80,6 +112,12 @@ public class ReviewService {
     	return reviewRepository.findByUser(optionalUser.get());
     }
     
+    /**
+     * Find a single review by its ID
+     * @param id of the review
+     * @return a single Review object
+     * @throws ReviewNotFoundException if the ID does not map to a review
+     */
     public Review findById(int id) {
     	Optional<Review> optionalReview = reviewRepository.findById(id);
     	if(!optionalReview.isPresent()) {
@@ -89,10 +127,24 @@ public class ReviewService {
     	}
     }
     
+    /**
+     * Save a review, creating a new review or updating an old review
+     * @param review to be saved
+     * @return the saved version of the review
+     */
     public Review save(Review review) {
     	return reviewRepository.save(review);
     }
     
+    /**
+     * Update a review with a given ID so long as the review was authored by the user with the user ID supplied
+     * @param reviewRequest to update the current review with
+     * @param id of the review to update
+     * @param userId of the user making the update request
+     * @return the updated version of the review
+     * @throws ReviewNotFoundException if the review ID does not map to a review
+     * @throws UnauthorizedReviewAccessException if the user making the request did not author the review
+     */
     public Review update(ReviewRequest reviewRequest, int id, int userId) {
     	Optional<Review> optionalReview = reviewRepository.findById(id);
     	if(optionalReview.isPresent()) {
@@ -110,6 +162,14 @@ public class ReviewService {
     	}
     }
     
+    /**
+     * Delete a review with the given ID so long as the user making the delete request authored the review
+     * @param id of the review to be deleted
+     * @param userId of the user making the delete request
+     * @return a copy of the now deleted review, that you may look back on your fond memories of this review.
+     * @throws ReviewNotFoundException if the ID does not map to a review
+     * @throws UnauthorizedReviewAccessException if the user making the request does not own the review
+     */
     public Review delete(int id, int userId) {
     	Optional<Review> optionalReview = reviewRepository.findById(id);
 		if(optionalReview.isPresent()) {
