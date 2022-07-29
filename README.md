@@ -1,6 +1,6 @@
 # Revazon
 
-![Project Image](project-image-url)
+![Project Image](src/main/resources/revazon-nav-bar-image.png)
 
 > Revazon is a sample e-commerce application that allows customers to buy Revature clothing and merchandise. This is a group project done as part of our cohort training at Revature.
 ---
@@ -22,9 +22,24 @@ Creating ReadMe's for your Github repository can be tedious.  I hope this templa
 
 #### Technologies
 
-- Java Spring
-- Angular
+- Java
+- Spring Boot
+- Postgres
+- AWS
+- Docker
+- Jacoco
 
+#### Deployment Diagram
+
+![Project Image](src/main/resources/fullstack-deployment-diagram.jpg)
+
+![Project Image](src/main/resources/backend-deployment-diagram.jpg)
+
+The backend is deployed in a cloud environment using AWS. A CI/CD pipeline is configured using Code Pipeline. EC2 instances host our application which is running in a Docker container. The application is written with Spring Boot and connects to AWS RDS service.
+
+#### Database ER Diagram
+
+![Project Image](src/main/resources/db-design.png)
 
 ---
 
@@ -34,6 +49,12 @@ Creating ReadMe's for your Github repository can be tedious.  I hope this templa
 
 ```html
     git clone https://github.com/Revature-Sophia-ECommerce-1376/e-commerce-backend.git
+```
+
+#### Running the Application
+
+```html
+    sh build.sh
 ```
 
 #### API Reference
@@ -68,7 +89,6 @@ furnished to do so, subject to the following conditions:
 
 ## Contributors
 
-- Twitter - [@jamesqquick](https://twitter.com/jamesqquick)
-- Website - [James Q Quick](https://jamesqquick.com)
+
 
 [Back To The Top](#read-me-template)
