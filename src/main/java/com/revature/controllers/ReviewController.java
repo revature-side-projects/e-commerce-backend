@@ -25,12 +25,19 @@ import com.revature.models.Review;
 import com.revature.models.User;
 import com.revature.services.ReviewService;
 
+/**
+ * This controller handles requests for the "/api/review" endpoint
+ * 
+ * @author CameronMSeibel
+ * @author janderson38
+ * @author JustDamion
+ *
+ */
 @RestController
 @RequestMapping("/api/review")
 @CrossOrigin(origins = {"http://localhost:4200", "http://localhost:3000"}, allowCredentials = "true")
 public class ReviewController {
 
-	// TODO: Integrate review service
 	private ReviewService reviewService;
 	
 	public ReviewController(ReviewService reviewService) {
@@ -56,6 +63,7 @@ public class ReviewController {
 		return ResponseEntity.ok(reviewService.findByUserId(userId));
 	}
 	
+	// Get a review by its ID
 	@GetMapping("/{id}")
 	public ResponseEntity<Review> getReviewById(@PathVariable("id") int id) {
 		Review review = reviewService.findById(id);
@@ -66,7 +74,7 @@ public class ReviewController {
 	 * Create a new review tied to the logged in User
 	 * @param reviewRequest
 	 * @param session
-	 * @return
+	 * @return an "ok" ResponseEntity so long as the product being reviewed exists
 	 */
 	@Authorized
 	@PostMapping
@@ -81,7 +89,7 @@ public class ReviewController {
 	 * @param reviewRequest
 	 * @param id ID of review to update
 	 * @param session
-	 * @return
+	 * @return an "ok" ResponseEntity so long as the current user authored the review, and the review exists
 	 */
 	@Authorized
 	@PutMapping("/{id}")
@@ -94,7 +102,7 @@ public class ReviewController {
 	 * Delete a review given a review's ID, and that the user requesting the delete owns the review
 	 * @param id ID of Review to delete
 	 * @param session Current HTTP session
-	 * @return
+	 * @return an "ok" ResponseEntity so long as the current user authored the review, and the review exists
 	 */
 	@Authorized
 	@DeleteMapping("/{id}")
