@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.AfterEach;
@@ -81,7 +82,7 @@ public class AddressControllerTest {
 		dummyUser.setAddresses(addresses);
 		System.out.println(dummyUser.getAddresses());
 		
-		given(this.userv.findById(1).get()).willReturn(dummyUser);
+		given(this.userv.findById(1)).willReturn(Optional.of(dummyUser));
 		given(this.aserv.findUsersAddresses(dummyUser)).willReturn(dummyUser.getAddresses());
 		
 		MockHttpServletRequestBuilder request = get(this.MAPPING + "/1").accept(MediaType.APPLICATION_JSON);
