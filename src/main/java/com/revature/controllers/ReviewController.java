@@ -30,7 +30,6 @@ import com.revature.services.ReviewService;
 @CrossOrigin(origins = {"http://localhost:4200", "http://localhost:3000"}, allowCredentials = "true")
 public class ReviewController {
 
-	// TODO: Integrate review service
 	private ReviewService reviewService;
 	
 	public ReviewController(ReviewService reviewService) {
