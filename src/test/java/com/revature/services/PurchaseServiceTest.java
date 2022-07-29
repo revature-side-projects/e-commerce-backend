@@ -83,6 +83,7 @@ class PurchaseServiceTest {
 	void testFindByOwner() {
 		List<Purchase> purchases = new LinkedList<>();
 		purchases.add(this.dummyPurchase);
+		given(this.uServ.findById(this.dummyUser.getId())).willReturn(Optional.of(this.dummyUser));
 		given(this.mockPurchaseRepo.findByOwnerUser(this.dummyUser)).willReturn(purchases);
 
 		List<Purchase> expected = purchases;

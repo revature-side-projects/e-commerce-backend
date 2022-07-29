@@ -106,6 +106,7 @@ class ProductServiceTest {
 
 	@Test
 	void testDelete() {
+		given(this.mockProductRepo.findById(this.dummyProduct.getId())).willReturn(Optional.of(this.dummyProduct));
 		this.pServ.delete(this.dummyProduct.getId());
 		verify(this.mockProductRepo, times(1)).deleteById(this.dummyProduct.getId());
 	}

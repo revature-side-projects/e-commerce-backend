@@ -34,7 +34,7 @@ public class ProductService {
     		throw new ProductNotFoundException(String.format("No product found with ID %d", id));
     	}
     	logger.info(String.format("Product with ID: %d successfully found", optionalProduct.get().getId()));
-        return productRepository.findById(id);
+        return optionalProduct;
     }
 
     public Product save(Product product) {
