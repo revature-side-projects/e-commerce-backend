@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
-import com.revature.annotations.Authorized;
 import com.revature.dtos.ReviewRequest;
 import com.revature.models.Review;
 import com.revature.models.User;
@@ -86,7 +85,6 @@ public class ReviewController {
 	 * @param session
 	 * @return
 	 */
-	@Authorized
 	@PostMapping
 	public ResponseEntity<Review> addReview(@RequestBody ReviewRequest reviewRequest, HttpSession session) {
 		User u = (User) session.getAttribute("user"); // May need to try catch - but this shouldn't execute if 
@@ -107,7 +105,7 @@ public class ReviewController {
 	 * @param session
 	 * @return
 	 */
-	@Authorized
+
 	@PutMapping("/{id}")
 	public ResponseEntity<Review> updateReview(@RequestBody ReviewRequest reviewRequest, @PathVariable("id") int id, HttpSession session) {
 		int userId = ((User) session.getAttribute("user")).getId();
@@ -126,7 +124,7 @@ public class ReviewController {
 	 * @param session Current HTTP session
 	 * @return
 	 */
-	@Authorized
+
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Review> deleteReview(@PathVariable("id") int id, HttpSession session) {
 		int userId = ((User) session.getAttribute("user")).getId();

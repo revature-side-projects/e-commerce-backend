@@ -16,13 +16,13 @@ public class PurchaseService {
 	
 	private final PurchaseRepository purchaseRepo;
 	private final ProductService pserv;
-	private final UserService userv;
+
 	
 	public PurchaseService(PurchaseRepository purchaseRepo, ProductService pserv,
 			UserService userv) {
 		this.purchaseRepo = purchaseRepo;
 		this.pserv = pserv;
-		this.userv = userv;
+
 	}
 	
 	public List<Purchase> findAll() {
