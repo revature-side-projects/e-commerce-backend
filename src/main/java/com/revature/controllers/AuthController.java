@@ -16,7 +16,10 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
+@Slf4j
 @RequestMapping("/auth")
 @CrossOrigin(origins = {"http://localhost:4200", "http://localhost:3000"}, allowCredentials = "true")
 public class AuthController {
@@ -30,10 +33,8 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<User> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
         Optional<User> optional = authService.findByCredentials(loginRequest.getEmail(), loginRequest.getPassword());
-
-        System.out.println(loginRequest.getEmail());
-        System.out.println(loginRequest.getPassword());
-        System.out.println(optional);
+        log.info(loginRequest.getEmail());
+        log.info(loginRequest.getPassword());
         if(!optional.isPresent()) {
             return ResponseEntity.badRequest().build();
         }
@@ -42,23 +43,6 @@ public class AuthController {
 
         return ResponseEntity.ok(optional.get());
     }
-
-//    @PostMapping("/loginEmail")
-//    public ResponseEntity<User> loginByEmail(@RequestBody LoginRequest loginRequest, HttpSession session) {
-//        Optional<User> optional = authService.findByEmail(loginRequest.getEmail());
-//
-//        System.out.println(loginRequest.getEmail());
-////        System.out.println(loginRequest.getPassword());
-//        System.out.println(optional);
-//        if(!optional.isPresent()) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//
-//        session.setAttribute("user", optional.get());
-//        System.out.println(session.getAttribute("user"));
-//
-//        return ResponseEntity.ok(optional.get());
-//    }
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpSession session) {
