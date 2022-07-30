@@ -1,7 +1,5 @@
 package com.revature.dtos;
 
-import com.revature.models.User;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,5 +13,5 @@ public class AddressRequest {
 	private String city;
 	private String zip;
 	private String state;
-	private User user;
+	
 }
