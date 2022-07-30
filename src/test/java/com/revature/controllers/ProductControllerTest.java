@@ -336,27 +336,19 @@ class ProductControllerTest {
 	}
 
 	@Test
-	@Disabled("Service method implementation is incomplete")
-	void testFilterByRating_Success() throws Exception {
-		int rating = 5;
+	void testFilterByRating() throws Exception {
+		// Currently we're only testing the filterByRating method to determine that the
+		// endpoint is working properly
 		List<Product> results = new LinkedList<>();
 		results.add(this.dummyProduct);
-		// given(this.pServ.filterByRating(rating)).willReturn(results);
+		given(this.pServ.filterByRating()).willReturn(results);
 
-		List<Product> expected = results;
-		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/filter-rating/" + rating)
+		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/filter-rating")
 				.contentType(MediaType.APPLICATION_JSON);
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
-		assertEquals(this.jsonProductList.write(expected).getJson(), response.getContentAsString());
-		// verify(this.pServ, times(1)).filterByRating(rating);
-	}
-
-	@Test
-	@Disabled("Not yet implemented")
-	void testFilterByRating_Failure_RatingOutOfBounds() throws Exception {
-		fail("Not yet implemented");
+		assertEquals(this.jsonProductList.write(results).getJson(), response.getContentAsString());
 	}
 
 }
