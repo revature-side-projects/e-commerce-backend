@@ -15,7 +15,7 @@ import com.revature.services.UserService;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:3000"}, allowCredentials = "true")
+@CrossOrigin(origins = "*")
 public class UserController {
 	
 	private final UserService userv;

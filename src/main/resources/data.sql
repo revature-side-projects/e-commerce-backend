@@ -93,15 +93,6 @@ VALUES (
            4,
            'great stuff man',
            2,
-           2
-       );
-INSERT INTO reviews (review_id, review, stars, title, product_id, user_id)
-VALUES (
-           3,
-           'A nice TeeShirt',
-           3,
-           'great stuff man',
-           2,
-           2
+           1
        );
 

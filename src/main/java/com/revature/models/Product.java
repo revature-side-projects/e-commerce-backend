@@ -39,8 +39,10 @@ public class Product {
     @Column(name = "product_id")
     private int id;
     @NotNull
+    @NonNull
     private int quantity;
     @NotNull
+    @NonNull
     private double price;
     @NotNull
     @NonNull
@@ -67,15 +69,4 @@ public class Product {
     public int hashCode() {
         return getClass().hashCode();
     }
-
-	public Product(int quantity, double price, String description, String image, String name, Set<Review> reviews,
-			Set<Purchase> purchases) {
-		super();
-		this.quantity = quantity;
-		this.price = price;
-		this.description = description;
-		this.image = image;
-		this.name = name;
-
-	}
 }

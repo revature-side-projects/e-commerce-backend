@@ -15,6 +15,8 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+
+
    @Value("${auth0.audience}")
    private String audience;
 
@@ -28,20 +30,22 @@ public class SecurityConfig {
         an OAuth2 Resource Server, using JWT validation.
         */
         http.authorizeRequests()
+//                .antMatchers(HttpMethod.PUT).hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/product").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/product/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/review/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/users/{userId}").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/users/").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/auth/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/users").permitAll()
 
-                
+
                 .antMatchers("/api/addresses/**").authenticated()
                 .antMatchers("/api/purchases/**").authenticated()
                 .antMatchers("/api/review/**").authenticated()
                 .antMatchers("/api/users/**").authenticated()
 
-                .antMatchers("/api/product/create-update").hasAuthority("admin")
-                .antMatchers("/api/product/uploadFile").hasAuthority("admin")
-                .antMatchers(HttpMethod.DELETE, "/api/product/{id}").hasAuthority("admin")
+                .antMatchers(HttpMethod.PUT).authenticated()
+                .antMatchers(HttpMethod.PATCH).authenticated()
+                .antMatchers(HttpMethod.DELETE).authenticated()
                 .and().cors()
                 .and().oauth2ResourceServer().jwt();
         return http.build();

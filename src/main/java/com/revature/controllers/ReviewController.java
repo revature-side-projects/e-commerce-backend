@@ -26,7 +26,7 @@ import com.revature.services.ReviewService;
 
 @RestController
 @RequestMapping("/api/review")
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:3000"}, allowCredentials = "true")
+@CrossOrigin(origins = "*")
 public class ReviewController {
 
 	// TODO: Integrate review service
