@@ -1,6 +1,7 @@
 package com.revature.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -24,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import com.revature.dtos.LoginRequest;
@@ -76,11 +78,12 @@ class AuthControllerTest {
 		String requestContent = this.jsonLoginRequest.write(loginRequest).getJson();
 		MockHttpServletRequestBuilder request = post(this.MAPPING_ROOT + "/login")
 				.contentType(MediaType.APPLICATION_JSON).content(requestContent);
-		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
+		MvcResult result = this.mvc.perform(request).andReturn();
+		MockHttpServletResponse response = result.getResponse();
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		assertEquals(this.jsonUser.write(this.dummyUser).getJson(), response.getContentAsString());
-		// TODO Assert if User in session matches that of the expected User
+		assertEquals(this.dummyUser, result.getRequest().getSession().getAttribute("user"));
 		verify(this.aServ, times(1)).findByCredentials(email, password);
 	}
 
@@ -102,10 +105,14 @@ class AuthControllerTest {
 
 	@Test
 	void testLogout() throws Exception {
-		MockHttpServletRequestBuilder request = post(this.MAPPING_ROOT + "/logout");
-		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
+		String attrName = "user";
+		MockHttpServletRequestBuilder request = post(this.MAPPING_ROOT + "/logout").sessionAttr(attrName,
+				this.dummyUser);
+		MvcResult result = this.mvc.perform(request).andReturn();
+		MockHttpServletResponse response = result.getResponse();
+
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
-		// TODO Assert if User in session is empty
+		assertNull(result.getRequest().getSession().getAttribute(attrName));
 	}
 
 	@Test
