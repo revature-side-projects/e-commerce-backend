@@ -1,8 +1,8 @@
 package com.revature.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -27,6 +27,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.web.client.ResourceAccessException;
 
 import com.revature.dtos.PurchaseRequest;
 import com.revature.models.Product;
@@ -109,10 +110,23 @@ class PurchaseControllerTest {
 		verify(this.pServ, times(1)).findByOwner(this.dummyUser);
 	}
 
+	/*
+	 * FIXME Fix implementation in both PurchaseController and PurchaseService to
+	 * make this test pass
+	 */
 	@Test
-	@Disabled("Not yet implemented")
+	@Disabled("Waiting on Gavin's team to fix method implementation in controller")
 	void testGetPurchasesByOwner_Failure_UserNotFound() throws Exception {
-		fail("Not yet implemented");
+		int userId = this.dummyUser.getId();
+		given(this.pServ.findByOwner(this.dummyUser))
+				.willThrow(new ResourceAccessException("No user found with ID " + userId));
+
+		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/user/" + userId)
+				.accept(MediaType.APPLICATION_JSON);
+		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
+
+		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+		verify(this.pServ, never()).findByOwner(this.dummyUser);
 	}
 
 	@Test
@@ -136,9 +150,24 @@ class PurchaseControllerTest {
 	}
 
 	@Test
-	@Disabled("Not yet implemented")
-	void testAddPurchase_Failure_ThrowsNotFound() throws Exception {
-		fail("Not yet implemented");
+	void testAddPurchase_Failure_ProductNotFound() throws Exception {
+		int productId = this.dummyProduct.getId();
+		PurchaseRequest newPurchase = new PurchaseRequest(productId, this.dummyPurchase.getQuantity());
+		List<PurchaseRequest> addRequests = new LinkedList<>();
+		addRequests.add(newPurchase);
+		given(this.pServ.add(newPurchase, this.dummyUser))
+				.willThrow(new ResourceAccessException("Product not found with ID " + productId));
+
+		List<Purchase> expected = new LinkedList<>();
+		expected.add(this.dummyPurchase);
+
+		String jsonContent = this.jsonPurchaseRequestList.write(addRequests).getJson();
+		MockHttpServletRequestBuilder request = post(this.MAPPING_ROOT).contentType(MediaType.APPLICATION_JSON)
+				.content(jsonContent).sessionAttr("user", this.dummyUser);
+		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
+
+		verify(this.pServ, times(1)).add(newPurchase, this.dummyUser);
+		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 	}
 
 }
