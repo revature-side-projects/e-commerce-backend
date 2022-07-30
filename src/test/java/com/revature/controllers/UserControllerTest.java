@@ -27,7 +27,7 @@ import com.revature.models.User;
 import com.revature.services.UserService;
 
 @AutoConfigureJsonTesters
-@WebMvcTest(ReviewController.class)
+@WebMvcTest(UserController.class)
 public class UserControllerTest {
 	
 	@Autowired
