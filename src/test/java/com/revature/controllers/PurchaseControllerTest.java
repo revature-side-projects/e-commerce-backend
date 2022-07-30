@@ -2,7 +2,6 @@ package com.revature.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -14,7 +13,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +25,10 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.web.client.ResourceAccessException;
 
 import com.revature.dtos.PurchaseRequest;
+import com.revature.exceptions.ProductNotFoundException;
+import com.revature.exceptions.UserNotFoundException;
 import com.revature.models.Product;
 import com.revature.models.Purchase;
 import com.revature.models.User;
@@ -92,14 +91,12 @@ class PurchaseControllerTest {
 		verify(this.pServ, times(1)).findAll();
 	}
 
-	// FIXME Fix implementation to make this test pass
 	@Test
-	@Disabled("Waiting on Gavin's team to fix method implementation in controller")
 	void testGetPurchasesByOwner_Success() throws Exception {
 		int userId = this.dummyUser.getId();
 		List<Purchase> purchases = new LinkedList<>();
 		purchases.add(this.dummyPurchase);
-		given(this.pServ.findByOwner(this.dummyUser)).willReturn(purchases);
+		given(this.pServ.findByOwner(userId)).willReturn(purchases);
 
 		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/user/" + userId)
 				.accept(MediaType.APPLICATION_JSON);
@@ -107,26 +104,20 @@ class PurchaseControllerTest {
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		assertEquals(this.jsonPurchaseList.write(purchases).getJson(), response.getContentAsString());
-		verify(this.pServ, times(1)).findByOwner(this.dummyUser);
+		verify(this.pServ, times(1)).findByOwner(userId);
 	}
 
-	/*
-	 * FIXME Fix implementation in both PurchaseController and PurchaseService to
-	 * make this test pass
-	 */
 	@Test
-	@Disabled("Waiting on Gavin's team to fix method implementation in controller")
 	void testGetPurchasesByOwner_Failure_UserNotFound() throws Exception {
 		int userId = this.dummyUser.getId();
-		given(this.pServ.findByOwner(this.dummyUser))
-				.willThrow(new ResourceAccessException("No user found with ID " + userId));
+		given(this.pServ.findByOwner(userId)).willThrow(new UserNotFoundException(userId));
 
 		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/user/" + userId)
 				.accept(MediaType.APPLICATION_JSON);
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
-		verify(this.pServ, never()).findByOwner(this.dummyUser);
+		verify(this.pServ, times(1)).findByOwner(userId);
 	}
 
 	@Test
@@ -155,8 +146,7 @@ class PurchaseControllerTest {
 		PurchaseRequest newPurchase = new PurchaseRequest(productId, this.dummyPurchase.getQuantity());
 		List<PurchaseRequest> addRequests = new LinkedList<>();
 		addRequests.add(newPurchase);
-		given(this.pServ.add(newPurchase, this.dummyUser))
-				.willThrow(new ResourceAccessException("Product not found with ID " + productId));
+		given(this.pServ.add(newPurchase, this.dummyUser)).willThrow(new ProductNotFoundException(productId));
 
 		List<Purchase> expected = new LinkedList<>();
 		expected.add(this.dummyPurchase);
