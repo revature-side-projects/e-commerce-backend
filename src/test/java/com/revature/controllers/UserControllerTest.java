@@ -5,6 +5,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import java.util.Optional;
 
@@ -23,6 +24,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import com.revature.dtos.UserRequest;
 import com.revature.models.User;
 import com.revature.services.UserService;
 
@@ -36,6 +38,9 @@ public class UserControllerTest {
 	@Autowired
 	private JacksonTester<User> jsonUser;
 
+	@Autowired
+	private JacksonTester<UserRequest> jsonUserRequest;
+	
 	@MockBean
 	private UserService uServ;
 	
@@ -106,10 +111,14 @@ public class UserControllerTest {
 	}
 	
 	@Test
-	public void testUpdate_Success() throws Exception {		
-		given(this.uServ.save(dummyUser)).willReturn(this.dummyUser);
+	public void testUpdate_Success() throws Exception {
+		UserRequest newUser = new UserRequest(this.dummyUser.getEmail(), this.dummyUser.getPassword(), 
+				this.dummyUser.getFirstName(), this.dummyUser.getLastName(), this.dummyUser.getRole());
+		given(this.uServ.save(this.dummyUser)).willReturn(this.dummyUser);
 		
-		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT).accept(MediaType.APPLICATION_JSON);
+		String jsonContent = this.jsonUserRequest.write(newUser).getJson();
+		MockHttpServletRequestBuilder request = post(this.MAPPING_ROOT).contentType(MediaType.APPLICATION_JSON)
+				.content(jsonContent).sessionAttr("user", this.dummyUser);;
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 		
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
