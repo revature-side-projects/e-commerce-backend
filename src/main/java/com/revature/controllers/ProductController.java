@@ -162,12 +162,7 @@ public class ProductController {
     	
         return ResponseEntity.ok(productService.findByPriceRange(priceRangeRequest.getMinPrice(),priceRangeRequest.getMaxPrice()));
     }
-//    @Authorized
-//    @GetMapping("/price-range")
-//    public ResponseEntity<List<Product>> getProductsByPriceRange(@RequestParam("minPrice") double minPrice,@RequestParam("maxPrice") double maxPrice ) {
-//    	
-//        return ResponseEntity.ok(productService.findByPriceRange(minPrice,maxPrice));
-//    }
+
     @Authorized
     @GetMapping("/filter-rating")
     public ResponseEntity<List<Product>> filterByRating() {
