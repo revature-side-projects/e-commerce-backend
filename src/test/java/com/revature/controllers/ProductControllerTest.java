@@ -52,7 +52,7 @@ class ProductControllerTest {
 	private JacksonTester<List<Product>> jsonProductList;
 
 	@Autowired
-	private JacksonTester<ProductInfo> jsonProductInfo;
+	private JacksonTester<List<ProductInfo>> jsonProductInfoList;
 
 	@Autowired
 	private JacksonTester<PriceRangeRequest> jsonPriceRangeRequest;
@@ -225,14 +225,37 @@ class ProductControllerTest {
 	}
 
 	@Test
-	@Disabled("Not yet implemented")
 	void testPurchase_Success() throws Exception {
+		int productId = this.dummyProduct.getId();
+		List<ProductInfo> metadata = new LinkedList<>();
+		metadata.add(new ProductInfo(productId, 1, this.dummyProduct.getPrice(), this.dummyProduct.getDescription(),
+				this.dummyProduct.getImage(), this.dummyProduct.getName()));
+		given(this.pServ.findById(productId)).willReturn(Optional.of(this.dummyProduct));
+
+		List<Product> productList = new LinkedList<>();
+		productList.add(this.dummyProduct);
+		given(this.pServ.saveAll(productList, metadata)).willReturn(productList);
+
+		String jsonContent = this.jsonProductInfoList.write(metadata).getJson();
+		MockHttpServletRequestBuilder request = patch(this.MAPPING_ROOT).contentType(MediaType.APPLICATION_JSON)
+				.content(jsonContent);
+		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
+
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(this.jsonProductList.write(productList).getJson(), response.getContentAsString());
+		verify(this.pServ, times(1)).findById(productId);
+		verify(this.pServ, times(1)).saveAll(productList, metadata);
+	}
+
+	@Test
+	@Disabled("Not yet implemented")
+	void testPurchase_Failure_ProductNotFound() throws Exception {
 		fail("Not yet implemented");
 	}
 
 	@Test
 	@Disabled("Not yet implemented")
-	void testPurchase_Failure_NotLoggedIn() throws Exception {
+	void testPurchase_Failure_BadRequestInvalidQuantity() throws Exception {
 		fail("Not yet implemented");
 	}
 
