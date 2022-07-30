@@ -3,12 +3,12 @@ package com.revature.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.sun.istack.NotNull;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -17,7 +17,6 @@ import java.util.Objects;
 @ToString
 @Entity
 @NoArgsConstructor
-@RequiredArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
 @Table(name = "purchases")
