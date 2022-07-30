@@ -1,8 +1,12 @@
 package com.revature.services;
 
 import com.revature.dtos.ProductInfo;
+import com.revature.exceptions.ProductNotFoundException;
 import com.revature.models.Product;
 import com.revature.repositories.ProductRepository;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,6 +14,8 @@ import java.util.Optional;
 
 @Service
 public class ProductService {
+	
+	Logger logger = LoggerFactory.getLogger(ProductService.class);
 
     private final ProductRepository productRepository;
 
@@ -22,7 +28,13 @@ public class ProductService {
     }
     
     public Optional<Product> findById(int id) {
-        return productRepository.findById(id);
+    	Optional<Product> optionalProduct = productRepository.findById(id);
+    	if(!optionalProduct.isPresent()) {
+    		logger.warn(String.format("No product found with ID %d", id));
+    		throw new ProductNotFoundException(String.format("No product found with ID %d", id));
+    	}
+    	logger.info(String.format("Product with ID: %d successfully found", optionalProduct.get().getId()));
+        return optionalProduct;
     }
 
     public Product save(Product product) {
@@ -34,7 +46,14 @@ public class ProductService {
     }
 
     public void delete(int id) {
-        productRepository.deleteById(id);
+    	Optional<Product> optionalProduct = productRepository.findById(id);
+    	if(optionalProduct.isPresent()) {
+    		productRepository.deleteById(id);
+    	}else {
+    		logger.warn(String.format("No Product found with ID %d", id));
+    		throw new ProductNotFoundException(String.format("No product found with ID %d", id));
+    	}
+        
     }
     
     public List<Product> findByNameContains(String name){

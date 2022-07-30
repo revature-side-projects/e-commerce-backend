@@ -9,10 +9,10 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
       
-  API:
+  api:
     build: ./
     ports:
-      - "8080:8080"
+      - "5000:5000"
     depends_on:
       - PostgreSQL
     environment:
@@ -20,3 +20,4 @@ services:
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=password
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+

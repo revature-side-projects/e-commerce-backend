@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.revature.dtos.PurchaseRequest;
+import com.revature.exceptions.ProductNotFoundException;
+import com.revature.exceptions.UserNotFoundException;
 import com.revature.models.Product;
 import com.revature.models.Purchase;
 import com.revature.models.User;
@@ -44,8 +46,13 @@ public class PurchaseService {
 		return purchaseRepo.findAll();
 	}
 	
-	public List<Purchase> findByOwner(User user) {
-		return purchaseRepo.findByOwnerUser(user);
+	public List<Purchase> findByOwner(int userId) {
+		Optional<User> optionalUser = userv.findById(userId);
+		if(optionalUser.isPresent()) {
+			return purchaseRepo.findByOwnerUser(optionalUser.get());
+		} else {
+			throw new UserNotFoundException(userId);
+		}
 	}
 	
 	/**
@@ -60,12 +67,15 @@ public class PurchaseService {
 	 */
 	public Purchase add(PurchaseRequest purchaseRequest, User user) {
 		Optional<Product> optionalProduct = pserv.findById(purchaseRequest.getId());
-		
-		Purchase purchase = new Purchase();
-		purchase.setProduct(optionalProduct.get());
-		purchase.setOwnerUser(user);
-		purchase.setQuantity(purchaseRequest.getQuantity());
-		return purchaseRepo.save(purchase);
+		if(optionalProduct.isPresent()) {
+			Purchase purchase = new Purchase();
+			purchase.setProduct(optionalProduct.get());
+			purchase.setOwnerUser(user);
+			purchase.setQuantity(purchaseRequest.getQuantity());
+			return purchaseRepo.save(purchase);
+		} else {
+			throw new ProductNotFoundException(purchaseRequest.getId());
+		}
 	}
 
 }
