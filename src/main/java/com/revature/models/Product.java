@@ -1,5 +1,9 @@
 package com.revature.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
+
+import javax.validation.constraints.NotNull;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -11,9 +15,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.sun.istack.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,40 +33,48 @@ import lombok.ToString;
 @AllArgsConstructor
 @Table(name = "products")
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "reviews", "purchases" })
+@EqualsAndHashCode
 public class Product {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_id")
-    private int id;
-    @NotNull
-    @NonNull
-    private int quantity;
-    @NotNull
-    @NonNull
-    private double price;
-    @NotNull
-    @NonNull
-    private String description;
-    @NotNull
-    @NonNull
-    private String image;
-    @NotNull
-    @NonNull
-    private String name;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "product_id")
+	private int id;
+	@NotNull
+	@NonNull
+	private int quantity;
+	@NotNull
+	@NonNull
+	private double price;
+	@NotNull
+	@NonNull
+	private String description;
+	@NotNull
+	@NonNull
+	private String image;
+	@NotNull
+	@NonNull
+	private String name;
 
-    @OneToMany(orphanRemoval = true)
-    @JoinColumn(name = "product_id")
-    @ToString.Exclude
-    private Set<Review> reviews = new LinkedHashSet<>();
+	@OneToMany(orphanRemoval = true)
+	@JoinColumn(name = "product_id")
+	@ToString.Exclude
+	@EqualsAndHashCode.Exclude
+	private Set<Review> reviews = new LinkedHashSet<>();
 
-    @OneToMany(orphanRemoval = true)
-    @JoinColumn(name = "product_id")
-    @ToString.Exclude
-    private Set<Purchase> purchases = new LinkedHashSet<>();
+	@OneToMany(orphanRemoval = true)
+	@JoinColumn(name = "product_id")
+	@ToString.Exclude
+	@EqualsAndHashCode.Exclude
+	private Set<Purchase> purchases = new LinkedHashSet<>();
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
+	public Product(int quantity, double price, String description, String image, String name, Set<Review> reviews,
+			Set<Purchase> purchases) {
+		super();
+		this.quantity = quantity;
+		this.price = price;
+		this.description = description;
+		this.image = image;
+		this.name = name;
+	}
 }

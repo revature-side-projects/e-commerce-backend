@@ -141,31 +141,20 @@ public class ProductController {
 		return ResponseEntity.ok(optional.get());
 	}
 
-	@GetMapping("/partial-search/{name}")
-	public ResponseEntity<List<Product>> getProductsByNameContains(@PathVariable("name") String name) {
+    @GetMapping("/partial-search/{name}")
+    public ResponseEntity<List<Product>> getProductsByNameContains(@PathVariable("name") String name) {
+    	
+        return ResponseEntity.ok(productService.findByNameContains(name));
+    }
+    @GetMapping("/price-range")
+    public ResponseEntity<List<Product>> getProductsByPriceRange(@RequestBody PriceRangeRequest priceRangeRequest) {
+    	
+        return ResponseEntity.ok(productService.findByPriceRange(priceRangeRequest.getMinPrice(),priceRangeRequest.getMaxPrice()));
+    }
 
-		return ResponseEntity.ok(productService.findByNameContains(name));
-	}
-
-	@GetMapping("/price-range")
-	public ResponseEntity<List<Product>> getProductsByPriceRange(@RequestBody PriceRangeRequest priceRangeRequest) {
-
-		return ResponseEntity
-				.ok(productService.findByPriceRange(priceRangeRequest.getMinPrice(), priceRangeRequest.getMaxPrice()));
-	}
-	//
-	// @GetMapping("/price-range")
-	// public ResponseEntity<List<Product>>
-	// getProductsByPriceRange(@RequestParam("minPrice") double
-	// minPrice,@RequestParam("maxPrice") double maxPrice ) {
-	//
-	// return ResponseEntity.ok(productService.findByPriceRange(minPrice,maxPrice));
-	// }
-
-	@GetMapping("/filter-rating")
-	public ResponseEntity<List<Product>> filterByRating() {
-
-		return ResponseEntity.ok(productService.filterByRating());
-	}
-
+    @GetMapping("/filter-rating")
+    public ResponseEntity<List<Product>> filterByRating() {
+    	
+        return ResponseEntity.ok(productService.filterByRating());
+    }
 }

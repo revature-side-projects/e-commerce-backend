@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.revature.dtos.PurchaseRequest;
+import com.revature.exceptions.ProductNotFoundException;
+import com.revature.exceptions.UserNotFoundException;
 import com.revature.models.Purchase;
 import com.revature.models.User;
 import com.revature.services.PurchaseService;
@@ -49,7 +51,11 @@ public class PurchaseController {
 
 	@GetMapping("user/{user}")
 	public ResponseEntity<List<Purchase>> getPurchasesByOwner(@PathVariable("user") int userId) {
-		return ResponseEntity.ok(pserv.findByOwner(userId));
+		try {
+			return ResponseEntity.ok(pserv.findByOwner(userId));
+		} catch (UserNotFoundException e) {
+			return ResponseEntity.notFound().build();
+		}
 	}
 
 	@PostMapping
@@ -58,8 +64,12 @@ public class PurchaseController {
 		User u = (User) session.getAttribute("user");
 
 		List<Purchase> resp = new LinkedList<>();
-		for (PurchaseRequest purchaseRequest : purchaseRequests) {
-			resp.add(pserv.add(purchaseRequest, u));
+		try {
+			for (PurchaseRequest purchaseRequest : purchaseRequests) {
+				resp.add(this.pserv.add(purchaseRequest, u));
+			}
+		} catch (ProductNotFoundException e) {
+			return ResponseEntity.notFound().build();
 		}
 
 		return ResponseEntity.ok(resp);

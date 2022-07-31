@@ -1,5 +1,9 @@
 package com.revature.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
+
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -17,10 +21,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.sun.istack.NotNull;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,6 +36,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 @Table(
         name = "users",
         uniqueConstraints = @UniqueConstraint(columnNames={"email"})
@@ -68,11 +69,13 @@ public class User {
     @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "user_id")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<Purchase> purchases = new LinkedHashSet<>();
 
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "user_id")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<Review> reviews = new LinkedHashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
@@ -82,12 +85,7 @@ public class User {
             inverseJoinColumns = { @JoinColumn(name = "address_id") }
     )
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<Address> addresses = new HashSet<>();
 
-
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }

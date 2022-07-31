@@ -21,7 +21,6 @@ import com.sun.istack.NotNull;
 @ToString
 @Entity
 @NoArgsConstructor
-@RequiredArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
 @Table(name = "purchases")
