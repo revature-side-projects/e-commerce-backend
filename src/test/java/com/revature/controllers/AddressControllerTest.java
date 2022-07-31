@@ -17,8 +17,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -60,7 +58,6 @@ class AddressControllerTest {
 	
 	@InjectMocks
 	private AddressController controller;
-	private Logger log = LoggerFactory.getLogger(AddressControllerTest.class);
 	
 	private final String MAPPING = "/api/addresses";
 	private Address dummyAddress;
@@ -84,7 +81,7 @@ class AddressControllerTest {
 		addresses.add(this.dummyAddress);
 		dummyUser.setAddresses(addresses);
 		
-		given(this.userv.findById(1)).willReturn(Optional.of(dummyUser));
+		given(this.userv.findById(dummyUser.getId())).willReturn(Optional.of(dummyUser));
 		given(this.aserv.findUsersAddresses(dummyUser)).willReturn(dummyUser.getAddresses());
 		
 		MockHttpServletRequestBuilder request = get(this.MAPPING + "/1").accept(MediaType.APPLICATION_JSON);
@@ -101,7 +98,7 @@ class AddressControllerTest {
 		Set<Address> expected = new HashSet<Address>();
 		expected.add(dummyAddress);
 		
-		given(userv.findById(1)).willThrow(UserNotFoundException.class);
+		given(userv.findById(dummyUser.getId())).willThrow(UserNotFoundException.class);
 		given(aserv.findUsersAddresses(dummyUser)).willThrow(NullPointerException.class);
 		MockHttpServletRequestBuilder request = get(MAPPING + "/1").accept(MediaType.APPLICATION_JSON);
 		MockHttpServletResponse response = mvc.perform(request).andReturn().getResponse();
@@ -114,7 +111,7 @@ class AddressControllerTest {
 	
 	@Test
 	void testGetUserAddress_NoAddress() throws Exception{
-		given(userv.findById(1)).willReturn(Optional.of(dummyUser));
+		given(userv.findById(dummyUser.getId())).willReturn(Optional.of(dummyUser));
 		MockHttpServletRequestBuilder request = get(MAPPING + "/1").accept(MediaType.APPLICATION_JSON);
 		MockHttpServletResponse response = mvc.perform(request).andReturn().getResponse();
 		
@@ -156,11 +153,11 @@ class AddressControllerTest {
 		Set<Address> addresses = new HashSet<Address>();
 		addresses.add(dummyAddress);
 		
-		newReq.setStreet("105 maybarry");
-		newReq.setSecondary("");
-		newReq.setCity("Far Far Away");
-		newReq.setZip("70530");
-		newReq.setState("NJ");
+		newReq.setStreet(dummyAddress.getStreet());
+		newReq.setSecondary(dummyAddress.getSecondary());
+		newReq.setCity(dummyAddress.getCity());
+		newReq.setZip(dummyAddress.getZip());
+		newReq.setState(dummyAddress.getState());
 		
 		String jsonContent = this.JsonAddressRequest.write(newReq).getJson();
 		
