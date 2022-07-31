@@ -2,6 +2,7 @@ package com.revature.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -14,7 +15,6 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,6 +22,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.revature.dtos.PurchaseRequest;
+import com.revature.exceptions.ProductNotFoundException;
+import com.revature.exceptions.UserNotFoundException;
 import com.revature.models.Product;
 import com.revature.models.Purchase;
 import com.revature.models.User;
@@ -93,6 +95,19 @@ class PurchaseServiceTest {
 		assertTrue(actual.containsAll(expected));
 		verify(this.mockPurchaseRepo, times(1)).findByOwnerUser(this.dummyUser);
 	}
+	
+	@Test
+	void testFindByOwner_Failure_UserNotFound() {
+		int id = 2;
+		given(this.uServ.findById(id)).willReturn(Optional.empty());
+		
+		try {
+			this.purchaseServ.findByOwner(id);
+			fail("Expected exception to be thrown");
+		} catch (Exception e) {
+			assertEquals(UserNotFoundException.class, e.getClass());
+		}
+	}
 
 	@Test
 	void testAdd() {
@@ -109,6 +124,19 @@ class PurchaseServiceTest {
 		assertEquals(expected, actual);
 		verify(this.productServ, times(1)).findById(productId);
 		verify(this.mockPurchaseRepo, times(1)).save(newPurchase);
+	}
+	
+	@Test
+	void testAdd_Failure_ProductNotFound() {
+		int productId = 6;
+		PurchaseRequest createRequest = new PurchaseRequest(productId, 1);
+		given(this.productServ.findById(productId)).willReturn(Optional.empty());
+		try {
+			this.purchaseServ.add(createRequest, this.dummyUser);
+			fail("Expected exception to be thrown");
+		} catch (Exception e) {
+			assertEquals(ProductNotFoundException.class, e.getClass());
+		}
 	}
 
 }
