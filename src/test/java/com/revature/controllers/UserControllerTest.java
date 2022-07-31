@@ -6,6 +6,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import java.util.Optional;
 
@@ -117,7 +118,7 @@ public class UserControllerTest {
 		given(this.uServ.save(this.dummyUser)).willReturn(this.dummyUser);
 		
 		String jsonContent = this.jsonUserRequest.write(newUser).getJson();
-		MockHttpServletRequestBuilder request = post(this.MAPPING_ROOT).contentType(MediaType.APPLICATION_JSON)
+		MockHttpServletRequestBuilder request = put(this.MAPPING_ROOT).contentType(MediaType.APPLICATION_JSON)
 				.content(jsonContent).sessionAttr("user", this.dummyUser);;
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 		

@@ -45,7 +45,8 @@ public class UserController {
 	public ResponseEntity<User> getUserByEmail(@PathVariable("userEmail") String userEmail) {
 		log.info(userEmail);
 		Optional<User> optionalUser = userv.findByEmail(userEmail);
-		return ResponseEntity.ok(optionalUser.get());
+		
+		return optionalUser.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
 	@Authorized
