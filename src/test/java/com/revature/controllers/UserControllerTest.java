@@ -5,7 +5,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import java.util.Optional;
@@ -62,7 +61,7 @@ public class UserControllerTest {
 	}
 	
 	@Test
-	public void testGetUserById_Success() throws Exception {
+	void testGetUserById_Success() throws Exception {
 		int userId = this.dummyUser.getId();
 		given(this.uServ.findById(userId)).willReturn(Optional.of(this.dummyUser));
 		
@@ -75,7 +74,7 @@ public class UserControllerTest {
 	}
 	
 	@Test
-	public void testGetUserById_Failure_UserNotFound() throws Exception {
+	void testGetUserById_Failure_UserNotFound() throws Exception {
 		int id = this.dummyUser.getId();
 		given(this.uServ.findById(id)).willReturn(Optional.empty());
 		
@@ -87,7 +86,7 @@ public class UserControllerTest {
 	}
 	
 	@Test
-	public void testGetUserByEmail_Success() throws Exception {
+	void testGetUserByEmail_Success() throws Exception {
 		String email = this.dummyUser.getEmail();
 		given(this.uServ.findByEmail(email)).willReturn(Optional.of(this.dummyUser));
 		
@@ -100,7 +99,7 @@ public class UserControllerTest {
 	}
 	
 	@Test
-	public void testGetUserByEmail_Failure_UserNotFound() throws Exception {
+	void testGetUserByEmail_Failure_UserNotFound() throws Exception {
 		String email = this.dummyUser.getEmail();
 		given(this.uServ.findByEmail(email)).willReturn(Optional.empty());
 		
@@ -112,7 +111,7 @@ public class UserControllerTest {
 	}
 	
 	@Test
-	public void testUpdate_Success() throws Exception {
+	void testUpdate_Success() throws Exception {
 		UserRequest newUser = new UserRequest(this.dummyUser.getEmail(), this.dummyUser.getPassword(), 
 				this.dummyUser.getFirstName(), this.dummyUser.getLastName(), this.dummyUser.getRole());
 		given(this.uServ.save(this.dummyUser)).willReturn(this.dummyUser);
