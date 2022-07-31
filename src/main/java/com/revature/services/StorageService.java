@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,12 +23,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class StorageService {
 
-	// @Value("$(application.bucket.name)")
-	private String bucketName = "revazon-image-bucket";
+	@Value("$(application.bucket.name)")
+	private String bucketName;
 
 	@Autowired
 	private AmazonS3 s3Client;
 
+	// upload the file to the S3 bucket
 	public ResponseEntity<String> uploadFile(MultipartFile file) {
 		String fileName = "";
 		try {
@@ -43,6 +45,7 @@ public class StorageService {
 		return new ResponseEntity<String>(fileName, HttpStatus.OK);
 	}
 
+	// get the image from the multipart file sent from the frontend
 	private File convertMultipartToFile(MultipartFile file) {
 		File convertFile = new File(file.getOriginalFilename());
 		try (FileOutputStream fos = new FileOutputStream(convertFile)) {
@@ -51,10 +54,5 @@ public class StorageService {
 			throw new MultipartFileConversionException("Error converting multipart file to file");
 		}
 		return convertFile;
-	}
-
-	public String deleteFile(String filename) {
-		s3Client.deleteObject(new DeleteObjectRequest(bucketName, filename));
-		return "Deleted " + filename;
 	}
 }
