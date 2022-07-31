@@ -32,4 +32,4 @@ cloud:
       
 application:
   bucket:
-    name: revature-image-bucket
+    name: revazon-image-bucket

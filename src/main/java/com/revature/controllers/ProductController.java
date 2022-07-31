@@ -108,6 +108,7 @@ public class ProductController {
     @Authorized
     @AuthorizedAdmin
     @PutMapping("/uploadFile")
+    // upload the file by requesting the "file" attribute in the Json from frontend
     public ResponseEntity<String> uploadImage(@RequestPart (value = "file") MultipartFile file){
     	return this.s3Srv.uploadFile(file);
     }
