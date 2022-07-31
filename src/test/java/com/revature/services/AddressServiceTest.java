@@ -2,6 +2,7 @@ package com.revature.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -21,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.revature.dtos.AddressRequest;
+import com.revature.exceptions.AddressNotFoundException;
 import com.revature.models.Address;
 import com.revature.models.User;
 import com.revature.repositories.AddressRepository;
@@ -69,9 +71,7 @@ class AddressServiceTest {
 		verify(this.mockAddressRepo, times(1)).save(newAddress);
 	}
 
-	// FIXME Fix implementation code to make this test pass
 	@Test
-	@Disabled("Waiting on Hector's team to fix implementation and make this test pass")
 	void testUpdate() {
 		Set<User> users = this.dummyAddress.getUsers();
 		users.add(this.dummyUser);
@@ -87,6 +87,24 @@ class AddressServiceTest {
 
 		assertEquals(expected, actual);
 		verify(this.mockAddressRepo, times(1)).save(this.dummyAddress);
+	}
+	
+	@Test
+	void testUpdate_Failure_AddressNotFound() {
+		Set<User> users = this.dummyAddress.getUsers();
+		users.add(this.dummyUser);
+		AddressRequest updateRequest = new AddressRequest(this.dummyAddress.getStreet(),
+				this.dummyAddress.getSecondary(), this.dummyAddress.getCity(), this.dummyAddress.getZip(),
+				this.dummyAddress.getState());
+		this.dummyAddress.setUsers(users);
+		int id = 404;
+		given(this.mockAddressRepo.findById(id)).willReturn(Optional.empty());
+		try {
+			this.aServ.update(updateRequest, id, this.dummyUser);
+			fail("Expected an exception to be thrown");
+		} catch (Exception e) {
+			assertEquals(AddressNotFoundException.class, e.getClass());
+		}
 	}
 
 	@Test
