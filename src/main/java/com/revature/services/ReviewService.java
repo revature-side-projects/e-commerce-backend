@@ -1,5 +1,8 @@
 package com.revature.services;
 
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,6 +70,9 @@ public class ReviewService {
 			if (optionalReview.isPresent()) {
 				throw new DuplicateReviewException("You have already written a review for this product.");
 			}
+			review.setPosted(Timestamp.valueOf(LocalDateTime.now()));
+			review.setUpdated(Timestamp.valueOf(LocalDateTime.now()));
+			review.setUser(user);
 			review = reviewRepository.save(review);
 
 			return review;
@@ -164,6 +170,7 @@ public class ReviewService {
 				review.setStars(reviewRequest.getStars());
 				review.setTitle(reviewRequest.getTitle());
 				review.setReview(reviewRequest.getReview());
+				review.setUpdated(Timestamp.valueOf(LocalDateTime.now()));
 				return reviewRepository.save(review);
 			} else {
 				throw new UnauthorizedReviewAccessException("You are not authorized to modify this review.");

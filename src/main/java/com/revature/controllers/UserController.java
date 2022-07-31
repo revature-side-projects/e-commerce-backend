@@ -1,8 +1,10 @@
 package com.revature.controllers;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import lombok.extern.slf4j.Slf4j;
@@ -38,9 +40,8 @@ public class UserController {
 	public ResponseEntity<User> getUserByEmail(@PathVariable("userEmail") String userEmail) {
 		Optional<User> optionalUser = userv.findByEmail(userEmail);
 		User user = optionalUser.get();
-		User withoutPasswordUser = new User(user.getId(), userEmail, "", user.getFirstName(), user.getLastName(), "",
+		User withoutPasswordUser = new User(user.getId(), user.getEmail(), "", user.getFirstName(), user.getLastName(), "",
 				new HashSet<>(), new HashSet<>(), new HashSet<>());
-		log.info(userEmail);
 		return ResponseEntity.ok(withoutPasswordUser);
 	}
 

@@ -1,5 +1,7 @@
 package com.revature.services;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,6 +77,7 @@ public class PurchaseService {
 			purchase.setProduct(optionalProduct.get());
 			purchase.setOwnerUser(user);
 			purchase.setQuantity(purchaseRequest.getQuantity());
+			purchase.setOrderPlaced(Timestamp.valueOf(LocalDateTime.now()));
 			return purchaseRepo.save(purchase);
 		} else {
 			throw new ProductNotFoundException(purchaseRequest.getId());

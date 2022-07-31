@@ -21,23 +21,17 @@ public class AddressService {
 	public AddressService(AddressRepository addressRepo, UserService userService) {
 		this.addressRepo = addressRepo;
 		this.userService = userService;
-
 	}
 
 	public Address addAddress(AddressRequest addressRequest, User u) {
-		Address address = new Address();
+		Address address = new Address(addressRequest.getStreet(), addressRequest.getCity(), addressRequest.getZip(), addressRequest.getState());
 		Set<User> users = new HashSet<>();
 		users.add(u);
-		address.setStreet(addressRequest.getStreet());
 		address.setSecondary(addressRequest.getSecondary());
-		address.setCity(addressRequest.getCity());
-		address.setState(addressRequest.getState());
-		address.setZip(addressRequest.getZip());
 		address.setUsers(users);
 		return addressRepo.save(address);
 	}
 
-	// FIXME Must add address ID parameter and find its matching Address object
 	public Address update(AddressRequest addressRequest, int id, User u) {
 		Optional<Address> optionalAddress = addressRepo.findById(id);
 		if (optionalAddress.isPresent()) {

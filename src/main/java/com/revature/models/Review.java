@@ -11,6 +11,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -45,10 +46,10 @@ public class Review {
     private String review;
 
     @CreationTimestamp
-    private LocalDateTime posted;
+    private Timestamp posted;
 
     @UpdateTimestamp
-    private LocalDateTime updated;
+    private Timestamp updated;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
