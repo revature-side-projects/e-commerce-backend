@@ -120,8 +120,8 @@ class AuthControllerTest {
 		RegisterRequest registerRequest = new RegisterRequest(this.dummyUser.getEmail(), this.dummyUser.getPassword(),
 				this.dummyUser.getFirstName(), this.dummyUser.getLastName());
 		User newUser = new User(0, registerRequest.getEmail(), registerRequest.getPassword(),
-				registerRequest.getFirstName(), registerRequest.getLastName(), this.dummyUser.getRole(),
-				new HashSet<>(), new HashSet<>(), new HashSet<>());
+				registerRequest.getFirstName(), registerRequest.getLastName(), "CUSTOMER", new HashSet<>(),
+				new HashSet<>(), new HashSet<>());
 		given(this.aServ.register(newUser)).willReturn(this.dummyUser);
 
 		String requestContent = this.jsonRegisterRequest.write(registerRequest).getJson();
