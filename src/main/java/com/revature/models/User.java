@@ -18,6 +18,7 @@ import java.util.Set;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 @Table(
         name = "users",
         uniqueConstraints = @UniqueConstraint(columnNames={"email"})
@@ -50,11 +51,13 @@ public class User {
     @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "user_id")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<Purchase> purchases = new LinkedHashSet<>();
 
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "user_id")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<Review> reviews = new LinkedHashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
@@ -64,12 +67,7 @@ public class User {
             inverseJoinColumns = { @JoinColumn(name = "address_id") }
     )
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<Address> addresses = new HashSet<>();
 
-
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }
