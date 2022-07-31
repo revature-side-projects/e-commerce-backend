@@ -1,6 +1,7 @@
 package com.revature.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -15,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.revature.exceptions.UserNotFoundException;
 import com.revature.models.User;
 import com.revature.repositories.UserRepository;
 
@@ -52,6 +54,19 @@ class UserServiceTest {
 		assertEquals(expected, actual);
 		verify(this.mockUserRepo, times(1)).findByEmailAndPassword(email, password);
 	}
+	
+	@Test
+	void testFindByCredentials_Failure_UserNotFound() {
+		String email = "user@coolmail.edu";
+		String password = "Alligator3";
+		given(this.mockUserRepo.findByEmailAndPassword(email, password)).willReturn(Optional.empty());
+		try {
+			this.uServ.findByCredentials(email, password);
+			fail("Expected an exception to be thrown");
+		} catch (Exception e) {
+			assertEquals(UserNotFoundException.class, e.getClass());
+		}
+	}
 
 	@Test
 	void testFindById() {
@@ -63,6 +78,18 @@ class UserServiceTest {
 
 		assertEquals(expected, actual);
 		verify(this.mockUserRepo, times(1)).findById(id);
+	}
+	
+	@Test
+	void testFindById_Failure_UserNotFound() {
+		int id = 1337;
+		given(this.mockUserRepo.findById(id)).willReturn(Optional.empty());
+		try {
+			this.uServ.findById(id);
+			fail("Expected an exception to be thrown");
+		} catch (Exception e) {
+			assertEquals(UserNotFoundException.class, e.getClass());
+		}
 	}
 
 	@Test
@@ -86,6 +113,17 @@ class UserServiceTest {
 
 		assertEquals(expected, actual);
 		verify(this.mockUserRepo, times(1)).findByEmail(email);
+	}
+	
+	@Test
+	void testFindByEmail_Failure_UserNotFound() {
+		String email = "user@coolmail.gov";
+		given(this.mockUserRepo.findByEmail(email)).willReturn(Optional.empty());
+		try {
+			this.uServ.findByEmail(email);
+		} catch (Exception e) {
+			assertEquals(UserNotFoundException.class, e.getClass());
+		}
 	}
 
 }
