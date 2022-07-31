@@ -39,7 +39,7 @@ import com.revature.services.UserService;
 
 @AutoConfigureJsonTesters
 @WebMvcTest(AddressController.class)
-public class AddressControllerTest {
+class AddressControllerTest {
 	@Autowired
 	private MockMvc mvc;
 	
