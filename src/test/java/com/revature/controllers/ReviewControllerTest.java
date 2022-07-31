@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import com.revature.dtos.ReviewRequest;
+import com.revature.exceptions.ReviewNotFoundException;
 import com.revature.models.Product;
 import com.revature.models.Review;
 import com.revature.models.User;
@@ -108,7 +109,7 @@ class ReviewControllerTest {
 		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT).accept(MediaType.APPLICATION_JSON);
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
-		assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		assertEquals(this.jsonReviewList.write(expected).getJson(), response.getContentAsString());
 		verify(this.rServ, times(1)).findAll();
 	}
@@ -160,7 +161,7 @@ class ReviewControllerTest {
 	@Test
 	void testGetReviewById_Success() throws Exception {
 		int id = this.dummyReview.getId();
-		given(this.rServ.findById(id)).willReturn(Optional.of(this.dummyReview));
+		given(this.rServ.findById(id)).willReturn(this.dummyReview);
 
 		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/" + id).accept(MediaType.APPLICATION_JSON);
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
@@ -173,7 +174,7 @@ class ReviewControllerTest {
 	@Test
 	void testGetReviewById_Failure_ReviewNotFound() throws Exception {
 		int id = this.dummyReview.getId();
-		given(this.rServ.findById(id)).willReturn(Optional.empty());
+		given(this.rServ.findById(id)).willThrow(ReviewNotFoundException.class);
 
 		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/" + id).accept(MediaType.APPLICATION_JSON);
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn()

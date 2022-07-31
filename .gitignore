@@ -38,3 +38,6 @@ build/
 push.sh
 .dockerignore
 /data
+
+### Don't push local .yml ###
+application.yml

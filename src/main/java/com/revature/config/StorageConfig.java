@@ -21,9 +21,9 @@ public class StorageConfig {
 	private String region;
 	@Value("{coud.aws.endpoint}")
 	private String endpoint;
-	
+
 	@Bean
-	public AmazonS3 generateS3client(){
+	public AmazonS3 generateS3client() {
 		AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
 		return AmazonS3ClientBuilder.standard()
 				.withCredentials(new AWSStaticCredentialsProvider(credentials))

@@ -1,6 +1,5 @@
 package com.revature.controllers;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,149 +26,146 @@ import com.revature.services.ProductService;
 import com.revature.services.StorageService;
 
 @RestController
-@RequestMapping("/api/product" )
+@RequestMapping("/api/product")
 @CrossOrigin(origins = "*")
 public class ProductController {
 
-    private final ProductService productService;
-    private final StorageService s3Srv;
+	private final ProductService productService;
+	private final StorageService s3Srv;
 
-    public ProductController(ProductService productService, StorageService storageService) {
-        this.productService = productService;
-        this.s3Srv = storageService;
-    }
+	public ProductController(ProductService productService, StorageService storageService) {
+		this.productService = productService;
+		this.s3Srv = storageService;
+	}
 
-    @GetMapping
-    public ResponseEntity<List<Product>> getInventory() {
-        return ResponseEntity.ok(productService.findAll());
-    }
+	@GetMapping
+	public ResponseEntity<List<Product>> getInventory() {
+		return ResponseEntity.ok(productService.findAll());
+	}
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable("id") int id) {
-        Optional<Product> optional = productService.findById(id);
+	@GetMapping("/{id}")
+	public ResponseEntity<Product> getProductById(@PathVariable("id") int id) {
+		Optional<Product> optional = productService.findById(id);
 
-        return optional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-    
-    @PutMapping("/create-update")
-    public ResponseEntity<Product> insertAndUpdate(@RequestBody CreateUpdateRequest createupdateRequest) {
-    	int id =createupdateRequest.getId();
-    	Optional<Product> currPd = productService.findById(id);
-    	
-    	int quantity = createupdateRequest.getQuantity();	
-    	double price = createupdateRequest.getPrice();
-    	String description = createupdateRequest.getDescription();
-    	String image = createupdateRequest.getImage();
-    	String name = createupdateRequest.getName();
-    	
-     
-    	if(currPd.isPresent()) {
-    	
-				Product updatePd = currPd.get();
-				updatePd.setId(id);
-				if(name != null) {
-					updatePd.setName(name );
-				}
-				
-				if(price > 0) {
-					updatePd.setPrice(price);
-				}
-  	
-				if(quantity > 0) {
-  
-					updatePd.setQuantity(quantity);    			
-				}
-				if(description != null) {
-					updatePd.setDescription(description);
-				}
-				if(image!= null) {
-					updatePd.setImage(image);
-					
-				}
-				
-				
-				return ResponseEntity.ok(productService.save(updatePd));
-    	}
-    	Product newPd;
+		return optional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+	}
+
+	@PutMapping("/create-update")
+	public ResponseEntity<Product> insertAndUpdate(@RequestBody CreateUpdateRequest createupdateRequest) {
+		int id = createupdateRequest.getId();
+		Optional<Product> currPd = productService.findById(id);
+
+		int quantity = createupdateRequest.getQuantity();
+		double price = createupdateRequest.getPrice();
+		String description = createupdateRequest.getDescription();
+		String image = createupdateRequest.getImage();
+		String name = createupdateRequest.getName();
+
+		if (currPd.isPresent()) {
+
+			Product updatePd = currPd.get();
+			updatePd.setId(id);
+			if (name != null) {
+				updatePd.setName(name);
+			}
+
+			if (price > 0) {
+				updatePd.setPrice(price);
+			}
+
+			if (quantity > 0) {
+
+				updatePd.setQuantity(quantity);
+			}
+			if (description != null) {
+				updatePd.setDescription(description);
+			}
+			if (image != null) {
+				updatePd.setImage(image);
+
+			}
+
+			return ResponseEntity.ok(productService.save(updatePd));
+		}
+		Product newPd;
 		try {
-			newPd = new Product(quantity,price,description,image,name);
+			newPd = new Product(quantity, price, description, image, name);
 		} catch (Exception e) {
-		
+
 			throw new InvalidProductInputException("Null value is not allowed");
 		}
-    	
-    	return ResponseEntity.ok(productService.save(newPd));
-    }
 
-    
-    @PutMapping("/uploadFile")
-    public ResponseEntity<String> uploadImage(@RequestPart (value = "file") MultipartFile file){
-    	return this.s3Srv.uploadFile(file);
-    }
-    
+		return ResponseEntity.ok(productService.save(newPd));
+	}
 
-    @PatchMapping
-    public ResponseEntity<List<Product>> purchase(@RequestBody List<ProductInfo> metadata) { 	
-    	List<Product> productList = new ArrayList<Product>();
-    	
-    	for (int i = 0; i < metadata.size(); i++) {
-    		Optional<Product> optional = productService.findById(metadata.get(i).getId());
+	@PutMapping("/uploadFile")
+	public ResponseEntity<String> uploadImage(@RequestPart(value = "file") MultipartFile file) {
+		return this.s3Srv.uploadFile(file);
+	}
 
-    		if(!optional.isPresent()) {
-    			return ResponseEntity.notFound().build();
-    		}
+	@PatchMapping
+	public ResponseEntity<List<Product>> purchase(@RequestBody List<ProductInfo> metadata) {
+		List<Product> productList = new ArrayList<Product>();
 
-    		Product product = optional.get();
+		for (int i = 0; i < metadata.size(); i++) {
+			Optional<Product> optional = productService.findById(metadata.get(i).getId());
 
-    		if(product.getQuantity() - metadata.get(i).getQuantity() < 0) {
-    			return ResponseEntity.badRequest().build();
-    		}
-    		
-    		product.setQuantity(product.getQuantity() - metadata.get(i).getQuantity());
-    		productList.add(product);
-    	}
-        
-        productService.saveAll(productList, metadata);
+			if (!optional.isPresent()) {
+				return ResponseEntity.notFound().build();
+			}
 
-        return ResponseEntity.ok(productList);
-    }
+			Product product = optional.get();
 
+			if (product.getQuantity() - metadata.get(i).getQuantity() < 0) {
+				return ResponseEntity.badRequest().build();
+			}
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Product> deleteProduct(@PathVariable("id") int id) {
-        Optional<Product> optional = productService.findById(id);
+			product.setQuantity(product.getQuantity() - metadata.get(i).getQuantity());
+			productList.add(product);
+		}
 
-        if(!optional.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-        productService.delete(id);
+		productService.saveAll(productList, metadata);
 
-        return ResponseEntity.ok(optional.get());
-    }
-    @GetMapping("/partial-search/{name}")
-    public ResponseEntity<List<Product>> getProductsByNameContains(@PathVariable("name") String name) {
-    	
-        return ResponseEntity.ok(productService.findByNameContains(name));
-    }
+		return ResponseEntity.ok(productList);
+	}
 
-    @GetMapping("/price-range")
-    public ResponseEntity<List<Product>> getProductsByPriceRange(@RequestBody PriceRangeRequest priceRangeRequest) {
-    	
-        return ResponseEntity.ok(productService.findByPriceRange(priceRangeRequest.getMinPrice(),priceRangeRequest.getMaxPrice()));
-    }
-//
-//    @GetMapping("/price-range")
-//    public ResponseEntity<List<Product>> getProductsByPriceRange(@RequestParam("minPrice") double minPrice,@RequestParam("maxPrice") double maxPrice ) {
-//    	
-//        return ResponseEntity.ok(productService.findByPriceRange(minPrice,maxPrice));
-//    }
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Product> deleteProduct(@PathVariable("id") int id) {
+		Optional<Product> optional = productService.findById(id);
 
-    @GetMapping("/filter-rating")
-    public ResponseEntity<List<Product>> filterByRating() {
-    	
-        return ResponseEntity.ok(productService.filterByRating());
-    }
-    
+		if (!optional.isPresent()) {
+			return ResponseEntity.notFound().build();
+		}
+		productService.delete(id);
 
-    
+		return ResponseEntity.ok(optional.get());
+	}
+
+	@GetMapping("/partial-search/{name}")
+	public ResponseEntity<List<Product>> getProductsByNameContains(@PathVariable("name") String name) {
+
+		return ResponseEntity.ok(productService.findByNameContains(name));
+	}
+
+	@GetMapping("/price-range")
+	public ResponseEntity<List<Product>> getProductsByPriceRange(@RequestBody PriceRangeRequest priceRangeRequest) {
+
+		return ResponseEntity
+				.ok(productService.findByPriceRange(priceRangeRequest.getMinPrice(), priceRangeRequest.getMaxPrice()));
+	}
+	//
+	// @GetMapping("/price-range")
+	// public ResponseEntity<List<Product>>
+	// getProductsByPriceRange(@RequestParam("minPrice") double
+	// minPrice,@RequestParam("maxPrice") double maxPrice ) {
+	//
+	// return ResponseEntity.ok(productService.findByPriceRange(minPrice,maxPrice));
+	// }
+
+	@GetMapping("/filter-rating")
+	public ResponseEntity<List<Product>> filterByRating() {
+
+		return ResponseEntity.ok(productService.filterByRating());
+	}
+
 }

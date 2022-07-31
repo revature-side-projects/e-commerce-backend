@@ -64,7 +64,6 @@ public class Product {
     @ToString.Exclude
     private Set<Purchase> purchases = new LinkedHashSet<>();
 
-
     @Override
     public int hashCode() {
         return getClass().hashCode();
