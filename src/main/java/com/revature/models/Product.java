@@ -2,10 +2,10 @@ package com.revature.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.sun.istack.NotNull;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -18,43 +18,40 @@ import java.util.Set;
 @AllArgsConstructor
 @Table(name = "products")
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "reviews", "purchases" })
+@EqualsAndHashCode
 public class Product {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_id")
-    private int id;
-    @NotNull
-    @NonNull
-    private int quantity;
-    @NotNull
-    @NonNull
-    private double price;
-    @NotNull
-    @NonNull
-    private String description;
-    @NotNull
-    @NonNull
-    private String image;
-    @NotNull
-    @NonNull
-    private String name;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "product_id")
+	private int id;
+	@NotNull
+	@NonNull
+	private int quantity;
+	@NotNull
+	@NonNull
+	private double price;
+	@NotNull
+	@NonNull
+	private String description;
+	@NotNull
+	@NonNull
+	private String image;
+	@NotNull
+	@NonNull
+	private String name;
 
-    @OneToMany(orphanRemoval = true)
-    @JoinColumn(name = "product_id")
-    @ToString.Exclude
-    private Set<Review> reviews = new LinkedHashSet<>();
+	@OneToMany(orphanRemoval = true)
+	@JoinColumn(name = "product_id")
+	@ToString.Exclude
+	@EqualsAndHashCode.Exclude
+	private Set<Review> reviews = new LinkedHashSet<>();
 
-    @OneToMany(orphanRemoval = true)
-    @JoinColumn(name = "product_id")
-    @ToString.Exclude
-    private Set<Purchase> purchases = new LinkedHashSet<>();
-
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
+	@OneToMany(orphanRemoval = true)
+	@JoinColumn(name = "product_id")
+	@ToString.Exclude
+	@EqualsAndHashCode.Exclude
+	private Set<Purchase> purchases = new LinkedHashSet<>();
 
 	public Product(int quantity, double price, String description, String image, String name, Set<Review> reviews,
 			Set<Purchase> purchases) {

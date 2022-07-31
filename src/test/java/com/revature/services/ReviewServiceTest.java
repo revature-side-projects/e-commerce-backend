@@ -22,6 +22,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import com.revature.dtos.ReviewRequest;
+import com.revature.exceptions.ReviewNotFoundException;
+import com.revature.exceptions.UnauthorizedReviewAccessException;
 import com.revature.models.Product;
 import com.revature.models.Review;
 import com.revature.models.User;
@@ -135,8 +137,8 @@ class ReviewServiceTest {
 
 		try {
 			this.rServ.findByProductId(id);
-			fail("Expected a ResourceAccessException to be thrown");
-		} catch (ResourceAccessException e) {
+			fail("Expected a ProductNotFoundException to be thrown");
+		} catch (Exception e) {
 			assertEquals("No product found with ID " + id, e.getMessage());
 			verify(this.pServ, times(1)).findById(id);
 		}
@@ -165,8 +167,8 @@ class ReviewServiceTest {
 
 		try {
 			this.rServ.findByUserId(id);
-			fail("Expected a ResourceAccessException to be thrown");
-		} catch (ResourceAccessException e) {
+			fail("Expected a UserNotFoundException to be thrown");
+		} catch (Exception e) {
 			assertEquals("No user found with ID " + id, e.getMessage());
 			verify(this.uServ, times(1)).findById(id);
 		}
@@ -178,7 +180,7 @@ class ReviewServiceTest {
 		given(this.mockReviewRepo.findById(id)).willReturn(Optional.of(this.dummyReview));
 
 		Review expected = this.dummyReview;
-		Review actual = this.rServ.findById(id).get();
+		Review actual = this.rServ.findById(id);
 
 		assertEquals(expected, actual);
 		verify(this.mockReviewRepo, times(1)).findById(id);
@@ -224,8 +226,8 @@ class ReviewServiceTest {
 		try {
 			this.rServ.update(updatedReview, id, wrongUserId);
 			fail("Expected a HttpClientErrorException with status code of 401");
-		} catch (HttpClientErrorException e) {
-			assertEquals(401, e.getRawStatusCode());
+		} catch (Exception e) {
+			assertEquals(UnauthorizedReviewAccessException.class, e.getClass());
 			verify(this.mockReviewRepo, times(1)).findById(id);
 		}
 	}
@@ -241,8 +243,8 @@ class ReviewServiceTest {
 		try {
 			this.rServ.update(updatedReview, id, authorId);
 			fail("Expected a HttpClientErrorException with status code of 404");
-		} catch (HttpClientErrorException e) {
-			assertEquals(404, e.getRawStatusCode());
+		} catch (Exception e) {
+			assertEquals(ReviewNotFoundException.class, e.getClass());
 			verify(this.mockReviewRepo, times(1)).findById(id);
 		}
 	}
@@ -264,9 +266,9 @@ class ReviewServiceTest {
 
 		try {
 			this.rServ.delete(reviewId, userId);
-			fail("Expected a HttpClientErrorException with status code of 401");
-		} catch (HttpClientErrorException e) {
-			assertEquals(401, e.getRawStatusCode());
+			fail("Expected a UnauthorizedReviewAccessException to be thrown");
+		} catch (Exception e) {
+			assertEquals(UnauthorizedReviewAccessException.class, e.getClass());
 			verify(this.mockReviewRepo, times(1)).findById(reviewId);
 		}
 	}
@@ -279,9 +281,9 @@ class ReviewServiceTest {
 
 		try {
 			this.rServ.delete(reviewId, authorId);
-			fail("Expected a HttpClientErrorException with status code of 404");
-		} catch (HttpClientErrorException e) {
-			assertEquals(404, e.getRawStatusCode());
+			fail("Expected a ReviewNotFoundException with status code of 404");
+		} catch (Exception e) {
+			assertEquals(ReviewNotFoundException.class, e.getClass());
 			verify(this.mockReviewRepo, times(1)).findById(reviewId);
 		}
 	}

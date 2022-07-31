@@ -18,6 +18,8 @@ import org.springframework.web.client.ResourceAccessException;
 
 import com.revature.annotations.Authorized;
 import com.revature.dtos.PurchaseRequest;
+import com.revature.exceptions.ProductNotFoundException;
+import com.revature.exceptions.UserNotFoundException;
 import com.revature.models.Purchase;
 import com.revature.models.User;
 import com.revature.services.PurchaseService;
@@ -55,11 +57,15 @@ public class PurchaseController {
 	public ResponseEntity<List<Purchase>> getAllPurchases() {
 		return ResponseEntity.ok(pserv.findAll());
 	}
-	
+
 	@Authorized
 	@GetMapping("user/{user}")
-	public ResponseEntity<List<Purchase>> getPurchasesByOwner(@PathVariable("user") User user) {
-		return ResponseEntity.ok(pserv.findByOwner(user));
+	public ResponseEntity<List<Purchase>> getPurchasesByOwner(@PathVariable("user") int userId) {
+		try {
+			return ResponseEntity.ok(pserv.findByOwner(userId));
+		} catch (UserNotFoundException e) {
+			return ResponseEntity.notFound().build();
+		}
 	}
 	
 	/**
@@ -76,15 +82,15 @@ public class PurchaseController {
 	public ResponseEntity<List<Purchase>> addPurchase(@RequestBody List<PurchaseRequest> purchaseRequests, HttpSession session) {
 		User u = (User) session.getAttribute("user");
 		
+		List<Purchase> resp = new LinkedList<>();
 		try {
-			List<Purchase> resp = new LinkedList<>();
 			for (PurchaseRequest purchaseRequest : purchaseRequests) {
-				resp.add(pserv.add(purchaseRequest, u));
+				resp.add(this.pserv.add(purchaseRequest, u));
 			}
-			
-			return ResponseEntity.ok(resp);
-		} catch(ResourceAccessException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		} catch (ProductNotFoundException e) {
+			return ResponseEntity.notFound().build();
 		}
+		
+		return ResponseEntity.ok(resp);
 	}
 }
