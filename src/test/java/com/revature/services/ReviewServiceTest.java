@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +23,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import com.revature.dtos.ReviewRequest;
+import com.revature.exceptions.DuplicateReviewException;
 import com.revature.exceptions.ReviewNotFoundException;
 import com.revature.exceptions.UnauthorizedReviewAccessException;
 import com.revature.models.Product;
@@ -72,6 +74,28 @@ class ReviewServiceTest {
 				newReview.getPosted(), newReview.getUpdated(), this.dummyProduct, this.dummyUser);
 
 		given(this.pServ.findById(request.getProductId())).willReturn(Optional.of(this.dummyProduct));
+		given(this.rServ.findByProductId(this.dummyProduct.getId())).willReturn(new LinkedList<Review>());
+		given(this.mockReviewRepo.save(newReview)).willReturn(expected);
+
+		Review actual = this.rServ.add(request, this.dummyUser);
+
+		assertEquals(expected, actual);
+		verify(this.mockReviewRepo, times(1)).save(newReview);
+	}
+	
+	@Test
+	void testAdd_Success_ProductHasReviews() {
+		ReviewRequest request = new ReviewRequest(this.dummyProduct.getId(), 5, "Review title",
+				"Review body sample text");
+		Review newReview = new Review(request.getStars(), request.getTitle(), request.getReview(), this.dummyUser,
+				this.dummyProduct);
+		Review expected = new Review(2, newReview.getStars(), newReview.getTitle(), newReview.getReview(),
+				newReview.getPosted(), newReview.getUpdated(), this.dummyProduct, this.dummyUser);
+
+		given(this.pServ.findById(request.getProductId())).willReturn(Optional.of(this.dummyProduct));
+		given(this.rServ.findByProductId(this.dummyProduct.getId())).willReturn(Collections.singletonList(
+				new Review(2, 1, "A title", "A review of a thing.", null, null, this.dummyProduct, 
+						new User(this.dummyUser.getId() + 1, "mail@mail.gov", "pass", "first", "last", "CUSTOMER", null, null, null))));
 		given(this.mockReviewRepo.save(newReview)).willReturn(expected);
 
 		Review actual = this.rServ.add(request, this.dummyUser);
@@ -93,6 +117,23 @@ class ReviewServiceTest {
 		} catch (Exception e) {
 			assertEquals("No product found with ID " + productId, e.getMessage());
 			verify(this.pServ, times(1)).findById(productId);
+		}
+	}
+
+	@Test
+	void testAdd_Failure_DuplicateReview() {
+		ReviewRequest request = new ReviewRequest(this.dummyProduct.getId(), 1, "Not working",
+				"It doesn't work as advertised. I am dissatisfied with this product.");
+		int productId = this.dummyProduct.getId();
+		given(this.pServ.findById(productId)).willReturn(Optional.of(this.dummyProduct));
+		given(this.rServ.findByProductId(this.dummyProduct.getId())).willReturn(Collections.singletonList(
+				new Review(2, 1, "A title", "A review of a thing.", null, null, this.dummyProduct, this.dummyUser)));
+		
+		try {
+			this.rServ.add(request, dummyUser);
+			fail("Expected an exception to be thrown");
+		} catch (Exception e) {
+			assertEquals(DuplicateReviewException.class, e.getClass());
 		}
 	}
 
@@ -183,6 +224,20 @@ class ReviewServiceTest {
 
 		assertEquals(expected, actual);
 		verify(this.mockReviewRepo, times(1)).findById(id);
+	}
+
+	@Test
+	void testFindById_Failure_ReviewIdNotFound() {
+		int id = 2;
+		given(this.mockReviewRepo.findById(id)).willReturn(Optional.empty());
+
+		try {
+			this.rServ.findById(id);
+			fail("Expected an exception to be thrown");
+		} catch (Exception e) {
+			assertEquals(ReviewNotFoundException.class, e.getClass());
+			verify(this.mockReviewRepo, times(1)).findById(id);
+		}
 	}
 
 	@Test
