@@ -1,10 +1,13 @@
 package com.revature.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -28,6 +31,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import com.revature.dtos.AddressRequest;
+import com.revature.exceptions.UserNotFoundException;
 import com.revature.models.Address;
 import com.revature.models.User;
 import com.revature.services.AddressService;
@@ -40,13 +44,13 @@ public class AddressControllerTest {
 	private MockMvc mvc;
 	
 	@Autowired
-	private JacksonTester<Address> jsonReview;
+	private JacksonTester<Address> jsonAddress;
 	
 	@Autowired
 	private JacksonTester<Set<Address>> jsonReviewList;
 	
 	@Autowired
-	private JacksonTester<AddressRequest> JsonReviewRequest;
+	private JacksonTester<AddressRequest> JsonAddressRequest;
 	
 	@MockBean
 	private AddressService aserv;
@@ -78,9 +82,7 @@ public class AddressControllerTest {
 	void testGetUserAddress_Success() throws Exception{
 		Set<Address> addresses = new HashSet<Address>();
 		addresses.add(this.dummyAddress);
-		System.out.println(addresses.toString());
 		dummyUser.setAddresses(addresses);
-		System.out.println(dummyUser.getAddresses());
 		
 		given(this.userv.findById(1)).willReturn(Optional.of(dummyUser));
 		given(this.aserv.findUsersAddresses(dummyUser)).willReturn(dummyUser.getAddresses());
@@ -91,5 +93,105 @@ public class AddressControllerTest {
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		assertEquals(this.jsonReviewList.write(addresses).getJson(), response.getContentAsString());
 		verify(this.aserv, times(1)).findUsersAddresses(dummyUser);
+	}
+	
+	@Test
+	void testGetUserAddress_Fail_UserNotFound() throws Exception{
+		
+		Set<Address> expected = new HashSet<Address>();
+		expected.add(dummyAddress);
+		
+		given(userv.findById(1)).willThrow(UserNotFoundException.class);
+		given(aserv.findUsersAddresses(dummyUser)).willThrow(NullPointerException.class);
+		MockHttpServletRequestBuilder request = get(MAPPING + "/1").accept(MediaType.APPLICATION_JSON);
+		MockHttpServletResponse response = mvc.perform(request).andReturn().getResponse();
+		
+		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+		assertNotEquals(this.jsonReviewList.write(expected).getJson(), response.getContentAsString());
+		verify(this.userv, times(1)).findById(1);
+		verify(this.aserv, times(0)).findUsersAddresses(dummyUser);
+	}
+	
+	@Test
+	void testGetUserAddress_NoAddress() throws Exception{
+		given(userv.findById(1)).willReturn(Optional.of(dummyUser));
+		MockHttpServletRequestBuilder request = get(MAPPING + "/1").accept(MediaType.APPLICATION_JSON);
+		MockHttpServletResponse response = mvc.perform(request).andReturn().getResponse();
+		
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertNotEquals("<>", response.getContentAsString());
+		verify(this.userv, times(1)).findById(1);
+		verify(this.aserv, times(1)).findUsersAddresses(dummyUser);
+	}
+	
+	@Test
+	void testUpdateAddress_Succeed() throws Exception {
+		AddressRequest newReq = new AddressRequest();
+		Set<Address> addresses = new HashSet<Address>();
+		addresses.add(dummyAddress);
+		dummyUser.setAddresses(addresses);
+		
+		newReq.setStreet("105 maybarry");
+		newReq.setSecondary("");
+		newReq.setCity("Far Far Away");
+		newReq.setZip("70530");
+		newReq.setState("NJ");
+		
+		given(aserv.update(newReq, 1, dummyUser)).willReturn(dummyAddress);
+
+		String jsonContent = this.JsonAddressRequest.write(newReq).getJson();
+		
+		MockHttpServletRequestBuilder request = put(MAPPING + "/1").contentType(MediaType.APPLICATION_JSON)
+				.content(jsonContent).sessionAttr("user", dummyUser);
+		MockHttpServletResponse response = mvc.perform(request).andReturn().getResponse();
+		
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(this.jsonAddress.write(dummyAddress).getJson(), response.getContentAsString());
+		verify(this.aserv, times(1)).update(newReq, 1, dummyUser);
+	}
+	
+	@Test
+	void testUpdateAddress_Fail_NoAddresses() throws Exception{
+		AddressRequest newReq = new AddressRequest();
+		Set<Address> addresses = new HashSet<Address>();
+		addresses.add(dummyAddress);
+		
+		newReq.setStreet("105 maybarry");
+		newReq.setSecondary("");
+		newReq.setCity("Far Far Away");
+		newReq.setZip("70530");
+		newReq.setState("NJ");
+		
+		String jsonContent = this.JsonAddressRequest.write(newReq).getJson();
+		
+		MockHttpServletRequestBuilder request = put(MAPPING + "/1").contentType(MediaType.APPLICATION_JSON)
+				.content(jsonContent).sessionAttr("user", dummyUser);
+		MockHttpServletResponse response = mvc.perform(request).andReturn().getResponse();
+		
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals("", response.getContentAsString());
+		verify(this.aserv, times(1)).update(newReq, 1, dummyUser);
+	}
+	
+	
+	@Test
+	void testAddAddress_Success() throws Exception{
+		AddressRequest newReq = new AddressRequest();
+		newReq.setStreet("105 maybarry");
+		newReq.setSecondary("");
+		newReq.setCity("Far Far Away");
+		newReq.setZip("70530");
+		newReq.setState("NJ");
+		
+		given(this.aserv.addAddress(newReq, this.dummyUser)).willReturn(this.dummyAddress);
+		String jsonContent = this.JsonAddressRequest.write(newReq).getJson();
+		
+		MockHttpServletRequestBuilder request = post(MAPPING).contentType(MediaType.APPLICATION_JSON)
+				.content(jsonContent).sessionAttr("user", dummyUser);
+		MockHttpServletResponse response = mvc.perform(request).andReturn().getResponse();
+		
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(this.jsonAddress.write(dummyAddress).getJson(), response.getContentAsString());
+		verify(this.aserv, times(1)).addAddress(newReq, dummyUser);
 	}
 }
