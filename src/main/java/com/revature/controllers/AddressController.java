@@ -1,10 +1,7 @@
 package com.revature.controllers;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-
-import javax.servlet.http.HttpSession;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
