@@ -74,22 +74,26 @@ VALUES (
            1
        );
 
-INSERT INTO reviews (review_id, review, stars, title, product_id, user_id)
+INSERT INTO reviews (review_id, posted, review, stars, title, updated, product_id, user_id)
 VALUES (
            1,
+        '2022-07-31 22:38:11.28',
            'this pair of headphones is fire',
            5,
            'great stuff man',
+           '2022-07-31 22:38:11.28',
            1,
            1
        );
 
-INSERT INTO reviews (review_id, review, stars, title, product_id, user_id)
+INSERT INTO reviews (review_id,posted, review, stars, title,updated, product_id, user_id)
 VALUES (
            2,
+           '2022-07-31 22:38:11.28',
            'A nice TeeShirt',
            4,
            'great stuff man',
+           '2022-07-31 22:38:11.28',
            2,
            1
        );
