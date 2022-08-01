@@ -1,35 +1,46 @@
 server:
-  port: 8080
+    port: 8080
 spring:
-  jpa:
-    hibernate:
-      ddl-auto: update
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-#    defer-datasource-initialization: true
-  datasource:
-#    platform: postgres
-    url: jdbc:postgresql://localhost:5432/postgres
-    driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: postgres
-#    username: ${RDS_USERNAME}
-#    password: ${RDS_PASSWORD}
-  h2:
-    console.enabled: true
-  sql:
-    init:
-      platform: postgres
+    jpa:
+        hibernate:
+            ddl-auto: update
+        database-platform: org.hibernate.dialect.PostgreSQLDialect
+    #    defer-datasource-initialization: true
+    security:
+        oauth2:
+            resourceserver:
+                jwt:
+                    issuer-uri: https://dev-famcs6az.us.auth0.com/
+    datasource:
+        #    platform: postgres
+        url: jdbc:postgresql://localhost:5432/postgres
+        driver-class-name: org.postgresql.Driver
+        username: postgres
+        password: postgres
+    #    username: ${RDS_USERNAME}
+    #    password: ${RDS_PASSWORD}
+    h2:
+        console.enabled: true
+    sql:
+        init:
+            platform: postgres
 cloud:
-  aws:
-    credentials:
-      access-key: AKIAXYAL34JPGSRKUR7Y
-      secret-key: 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
-    region:
-      static: us-east-1
-    stack:
-      auto: false
-    endpoint: https://revazon-image-bucket.s3.amazonaws.com
-      
+    aws:
+        credentials:
+            access-key: AKIAXYAL34JPGSRKUR7Y
+            secret-key: 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
+        region:
+            static: us-east-1
+        stack:
+            auto: false
+        endpoint: https://revazon-image-bucket.s3.amazonaws.com
+
+auth0:
+    audience: http://backend-env.eba-g9uchpeu.us-west-2.elasticbeanstalk.com/
+    client-origin-url: http://localhost:4200
+
 application:
-  bucket:
-    name: revature-image-bucket
+    bucket:
+        name: revature-image-bucket
+#auth0:
+#  audience: http://backend-env.eba-g9uchpeu.us-west-2.elasticbeanstalk.com/

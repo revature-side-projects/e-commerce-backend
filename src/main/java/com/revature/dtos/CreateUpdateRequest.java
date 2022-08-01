@@ -15,5 +15,4 @@ public class CreateUpdateRequest {
     private String image;
     private String name;
 
-	
 }

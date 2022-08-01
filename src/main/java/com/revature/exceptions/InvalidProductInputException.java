@@ -1,7 +1,7 @@
 package com.revature.exceptions;
 
 public class InvalidProductInputException extends RuntimeException {
-	
+
     public InvalidProductInputException() {
     }
 
@@ -17,7 +17,8 @@ public class InvalidProductInputException extends RuntimeException {
         super(cause);
     }
 
-    public InvalidProductInputException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public InvalidProductInputException(String message, Throwable cause, boolean enableSuppression,
+            boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 
