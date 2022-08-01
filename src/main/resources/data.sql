@@ -1,4 +1,4 @@
-INSERT INTO product (id, quantity, price, description, image, name) VALUES (
+INSERT INTO products (product_id, quantity, price, description, image, "name") VALUES (
     1,
     10,
     20.00,
@@ -27,7 +27,7 @@ INSERT INTO product (id, quantity, price, description, image, name) VALUES (
     20,
     10.00,
     'A fancy cap for a fancy person',
-    'https://d3o2e4jr3mxnm3.cloudfront.net/Rocket-Vintage-Chill-Cap_66374_1_lg.png',
+    'https://revazon-image-bucket.s3.amazonaws.com/cap.png',
     'Baseball Cap'
 ),
 (
@@ -39,10 +39,61 @@ INSERT INTO product (id, quantity, price, description, image, name) VALUES (
     'Coat'
 );
 
-INSERT INTO users (id, email, password, first_name, last_name) VALUES (
-    1,
-    'testuser@gmail.com',
-    'password',
-    'Test',
-    'User'
-);
+
+INSERT INTO users (email, password, first_name, last_name, role)
+VALUES (
+           'admin@gmail.com',
+           'auth0|62e0f8d6a6c5ffa1e877de65',
+           'testAdmin',
+           'User',
+           'ADMIN'
+       );
+
+INSERT INTO purchases (quantity, order_placed, product_id, user_id)
+VALUES (
+           1,
+           CURRENT_TIMESTAMP,
+           1,
+           1
+       );
+
+
+INSERT INTO addresses (address_id, street, secondary, city, zip, state)
+VALUES (
+           1,
+           '844 california street',
+           '',
+           'Los Angeles',
+           '39999',
+           'CA'
+       );
+
+INSERT INTO users_addresses (address_id, user_id)
+VALUES (
+           1,
+           1
+       );
+
+INSERT INTO reviews (review_id, posted, review, stars, title, updated, product_id, user_id)
+VALUES (
+           1,
+        '2022-07-31 22:38:11.28',
+           'this pair of headphones is fire',
+           5,
+           'great stuff man',
+           '2022-07-31 22:38:11.28',
+           1,
+           1
+       );
+
+INSERT INTO reviews (review_id,posted, review, stars, title,updated, product_id, user_id)
+VALUES (
+           2,
+           '2022-07-31 22:38:11.28',
+           'A nice TeeShirt',
+           4,
+           'great stuff man',
+           '2022-07-31 22:38:11.28',
+           2,
+           1
+       );

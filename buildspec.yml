@@ -1,0 +1,11 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - java -version
+      - mvn clean install -DskipTests
+artifacts:
+  files:
+    - 'Dockerfile'
+    - target/e-commerce-0.0.1-SNAPSHOT.jar
