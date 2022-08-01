@@ -112,17 +112,18 @@ public class UserControllerTest {
 	
 	@Test
 	void testUpdate_Success() throws Exception {
-		UserRequest newUser = new UserRequest(this.dummyUser.getEmail(), this.dummyUser.getPassword(), 
-				this.dummyUser.getFirstName(), this.dummyUser.getLastName(), this.dummyUser.getRole());
+		UserRequest newUser = new UserRequest(this.dummyUser.getId(), this.dummyUser.getEmail(),
+				this.dummyUser.getPassword(), this.dummyUser.getFirstName(), this.dummyUser.getLastName(),
+				this.dummyUser.getRole());
 		given(this.uServ.save(this.dummyUser)).willReturn(this.dummyUser);
 		
 		String jsonContent = this.jsonUserRequest.write(newUser).getJson();
 		MockHttpServletRequestBuilder request = put(this.MAPPING_ROOT).contentType(MediaType.APPLICATION_JSON)
-				.content(jsonContent).sessionAttr("user", this.dummyUser);;
+				.content(jsonContent).sessionAttr("user", this.dummyUser);
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 		
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		assertEquals(this.jsonUser.write(this.dummyUser).getJson(), response.getContentAsString());
-		verify(this.uServ, times(1)).save(dummyUser);
+		verify(this.uServ, times(1)).save(this.dummyUser);
 	}
 }
