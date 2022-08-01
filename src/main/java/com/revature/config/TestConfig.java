@@ -1,6 +1,7 @@
 package com.revature.config;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.boot.test.context.TestConfiguration;
@@ -13,7 +14,7 @@ public class TestConfig {
 
   static final String AUTH0_TOKEN = "token";
   static final String SUB = "sub";
-  static final String AUTH0ID = "sms|12345678";
+  static final String AUTH0_ID = "sms|12345678";
 
   @Bean
   public JwtDecoder jwtDecoder() {
@@ -30,9 +31,8 @@ public class TestConfig {
   public Jwt jwt() {
 
     // This is a place to add general and maybe custom claims which should be available after parsing token in the live system
-    Map<String, Object> claims = Map.of(
-        SUB, AUTH0ID
-    );
+    Map<String, Object> claims = new HashMap<>();		
+    claims.put(SUB, AUTH0_ID);
 
     //This is an object that represents contents of jwt token after parsing
     return new Jwt(
