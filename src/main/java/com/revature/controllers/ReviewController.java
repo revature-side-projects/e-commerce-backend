@@ -74,10 +74,8 @@ public class ReviewController {
 	 * @return an "ok" ResponseEntity so long as the product being reviewed exists
 	 */
 	@PostMapping
-	public ResponseEntity<Review> addReview(@RequestBody ReviewRequest reviewRequest, HttpSession session) {
-		User u = (User) session.getAttribute("user"); // May need to try catch - but this shouldn't execute if
-														// "user" session attribute is null anyway
-		return ResponseEntity.ok(reviewService.add(reviewRequest, u));
+	public ResponseEntity<Review> addReview(@RequestBody ReviewRequest reviewRequest) {
+		return ResponseEntity.ok(reviewService.add(reviewRequest));
 	}
 
 	/**
@@ -92,10 +90,8 @@ public class ReviewController {
 	 */
 
 	@PutMapping("/{id}")
-	public ResponseEntity<Review> updateReview(@RequestBody ReviewRequest reviewRequest, @PathVariable("id") int id,
-			HttpSession session) {
-		int userId = ((User) session.getAttribute("user")).getId();
-		return ResponseEntity.ok(reviewService.update(reviewRequest, id, userId));
+	public ResponseEntity<Review> updateReview(@RequestBody ReviewRequest reviewRequest, @PathVariable("id") int id) {
+		return ResponseEntity.ok(reviewService.update(reviewRequest, id));
 	}
 
 	/**
@@ -108,9 +104,8 @@ public class ReviewController {
 	 *         review, and the review exists
 	 */
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Review> deleteReview(@PathVariable("id") int id, HttpSession session) {
-		int userId = ((User) session.getAttribute("user")).getId();
+	@DeleteMapping("/{userId}/{id}")
+	public ResponseEntity<Review> deleteReview(@PathVariable("userId") int userId, @PathVariable("id") int id) {
 		return ResponseEntity.ok(reviewService.delete(id, userId));
 	}
 }

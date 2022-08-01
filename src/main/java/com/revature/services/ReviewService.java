@@ -54,25 +54,30 @@ public class ReviewService {
 	 * @param user          who authored the review
 	 * @return the new review object
 	 */
-	public Review add(ReviewRequest reviewRequest, User user) {
+	public Review add(ReviewRequest reviewRequest) {
 		Optional<Product> optionalProduct = productService.findById(reviewRequest.getProductId());
 		if (optionalProduct.isPresent()) {
+			Optional<User> user = userService.findById(reviewRequest.getUserId());
+			if (!user.isPresent()) {
+				throw new UserNotFoundException();
+			}
+			
 			Review review = new Review(
 					reviewRequest.getStars(),
 					reviewRequest.getTitle(),
 					reviewRequest.getReview(),
-					user,
+					user.get(),
 					optionalProduct.get());
 			Product product = optionalProduct.get();
 			Optional<Review> optionalReview = this.findByProductId(product.getId()).stream()
-					.filter(r -> r.getUser().getId() == user.getId())
+					.filter(r -> r.getUser().getId() == reviewRequest.getUserId())
 					.findFirst();
 			if (optionalReview.isPresent()) {
 				throw new DuplicateReviewException("You have already written a review for this product.");
 			}
 			review.setPosted(Timestamp.valueOf(LocalDateTime.now()));
 			review.setUpdated(Timestamp.valueOf(LocalDateTime.now()));
-			review.setUser(user);
+			review.setUser(user.get());
 			review = reviewRepository.save(review);
 
 			return review;
@@ -162,11 +167,11 @@ public class ReviewService {
 	 * @throws UnauthorizedReviewAccessException if the user making the request did
 	 *                                           not author the review
 	 */
-	public Review update(ReviewRequest reviewRequest, int id, int userId) {
+	public Review update(ReviewRequest reviewRequest, int id) {
 		Optional<Review> optionalReview = reviewRepository.findById(id);
 		if (optionalReview.isPresent()) {
 			Review review = optionalReview.get();
-			if (review.getUser().getId() == userId) {
+			if (review.getUser().getId() == reviewRequest.getUserId()) {
 				review.setStars(reviewRequest.getStars());
 				review.setTitle(reviewRequest.getTitle());
 				review.setReview(reviewRequest.getReview());
