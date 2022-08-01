@@ -36,7 +36,7 @@ public class AddressController {
 		this.userv = userv;
 	}
 
-	@GetMapping("/{userId}") // TODO: Strongly consider using "/user/{userId}" isntead.
+	@GetMapping("/user/{userId}")
 	public ResponseEntity<Set<Address>> getUserAddresses(@PathVariable("userId") int userId) {
 		Optional<User> optionalUser = userv.findById(userId);
 		if (optionalUser.isPresent()) {

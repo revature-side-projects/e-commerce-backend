@@ -1,7 +1,5 @@
 package com.revature.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
@@ -69,5 +67,6 @@ public class User {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<Address> addresses = new HashSet<>();
+    
 
 }
