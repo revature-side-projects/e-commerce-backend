@@ -9,7 +9,6 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import com.openpojo.business.BusinessIdentity;
 import com.openpojo.business.annotation.BusinessKey;
-import com.sun.istack.NotNull;
 
 @Getter
 @Setter
