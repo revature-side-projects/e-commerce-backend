@@ -8,9 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PurchaseRequest {
-	
+
 	private int id;
 	
+	private int userId;
+
 	private int quantity;
-	
+
 }

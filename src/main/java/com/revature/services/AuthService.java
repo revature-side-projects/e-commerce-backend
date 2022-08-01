@@ -8,7 +8,7 @@ import com.revature.models.User;
 
 @Service
 public class AuthService {
-	
+
     private final UserService userService;
 
     public AuthService(UserService userService) {
@@ -18,11 +18,6 @@ public class AuthService {
     public Optional<User> findByCredentials(String email, String password) {
         return userService.findByCredentials(email, password);
     }
-
-    public Optional<User> findByEmail(String email) {
-        return userService.findByEmail(email);
-    }
-
 
     public User register(User user) {
         return userService.save(user);
