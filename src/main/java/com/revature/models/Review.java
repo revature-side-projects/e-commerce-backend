@@ -5,6 +5,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.Length;
 
+import com.openpojo.business.BusinessIdentity;
+import com.openpojo.business.annotation.BusinessKey;
+
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -17,12 +20,10 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
 @Table(name = "reviews")
 public class Review {
     @Id
@@ -30,32 +31,39 @@ public class Review {
     @Column(name = "review_id")
     private int id;
 
+	@BusinessKey
     @NotNull
     @NonNull
     @Min(value = 0)
     @Max(value = 5)
     private int stars;
 
+	@BusinessKey
     @NotNull
     @NonNull
     private String title;
 
+	@BusinessKey
     @NotNull
     @NonNull
     private String review;
 
     @CreationTimestamp
+    @EqualsAndHashCode.Exclude
     private Timestamp posted;
 
     @UpdateTimestamp
+    @EqualsAndHashCode.Exclude
     private Timestamp updated;
 
+	@BusinessKey
     @ManyToOne
     @JoinColumn(name = "product_id")
     @NotNull
     @NonNull
     private Product product;
 
+	@BusinessKey
     @ManyToOne
     @JoinColumn(name = "user_id")
     @NotNull
@@ -71,4 +79,13 @@ public class Review {
         this.user = user;
         this.product = product;
     }
+    
+    @Override
+    public String toString() { return BusinessIdentity.toString(this); }
+
+    @Override
+    public boolean equals(final Object o) { return BusinessIdentity.areEqual(this, o); }
+
+    @Override
+    public int hashCode() { return BusinessIdentity.getHashCode(this); }
 }

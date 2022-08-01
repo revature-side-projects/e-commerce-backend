@@ -5,12 +5,15 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
+import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -24,9 +27,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import com.revature.config.TestConfig;
 import com.revature.dtos.ReviewRequest;
 import com.revature.exceptions.ReviewNotFoundException;
 import com.revature.models.Product;
@@ -43,7 +48,8 @@ import com.revature.services.ReviewService;
  *
  */
 @AutoConfigureJsonTesters
-@WebMvcTest(ReviewController.class)
+@WebMvcTest(controllers = ReviewController.class)
+@ContextConfiguration(classes = TestConfig.class)
 class ReviewControllerTest {
 
 	@Autowired
@@ -93,7 +99,9 @@ class ReviewControllerTest {
 
 		given(this.rServ.findAll()).willReturn(reviews);
 
-		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT).accept(MediaType.APPLICATION_JSON);
+		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT)
+				.accept(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer token");
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -106,7 +114,7 @@ class ReviewControllerTest {
 		List<Review> expected = new LinkedList<>();
 		given(this.rServ.findAll()).willReturn(expected);
 
-		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT).accept(MediaType.APPLICATION_JSON);
+		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT).accept(MediaType.APPLICATION_JSON).header(HttpHeaders.AUTHORIZATION, "Bearer token");
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -122,7 +130,8 @@ class ReviewControllerTest {
 		given(this.rServ.findByProductId(productId)).willReturn(reviews);
 
 		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/product/" + productId)
-				.accept(MediaType.APPLICATION_JSON);
+				.accept(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer token");
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -144,7 +153,8 @@ class ReviewControllerTest {
 		given(this.rServ.findByUserId(userId)).willReturn(reviews);
 
 		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/user/" + userId)
-				.accept(MediaType.APPLICATION_JSON);
+				.accept(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer token");
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -163,7 +173,7 @@ class ReviewControllerTest {
 		int id = this.dummyReview.getId();
 		given(this.rServ.findById(id)).willReturn(this.dummyReview);
 
-		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/" + id).accept(MediaType.APPLICATION_JSON);
+		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/" + id).accept(MediaType.APPLICATION_JSON).header(HttpHeaders.AUTHORIZATION, "Bearer token");
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -176,9 +186,8 @@ class ReviewControllerTest {
 		int id = this.dummyReview.getId();
 		given(this.rServ.findById(id)).willThrow(ReviewNotFoundException.class);
 
-		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/" + id).accept(MediaType.APPLICATION_JSON);
-		MockHttpServletResponse response = this.mvc.perform(request).andReturn()
-				.getResponse();
+		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/" + id).accept(MediaType.APPLICATION_JSON).header(HttpHeaders.AUTHORIZATION, "Bearer token");
+		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 		verify(this.rServ, times(1)).findById(id);
@@ -186,18 +195,20 @@ class ReviewControllerTest {
 
 	@Test
 	void testAddReview_Success() throws Exception {
-		ReviewRequest newReview = new ReviewRequest(this.dummyProduct.getId(), this.dummyReview.getStars(),
+		int authorId = this.dummyUser.getId();
+		ReviewRequest newReview = new ReviewRequest(authorId, this.dummyProduct.getId(), this.dummyReview.getStars(),
 				this.dummyReview.getTitle(), this.dummyReview.getReview());
-		given(this.rServ.add(newReview, this.dummyUser)).willReturn(this.dummyReview);
+		given(this.rServ.add(newReview)).willReturn(this.dummyReview);
 
 		String jsonContent = this.jsonReviewRequest.write(newReview).getJson();
 		MockHttpServletRequestBuilder request = post(this.MAPPING_ROOT).contentType(MediaType.APPLICATION_JSON)
-				.content(jsonContent).sessionAttr("user", this.dummyUser);
+				.content(jsonContent).sessionAttr("user", this.dummyUser)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer token");
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		assertEquals(this.jsonReview.write(this.dummyReview).getJson(), response.getContentAsString());
-		verify(this.rServ, times(1)).add(newReview, this.dummyUser);
+		verify(this.rServ, times(1)).add(newReview);
 	}
 
 	@Test
@@ -216,22 +227,22 @@ class ReviewControllerTest {
 	void testUpdateReview_Success() throws Exception {
 		int reviewId = this.dummyReview.getId();
 		int authorId = this.dummyUser.getId();
-		ReviewRequest updatedReview = new ReviewRequest(this.dummyProduct.getId(), 5, "Updated review",
+		ReviewRequest updatedReview = new ReviewRequest(authorId, this.dummyProduct.getId(), 5, "Updated review",
 				"This new version of the product made it a lot better");
 		this.dummyReview.setTitle(updatedReview.getTitle());
 		this.dummyReview.setReview(updatedReview.getReview());
 		this.dummyReview.setStars(updatedReview.getStars());
 
-		given(this.rServ.update(updatedReview, reviewId, authorId)).willReturn(this.dummyReview);
+		given(this.rServ.update(updatedReview, reviewId)).willReturn(this.dummyReview);
 
 		String jsonContent = this.jsonReviewRequest.write(updatedReview).getJson();
 		MockHttpServletRequestBuilder request = put(this.MAPPING_ROOT + "/" + reviewId)
-				.contentType(MediaType.APPLICATION_JSON).content(jsonContent).sessionAttr("user", this.dummyUser);
+				.contentType(MediaType.APPLICATION_JSON).content(jsonContent).sessionAttr("user", this.dummyUser).header(HttpHeaders.AUTHORIZATION, "Bearer token");
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		assertEquals(this.jsonReview.write(this.dummyReview).getJson(), response.getContentAsString());
-		verify(this.rServ, times(1)).update(updatedReview, reviewId, authorId);
+		verify(this.rServ, times(1)).update(updatedReview, reviewId);
 	}
 
 	@Test
@@ -255,9 +266,9 @@ class ReviewControllerTest {
 	@Test
 	void testDeleteReview_Success() throws Exception {
 		int reviewId = this.dummyReview.getId();
-
-		MockHttpServletRequestBuilder request = delete(this.MAPPING_ROOT + "/" + reviewId)
-				.contentType(MediaType.APPLICATION_JSON).sessionAttr("user", this.dummyUser);
+		int userId = this.dummyUser.getId();
+		MockHttpServletRequestBuilder request = delete(this.MAPPING_ROOT + "/" + userId + "/" + reviewId)
+				.contentType(MediaType.APPLICATION_JSON).sessionAttr("user", this.dummyUser).header(HttpHeaders.AUTHORIZATION, "Bearer token");
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());

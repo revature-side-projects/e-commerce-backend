@@ -1,6 +1,9 @@
 package com.revature.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.openpojo.business.BusinessIdentity;
+import com.openpojo.business.annotation.BusinessKey;
+
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,33 +14,35 @@ import java.util.Set;
 
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
 @Table(name = "addresses")
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "users" })
 public class Address {
-    @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "address_id")
     private int id;
 
+    @BusinessKey
     @NotNull
     @NonNull
     private String street;
     private String secondary;
 
+    @BusinessKey
     @NotNull
     @NonNull
     private String city;
 
+    @BusinessKey
     @NotNull
     @NonNull
     private String zip;
 
+    @BusinessKey
     @NotNull
     @NonNull
     private String state;
@@ -47,4 +52,12 @@ public class Address {
     @ToString.Exclude
     private Set<User> users = new LinkedHashSet<>();
 
+    @Override
+    public String toString() { return BusinessIdentity.toString(this); }
+
+    @Override
+    public boolean equals(final Object o) { return BusinessIdentity.areEqual(this, o); }
+
+    @Override
+    public int hashCode() { return BusinessIdentity.getHashCode(this); }
 }
