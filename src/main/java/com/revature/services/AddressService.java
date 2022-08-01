@@ -24,7 +24,8 @@ public class AddressService {
 	}
 
 	public Address addAddress(AddressRequest addressRequest, User u) {
-		Address address = new Address(addressRequest.getStreet(), addressRequest.getCity(), addressRequest.getZip(), addressRequest.getState());
+		Address address = new Address(addressRequest.getStreet(), addressRequest.getCity(),
+				addressRequest.getZip(), addressRequest.getState());
 		Set<User> users = new HashSet<>();
 		users.add(u);
 		address.setSecondary(addressRequest.getSecondary());
