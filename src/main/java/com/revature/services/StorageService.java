@@ -40,7 +40,7 @@ public class StorageService {
 		} catch (Exception e) {
 			throw new FileUploadException(e.getMessage());
 		}
-		return new ResponseEntity<String>(fileName, HttpStatus.OK);
+		return new ResponseEntity<>(fileName, HttpStatus.OK);
 	}
 
 	private File convertMultipartToFile(MultipartFile file) {
