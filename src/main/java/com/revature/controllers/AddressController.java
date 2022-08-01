@@ -1,5 +1,6 @@
 package com.revature.controllers;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -46,17 +47,16 @@ public class AddressController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<Address> updateAddress(@RequestBody AddressRequest addressRequest, @PathVariable("id") int id,
-			HttpSession session) {
-		User u = (User) session.getAttribute("user");
-
-		return ResponseEntity.ok(aserv.update(addressRequest, id, u));
+	public ResponseEntity<Address> updateAddress(@RequestBody AddressRequest addressRequest, @PathVariable("id") int userId) {
+		System.out.println(userId);
+		Optional<User> user = userv.findById(userId);
+		return ResponseEntity.ok(aserv.update(addressRequest, user.get()));
 
 	}
 
-	@PostMapping
-	public ResponseEntity<Address> addAddress(@RequestBody AddressRequest addressRequest, HttpSession session) {
-		User u = (User) session.getAttribute("user");
-		return ResponseEntity.ok(aserv.addAddress(addressRequest, u));
+	@PostMapping("/{id}")
+	public ResponseEntity<Address> addAddress(@RequestBody AddressRequest addressRequest, @PathVariable("id") int userId) {
+		Optional<User> user = userv.findById(userId);
+		return ResponseEntity.ok(aserv.addAddress(addressRequest, user.get()));
 	}
 }

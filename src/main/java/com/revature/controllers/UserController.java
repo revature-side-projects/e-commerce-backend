@@ -40,22 +40,17 @@ public class UserController {
 	public ResponseEntity<User> getUserByEmail(@PathVariable("userEmail") String userEmail) {
 		Optional<User> optionalUser = userv.findByEmail(userEmail);
 		User user = optionalUser.get();
-		User withoutPasswordUser = new User(user.getId(), user.getEmail(), "", user.getFirstName(), user.getLastName(), "",
+		User withoutPasswordUser = new User(user.getId(), user.getEmail(), "", user.getFirstName(), user.getLastName(), user.getRole(),
 				new HashSet<>(), new HashSet<>(), new HashSet<>());
 		return ResponseEntity.ok(withoutPasswordUser);
 	}
 
 	@PutMapping
-	public ResponseEntity<User> update(@RequestBody UserRequest user, HttpSession session) {
-
-		User curUser = (User) session.getAttribute("user");
-		log.info(curUser.toString());
-		curUser.setEmail(user.getEmail());
-		curUser.setPassword(user.getPassword());
-		curUser.setFirstName(user.getFirstName());
-		curUser.setLastName(user.getLastName());
-		log.info(curUser.toString());
-		return ResponseEntity.ok(userv.save(curUser));
+	public ResponseEntity<User> update(@RequestBody UserRequest user) {
+		User newUser = new User(user.getId(),user.getEmail(),user.getPassword(),user.getFirstName(),user.getLastName(), user.getRole(),
+				new HashSet<>(), new HashSet<>(), new HashSet<>());
+		log
+		return ResponseEntity.ok(userv.save(newUser));
 	}
 
 	@PostMapping

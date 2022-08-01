@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -87,5 +89,4 @@ public class User {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<Address> addresses = new HashSet<>();
-
 }

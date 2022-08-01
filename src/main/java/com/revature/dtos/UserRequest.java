@@ -7,6 +7,8 @@ import lombok.*;
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class UserRequest {
+
+	private Integer id;
 	@NonNull
 	private String email;
 	private String password;

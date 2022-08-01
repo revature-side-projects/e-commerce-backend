@@ -32,22 +32,21 @@ public class AddressService {
 		return addressRepo.save(address);
 	}
 
-	public Address update(AddressRequest addressRequest, int id, User u) {
-		Optional<Address> optionalAddress = addressRepo.findById(id);
+	public Address update(AddressRequest addressRequest, User user) {
+		Optional<Address> optionalAddress = addressRepo.findById(addressRequest.getId());
 		if (optionalAddress.isPresent()) {
 			Address address = optionalAddress.get();
 			Set<User> addressesUsers = address.getUsers();
-			addressesUsers.add(u);
+			addressesUsers.add(user);
 			address.setStreet(addressRequest.getStreet());
 			address.setSecondary(addressRequest.getSecondary());
 			address.setCity(addressRequest.getCity());
 			address.setState(addressRequest.getState());
 			address.setZip(addressRequest.getZip());
 			address.setUsers(addressesUsers);
-
 			return addressRepo.save(address);
 		} else {
-			throw new AddressNotFoundException(id);
+			throw new AddressNotFoundException(addressRequest.getId());
 		}
 	}
 
