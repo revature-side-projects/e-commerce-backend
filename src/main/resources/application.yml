@@ -40,12 +40,8 @@ auth0:
     client-origin-url: http://localhost:4200
 
 application:
-<<<<<<< HEAD
   bucket:
     name: revazon-image-bucket
-=======
-    bucket:
-        name: revature-image-bucket
+
 #auth0:
 #  audience: http://backend-env.eba-g9uchpeu.us-west-2.elasticbeanstalk.com/
->>>>>>> 7105dcb0b3f2695e92526bdddfbcccb390a2f544
