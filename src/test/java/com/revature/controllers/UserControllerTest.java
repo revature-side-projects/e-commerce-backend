@@ -26,7 +26,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import com.revature.config.TestSecurityConfig;
+import com.revature.config.TestConfig;
 import com.revature.dtos.UserRequest;
 import com.revature.exceptions.UserNotFoundException;
 import com.revature.models.User;
@@ -34,7 +34,7 @@ import com.revature.services.UserService;
 
 @AutoConfigureJsonTesters
 @WebMvcTest(UserController.class)
-@ContextConfiguration(classes = TestSecurityConfig.class)
+@ContextConfiguration(classes = TestConfig.class)
 public class UserControllerTest {
 
 	@Autowired
@@ -125,6 +125,7 @@ public class UserControllerTest {
 		UserRequest newUser = new UserRequest(this.dummyUser.getId(), this.dummyUser.getEmail(),
 				this.dummyUser.getPassword(), this.dummyUser.getFirstName(), this.dummyUser.getLastName(),
 				this.dummyUser.getRole());
+		given(this.uServ.findById(this.dummyUser.getId())).willReturn(Optional.of(this.dummyUser));
 		given(this.uServ.save(this.dummyUser)).willReturn(this.dummyUser);
 
 		String jsonContent = this.jsonUserRequest.write(newUser).getJson();

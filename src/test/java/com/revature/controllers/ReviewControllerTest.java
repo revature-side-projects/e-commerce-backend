@@ -31,7 +31,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import com.revature.config.TestSecurityConfig;
+import com.revature.config.TestConfig;
 import com.revature.dtos.ReviewRequest;
 import com.revature.exceptions.ReviewNotFoundException;
 import com.revature.models.Product;
@@ -49,7 +49,7 @@ import com.revature.services.ReviewService;
  */
 @AutoConfigureJsonTesters
 @WebMvcTest(controllers = ReviewController.class)
-@ContextConfiguration(classes = TestSecurityConfig.class)
+@ContextConfiguration(classes = TestConfig.class)
 class ReviewControllerTest {
 
 	@Autowired

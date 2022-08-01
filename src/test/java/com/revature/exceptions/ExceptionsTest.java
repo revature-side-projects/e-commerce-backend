@@ -165,6 +165,28 @@ public class ExceptionsTest {
 		}
 	}
 	
+	@Test
+	void testNotLoggedInException_WithMessageAndThrowable() {
+		String message = "You must be logged in to access this resource";
+		try {
+			throw new NotLoggedInException(message, new Throwable());
+		} catch (Exception e) {
+			assertEquals(NotLoggedInException.class, e.getClass());
+			assertEquals(message, e.getMessage());
+		}
+	}
+	
+	@Test
+	void testNotLoggedInException_WithMessageAndThrowableAndFlags() {
+		String message = "You must be logged in to access this resource";
+		try {
+			throw new NotLoggedInException(message, new Throwable(), true, false);
+		} catch (Exception e) {
+			assertEquals(NotLoggedInException.class, e.getClass());
+			assertEquals(message, e.getMessage());
+		}
+	}
+	
 	@Test 
 	void testProductNotFoundException() {
 		try {
