@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -18,10 +19,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.ResourceAccessException;
 
 import com.revature.dtos.ReviewRequest;
+import com.revature.exceptions.DuplicateReviewException;
 import com.revature.exceptions.ReviewNotFoundException;
 import com.revature.exceptions.UnauthorizedReviewAccessException;
 import com.revature.models.Product;
@@ -71,7 +71,6 @@ class ReviewServiceTest {
 				this.dummyProduct);
 		Review expected = new Review(2, newReview.getStars(), newReview.getTitle(), newReview.getReview(),
 				newReview.getPosted(), newReview.getUpdated(), this.dummyProduct, this.dummyUser);
-
 		given(this.pServ.findById(productId)).willReturn(Optional.of(this.dummyProduct));
 		given(this.uServ.findById(authorId)).willReturn(Optional.of(this.dummyUser));
 		given(this.mockReviewRepo.save(newReview)).willReturn(expected);
@@ -97,6 +96,24 @@ class ReviewServiceTest {
 		} catch (Exception e) {
 			assertEquals("No product found with ID " + productId, e.getMessage());
 			verify(this.pServ, times(1)).findById(productId);
+		}
+	}
+
+	@Test
+	void testAdd_Failure_DuplicateReview() {
+		ReviewRequest request = new ReviewRequest(this.dummyUser.getId(), this.dummyProduct.getId(), 1, "Not working",
+				"It doesn't work as advertised. I am dissatisfied with this product.");
+		int productId = this.dummyProduct.getId();
+		given(this.pServ.findById(productId)).willReturn(Optional.of(this.dummyProduct));
+		given(this.uServ.findById(this.dummyUser.getId())).willReturn(Optional.of(this.dummyUser));
+		given(this.rServ.findByProductId(this.dummyProduct.getId())).willReturn(Collections.singletonList(
+				new Review(2, 1, "A title", "A review of a thing.", null, null, this.dummyProduct, this.dummyUser)));
+		
+		try {
+			this.rServ.add(request);
+			fail("Expected DuplicateReviewException to be thrown");
+		} catch (Exception e) {
+			assertEquals(DuplicateReviewException.class, e.getClass());
 		}
 	}
 
@@ -190,6 +207,20 @@ class ReviewServiceTest {
 	}
 
 	@Test
+	void testFindById_Failure_ReviewIdNotFound() {
+		int id = 2;
+		given(this.mockReviewRepo.findById(id)).willReturn(Optional.empty());
+
+		try {
+			this.rServ.findById(id);
+			fail("Expected ReviewNotFoundException to be thrown");
+		} catch (Exception e) {
+			assertEquals(ReviewNotFoundException.class, e.getClass());
+			verify(this.mockReviewRepo, times(1)).findById(id);
+		}
+	}
+
+	@Test
 	void testSave() {
 		given(this.mockReviewRepo.save(this.dummyReview)).willReturn(this.dummyReview);
 
@@ -227,8 +258,8 @@ class ReviewServiceTest {
 		given(this.mockReviewRepo.findById(id)).willReturn(Optional.of(this.dummyReview));
 
 		try {
-			this.rServ.update(updatedReview, wrongId);
-			fail("Expected a HttpClientErrorException with status code of 401");
+			this.rServ.update(updatedReview, id);
+			fail("Expected a UnauthorizedReviewAccessException to be thrown");
 		} catch (Exception e) {
 			assertEquals(UnauthorizedReviewAccessException.class, e.getClass());
 			verify(this.mockReviewRepo, times(1)).findById(id);
@@ -245,7 +276,7 @@ class ReviewServiceTest {
 
 		try {
 			this.rServ.update(updatedReview, id);
-			fail("Expected a HttpClientErrorException with status code of 404");
+			fail("Expected a ReviewNotFoundException to be thrown");
 		} catch (Exception e) {
 			assertEquals(ReviewNotFoundException.class, e.getClass());
 			verify(this.mockReviewRepo, times(1)).findById(id);

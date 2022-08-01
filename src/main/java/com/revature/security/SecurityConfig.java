@@ -1,6 +1,7 @@
 package com.revature.security;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -47,6 +48,7 @@ public class SecurityConfig {
     }
 
     @Bean
+    @ConditionalOnMissingBean
     JwtDecoder jwtDecoder() {
         NimbusJwtDecoder jwtDecoder =  JwtDecoders.fromOidcIssuerLocation(issuer);
 

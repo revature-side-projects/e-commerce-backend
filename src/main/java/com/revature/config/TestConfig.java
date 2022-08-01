@@ -33,13 +33,17 @@ public class TestConfig {
     // This is a place to add general and maybe custom claims which should be available after parsing token in the live system
     Map<String, Object> claims = new HashMap<>();		
     claims.put(SUB, AUTH0_ID);
+    
+    Map<String, Object> headers = new HashMap<>();
+	headers.put("alg", "none");
+
 
     //This is an object that represents contents of jwt token after parsing
     return new Jwt(
         AUTH0_TOKEN,
         Instant.now(),
         Instant.now().plusSeconds(30),
-        Map.of("alg", "none"),
+        headers,
         claims
     );
   }

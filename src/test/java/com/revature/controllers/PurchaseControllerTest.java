@@ -170,6 +170,7 @@ class PurchaseControllerTest {
 				.header(HttpHeaders.AUTHORIZATION, "Bearer token");
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
+
 		verify(this.pServ, times(1)).add(newPurchase, buyerId);
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 	}
