@@ -58,15 +58,12 @@ public class PurchaseController {
 		}
 	}
 
-	@PostMapping
-	public ResponseEntity<List<Purchase>> addPurchase(@RequestBody List<PurchaseRequest> purchaseRequests,
-			HttpSession session) {
-		User u = (User) session.getAttribute("user");
-
+	@PostMapping("/{id}")
+	public ResponseEntity<List<Purchase>> addPurchase(@RequestBody List<PurchaseRequest> purchaseRequests, @PathVariable("id") int id) {
 		List<Purchase> resp = new LinkedList<>();
 		try {
 			for (PurchaseRequest purchaseRequest : purchaseRequests) {
-				resp.add(this.pserv.add(purchaseRequest, u));
+				resp.add(this.pserv.add(purchaseRequest, id));
 			}
 		} catch (ProductNotFoundException e) {
 			return ResponseEntity.notFound().build();

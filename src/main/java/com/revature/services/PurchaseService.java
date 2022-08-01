@@ -63,19 +63,26 @@ public class PurchaseService {
 	 * 
 	 * @param purchaseRequest - a body that contains the purchase information from
 	 *                        the front end.
-	 * @param user            - the user associated with the purchase.
+	 * @param id              - the id of the user associated with the purchase.
 	 * 
 	 *                        sets additional information about the purchase, such
 	 *                        as which product, the quantity, and the owner.
 	 * 
 	 * @return the purchase that was saved in the database.
 	 */
-	public Purchase add(PurchaseRequest purchaseRequest, User user) {
+	public Purchase add(PurchaseRequest purchaseRequest, int id) {
 		Optional<Product> optionalProduct = pserv.findById(purchaseRequest.getId());
+		Optional<User> user = userv.findById(id);
 		if (optionalProduct.isPresent()) {
 			Purchase purchase = new Purchase();
 			purchase.setProduct(optionalProduct.get());
-			purchase.setOwnerUser(user);
+			
+			if (user.isPresent()) {
+				purchase.setOwnerUser(user.get());
+			} else {
+				throw new UserNotFoundException();
+			}
+			
 			purchase.setQuantity(purchaseRequest.getQuantity());
 			purchase.setOrderPlaced(Timestamp.valueOf(LocalDateTime.now()));
 			return purchaseRepo.save(purchase);

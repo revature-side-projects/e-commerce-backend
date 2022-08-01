@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 public class PurchaseRequest {
 
 	private int id;
+	
+	private int userId;
 
 	private int quantity;
 
