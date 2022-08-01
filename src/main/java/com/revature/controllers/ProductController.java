@@ -94,7 +94,6 @@ public class ProductController {
 
 			throw new InvalidProductInputException("Null value is not allowed");
 		}
-
 		return ResponseEntity.ok(productService.save(newPd));
 	}
 

@@ -15,6 +15,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +23,15 @@ import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import com.revature.config.TestConfig;
 import com.revature.dtos.AddressRequest;
 import com.revature.exceptions.UserNotFoundException;
 import com.revature.models.Address;
@@ -36,6 +40,7 @@ import com.revature.services.AddressService;
 import com.revature.services.UserService;
 
 @AutoConfigureJsonTesters
+@ContextConfiguration(classes = TestConfig.class)
 @WebMvcTest(AddressController.class)
 class AddressControllerTest {
 	@Autowired
@@ -84,7 +89,8 @@ class AddressControllerTest {
 		given(this.userv.findById(dummyUser.getId())).willReturn(Optional.of(dummyUser));
 		given(this.aserv.findUsersAddresses(dummyUser)).willReturn(dummyUser.getAddresses());
 		
-		MockHttpServletRequestBuilder request = get(this.MAPPING + "/1").accept(MediaType.APPLICATION_JSON);
+		MockHttpServletRequestBuilder request = get(this.MAPPING + "/1").accept(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer token");
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 		
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -100,7 +106,8 @@ class AddressControllerTest {
 		
 		given(userv.findById(dummyUser.getId())).willThrow(UserNotFoundException.class);
 		given(aserv.findUsersAddresses(dummyUser)).willThrow(NullPointerException.class);
-		MockHttpServletRequestBuilder request = get(MAPPING + "/1").accept(MediaType.APPLICATION_JSON);
+		MockHttpServletRequestBuilder request = get(MAPPING + "/1").accept(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer token");
 		MockHttpServletResponse response = mvc.perform(request).andReturn().getResponse();
 		
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
@@ -112,7 +119,8 @@ class AddressControllerTest {
 	@Test
 	void testGetUserAddress_NoAddress() throws Exception{
 		given(userv.findById(dummyUser.getId())).willReturn(Optional.of(dummyUser));
-		MockHttpServletRequestBuilder request = get(MAPPING + "/1").accept(MediaType.APPLICATION_JSON);
+		MockHttpServletRequestBuilder request = get(MAPPING + "/1").accept(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer token");
 		MockHttpServletResponse response = mvc.perform(request).andReturn().getResponse();
 		
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -137,9 +145,11 @@ class AddressControllerTest {
 		given(aserv.update(newReq, dummyUser)).willReturn(dummyAddress);
 
 		String jsonContent = this.JsonAddressRequest.write(newReq).getJson();
+		given(userv.findById(dummyUser.getId())).willReturn(Optional.of(dummyUser));
 		
 		MockHttpServletRequestBuilder request = put(MAPPING + "/1").contentType(MediaType.APPLICATION_JSON)
-				.content(jsonContent).sessionAttr("user", dummyUser);
+				.content(jsonContent).sessionAttr("user", dummyUser)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer token");
 		MockHttpServletResponse response = mvc.perform(request).andReturn().getResponse();
 		
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -153,6 +163,7 @@ class AddressControllerTest {
 		Set<Address> addresses = new HashSet<Address>();
 		addresses.add(dummyAddress);
 		
+		newReq.setId(dummyAddress.getId());
 		newReq.setStreet(dummyAddress.getStreet());
 		newReq.setSecondary(dummyAddress.getSecondary());
 		newReq.setCity(dummyAddress.getCity());
@@ -160,9 +171,11 @@ class AddressControllerTest {
 		newReq.setState(dummyAddress.getState());
 		
 		String jsonContent = this.JsonAddressRequest.write(newReq).getJson();
+		given(userv.findById(dummyUser.getId())).willReturn(Optional.of(dummyUser));
 		
 		MockHttpServletRequestBuilder request = put(MAPPING + "/1").contentType(MediaType.APPLICATION_JSON)
-				.content(jsonContent).sessionAttr("user", dummyUser);
+				.content(jsonContent).sessionAttr("user", dummyUser)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer token");
 		MockHttpServletResponse response = mvc.perform(request).andReturn().getResponse();
 		
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -182,9 +195,11 @@ class AddressControllerTest {
 		
 		given(this.aserv.addAddress(newReq, this.dummyUser)).willReturn(this.dummyAddress);
 		String jsonContent = this.JsonAddressRequest.write(newReq).getJson();
+		given(userv.findById(dummyUser.getId())).willReturn(Optional.of(dummyUser));
 		
-		MockHttpServletRequestBuilder request = post(MAPPING).contentType(MediaType.APPLICATION_JSON)
-				.content(jsonContent).sessionAttr("user", dummyUser);
+		MockHttpServletRequestBuilder request = post(MAPPING + "/" + dummyUser.getId()).contentType(MediaType.APPLICATION_JSON)
+				.content(jsonContent).sessionAttr("user", dummyUser)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer token");
 		MockHttpServletResponse response = mvc.perform(request).andReturn().getResponse();
 		
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
