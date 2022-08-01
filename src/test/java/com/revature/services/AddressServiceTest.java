@@ -55,7 +55,7 @@ class AddressServiceTest {
 
 	@Test
 	void testAddAddress() {
-		AddressRequest createRequest = new AddressRequest(this.dummyAddress.getStreet(),
+		AddressRequest createRequest = new AddressRequest(this.dummyAddress.getId(), this.dummyAddress.getStreet(),
 				this.dummyAddress.getSecondary(), this.dummyAddress.getCity(), this.dummyAddress.getZip(),
 				this.dummyAddress.getState());
 		Set<User> users = new HashSet<User>();
@@ -75,7 +75,7 @@ class AddressServiceTest {
 	void testUpdate() {
 		Set<User> users = this.dummyAddress.getUsers();
 		users.add(this.dummyUser);
-		AddressRequest updateRequest = new AddressRequest(this.dummyAddress.getStreet(),
+		AddressRequest updateRequest = new AddressRequest(this.dummyAddress.getId(), this.dummyAddress.getStreet(),
 				this.dummyAddress.getSecondary(), this.dummyAddress.getCity(), this.dummyAddress.getZip(),
 				this.dummyAddress.getState());
 		this.dummyAddress.setUsers(users);
@@ -83,7 +83,7 @@ class AddressServiceTest {
 		given(this.mockAddressRepo.findById(id)).willReturn(Optional.of(this.dummyAddress));
 		given(this.mockAddressRepo.save(this.dummyAddress)).willReturn(this.dummyAddress);
 		Address expected = this.dummyAddress;
-		Address actual = this.aServ.update(updateRequest, id, this.dummyUser);
+		Address actual = this.aServ.update(updateRequest, this.dummyUser);
 
 		assertEquals(expected, actual);
 		verify(this.mockAddressRepo, times(1)).save(this.dummyAddress);
@@ -93,14 +93,14 @@ class AddressServiceTest {
 	void testUpdate_Failure_AddressNotFound() {
 		Set<User> users = this.dummyAddress.getUsers();
 		users.add(this.dummyUser);
-		AddressRequest updateRequest = new AddressRequest(this.dummyAddress.getStreet(),
+		int id = 404;
+		AddressRequest updateRequest = new AddressRequest(id, this.dummyAddress.getStreet(),
 				this.dummyAddress.getSecondary(), this.dummyAddress.getCity(), this.dummyAddress.getZip(),
 				this.dummyAddress.getState());
 		this.dummyAddress.setUsers(users);
-		int id = 404;
 		given(this.mockAddressRepo.findById(id)).willReturn(Optional.empty());
 		try {
-			this.aServ.update(updateRequest, id, this.dummyUser);
+			this.aServ.update(updateRequest, this.dummyUser);
 			fail("Expected an exception to be thrown");
 		} catch (Exception e) {
 			assertEquals(AddressNotFoundException.class, e.getClass());

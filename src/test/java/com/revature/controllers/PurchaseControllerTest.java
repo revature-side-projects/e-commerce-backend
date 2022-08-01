@@ -122,10 +122,10 @@ class PurchaseControllerTest {
 
 	@Test
 	void testAddPurchase_Success() throws Exception {
-		PurchaseRequest newPurchase = new PurchaseRequest(this.dummyProduct.getId(), this.dummyPurchase.getQuantity());
+		PurchaseRequest newPurchase = new PurchaseRequest(this.dummyProduct.getId(), this.dummyUser.getId(), this.dummyPurchase.getQuantity());
 		List<PurchaseRequest> addRequests = new LinkedList<>();
 		addRequests.add(newPurchase);
-		given(this.pServ.add(newPurchase, this.dummyUser)).willReturn(this.dummyPurchase);
+		given(this.pServ.add(newPurchase, this.dummyUser.getId())).willReturn(this.dummyPurchase);
 
 		List<Purchase> expected = new LinkedList<>();
 		expected.add(this.dummyPurchase);
@@ -137,16 +137,16 @@ class PurchaseControllerTest {
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		assertEquals(this.jsonPurchaseList.write(expected).getJson(), response.getContentAsString());
-		verify(this.pServ, times(1)).add(newPurchase, this.dummyUser);
+		verify(this.pServ, times(1)).add(newPurchase, this.dummyUser.getId());
 	}
 
 	@Test
 	void testAddPurchase_Failure_ProductNotFound() throws Exception {
 		int productId = this.dummyProduct.getId();
-		PurchaseRequest newPurchase = new PurchaseRequest(productId, this.dummyPurchase.getQuantity());
+		PurchaseRequest newPurchase = new PurchaseRequest(productId, this.dummyUser.getId(), this.dummyPurchase.getQuantity());
 		List<PurchaseRequest> addRequests = new LinkedList<>();
 		addRequests.add(newPurchase);
-		given(this.pServ.add(newPurchase, this.dummyUser)).willThrow(new ProductNotFoundException(productId));
+		given(this.pServ.add(newPurchase, this.dummyUser.getId())).willThrow(new ProductNotFoundException(productId));
 
 		List<Purchase> expected = new LinkedList<>();
 		expected.add(this.dummyPurchase);
@@ -156,7 +156,7 @@ class PurchaseControllerTest {
 				.content(jsonContent).sessionAttr("user", this.dummyUser);
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
-		verify(this.pServ, times(1)).add(newPurchase, this.dummyUser);
+		verify(this.pServ, times(1)).add(newPurchase, this.dummyUser.getId());
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 	}
 

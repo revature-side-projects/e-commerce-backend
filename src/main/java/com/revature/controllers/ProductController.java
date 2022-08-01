@@ -94,9 +94,44 @@ public class ProductController {
 
 			throw new InvalidProductInputException("Null value is not allowed");
 		}
-
+		
 		return ResponseEntity.ok(productService.save(newPd));
 	}
+    
+//    @Authorized
+//    @AuthorizedAdmin
+//    @PutMapping("/uploadFile")
+//    // upload the file by requesting the "file" attribute in the Json from frontend
+//    public ResponseEntity<String> uploadImage(@RequestPart (value = "file") MultipartFile file){
+//    	return this.s3Srv.uploadFile(file);
+//    }
+//    
+//    @Authorized
+//    @PatchMapping
+//    public ResponseEntity<List<Product>> purchase(@RequestBody List<ProductInfo> metadata) { 	
+//    	List<Product> productList = new ArrayList<Product>();
+//    	
+//    	for (int i = 0; i < metadata.size(); i++) {
+//    		Optional<Product> optional = productService.findById(metadata.get(i).getId());
+//
+//    		if(!optional.isPresent()) {
+//    			return ResponseEntity.notFound().build();
+//    		}
+//
+//    		Product product = optional.get();
+//
+//    		if(product.getQuantity() - metadata.get(i).getQuantity() < 0) {
+//    			return ResponseEntity.badRequest().build();
+//    		}
+//    		
+//    		product.setQuantity(product.getQuantity() - metadata.get(i).getQuantity());
+//    		productList.add(product);
+//    	}
+//        
+//        productService.saveAll(productList, metadata);
+//
+//        return ResponseEntity.ok(productList);
+//    }
 
 	@PutMapping("/uploadFile")
 	public ResponseEntity<String> uploadImage(@RequestPart(value = "file") MultipartFile file) {

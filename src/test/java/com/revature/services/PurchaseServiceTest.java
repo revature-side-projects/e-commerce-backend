@@ -8,6 +8,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,6 +41,9 @@ class PurchaseServiceTest {
 
 	@Mock
 	UserService uServ;
+	
+	@Mock
+	LocalDateTime ldt;
 
 	@InjectMocks
 	PurchaseService purchaseServ;
@@ -112,14 +116,19 @@ class PurchaseServiceTest {
 	@Test
 	void testAdd() {
 		int productId = this.dummyProduct.getId();
-		PurchaseRequest createRequest = new PurchaseRequest(productId, this.dummyPurchase.getQuantity());
+		PurchaseRequest createRequest = new PurchaseRequest(productId, this.dummyUser.getId(), this.dummyPurchase.getQuantity());
+		given(this.uServ.findById(this.dummyUser.getId())).willReturn(Optional.of(this.dummyUser));
 		given(this.productServ.findById(createRequest.getId())).willReturn(Optional.of(this.dummyProduct));
-
-		Purchase newPurchase = new Purchase(0, null, this.dummyProduct, this.dummyUser, createRequest.getQuantity());
+		given(LocalDateTime.now()).willReturn(LocalDateTime.parse("2007-12-03T10:15:30"));
+		Purchase newPurchase = new Purchase();
+		newPurchase.setProduct(this.dummyProduct);
+		newPurchase.setOwnerUser(this.dummyUser);
+		newPurchase.setQuantity(createRequest.getQuantity());
+		newPurchase.setOrderPlaced(Timestamp.valueOf(LocalDateTime.now()));
 		given(this.mockPurchaseRepo.save(newPurchase)).willReturn(this.dummyPurchase);
 
 		Purchase expected = this.dummyPurchase;
-		Purchase actual = this.purchaseServ.add(createRequest, this.dummyUser);
+		Purchase actual = this.purchaseServ.add(createRequest, this.dummyUser.getId());
 
 		assertEquals(expected, actual);
 		verify(this.productServ, times(1)).findById(productId);
@@ -129,10 +138,10 @@ class PurchaseServiceTest {
 	@Test
 	void testAdd_Failure_ProductNotFound() {
 		int productId = 6;
-		PurchaseRequest createRequest = new PurchaseRequest(productId, 1);
+		PurchaseRequest createRequest = new PurchaseRequest(productId, this.dummyUser.getId(), 1);
 		given(this.productServ.findById(productId)).willReturn(Optional.empty());
 		try {
-			this.purchaseServ.add(createRequest, this.dummyUser);
+			this.purchaseServ.add(createRequest, this.dummyUser.getId());
 			fail("Expected exception to be thrown");
 		} catch (Exception e) {
 			assertEquals(ProductNotFoundException.class, e.getClass());

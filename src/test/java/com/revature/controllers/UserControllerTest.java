@@ -112,7 +112,7 @@ public class UserControllerTest {
 	
 	@Test
 	void testUpdate_Success() throws Exception {
-		UserRequest newUser = new UserRequest(this.dummyUser.getEmail(), this.dummyUser.getPassword(), 
+		UserRequest newUser = new UserRequest(this.dummyUser.getId(), this.dummyUser.getEmail(), this.dummyUser.getPassword(), 
 				this.dummyUser.getFirstName(), this.dummyUser.getLastName(), this.dummyUser.getRole());
 		given(this.uServ.save(this.dummyUser)).willReturn(this.dummyUser);
 		

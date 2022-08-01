@@ -66,7 +66,7 @@ class ReviewServiceTest {
 
 	@Test
 	void testAdd_Success() {
-		ReviewRequest request = new ReviewRequest(this.dummyProduct.getId(), 5, "Review title",
+		ReviewRequest request = new ReviewRequest(this.dummyUser.getId(), this.dummyProduct.getId(), 5, "Review title",
 				"Review body sample text");
 		Review newReview = new Review(request.getStars(), request.getTitle(), request.getReview(), this.dummyUser,
 				this.dummyProduct);
@@ -77,7 +77,7 @@ class ReviewServiceTest {
 		given(this.rServ.findByProductId(this.dummyProduct.getId())).willReturn(new LinkedList<Review>());
 		given(this.mockReviewRepo.save(newReview)).willReturn(expected);
 
-		Review actual = this.rServ.add(request, this.dummyUser);
+		Review actual = this.rServ.add(request);
 
 		assertEquals(expected, actual);
 		verify(this.mockReviewRepo, times(1)).save(newReview);
@@ -85,7 +85,7 @@ class ReviewServiceTest {
 	
 	@Test
 	void testAdd_Success_ProductHasReviews() {
-		ReviewRequest request = new ReviewRequest(this.dummyProduct.getId(), 5, "Review title",
+		ReviewRequest request = new ReviewRequest(this.dummyUser.getId(), this.dummyProduct.getId(), 5, "Review title",
 				"Review body sample text");
 		Review newReview = new Review(request.getStars(), request.getTitle(), request.getReview(), this.dummyUser,
 				this.dummyProduct);
@@ -98,7 +98,7 @@ class ReviewServiceTest {
 						new User(this.dummyUser.getId() + 1, "mail@mail.gov", "pass", "first", "last", "CUSTOMER", null, null, null))));
 		given(this.mockReviewRepo.save(newReview)).willReturn(expected);
 
-		Review actual = this.rServ.add(request, this.dummyUser);
+		Review actual = this.rServ.add(request);
 
 		assertEquals(expected, actual);
 		verify(this.mockReviewRepo, times(1)).save(newReview);
@@ -106,13 +106,13 @@ class ReviewServiceTest {
 
 	@Test
 	void testAdd_Failure_ProductNotFound() {
-		ReviewRequest request = new ReviewRequest(this.dummyProduct.getId(), 1, "Not working",
+		ReviewRequest request = new ReviewRequest(this.dummyUser.getId(), this.dummyProduct.getId(), 1, "Not working",
 				"It doesn't work as advertised. I am dissatisfied with this product.");
 		int productId = this.dummyProduct.getId();
 		given(this.pServ.findById(request.getProductId())).willReturn(Optional.empty());
 
 		try {
-			this.rServ.add(request, this.dummyUser);
+			this.rServ.add(request);
 			fail("Expected a ResourceAccessException to be thrown");
 		} catch (Exception e) {
 			assertEquals("No product found with ID " + productId, e.getMessage());
@@ -120,9 +120,10 @@ class ReviewServiceTest {
 		}
 	}
 
+
 	@Test
 	void testAdd_Failure_DuplicateReview() {
-		ReviewRequest request = new ReviewRequest(this.dummyProduct.getId(), 1, "Not working",
+		ReviewRequest request = new ReviewRequest(this.dummyUser.getId(), this.dummyProduct.getId(), 1, "Not working",
 				"It doesn't work as advertised. I am dissatisfied with this product.");
 		int productId = this.dummyProduct.getId();
 		given(this.pServ.findById(productId)).willReturn(Optional.of(this.dummyProduct));
@@ -130,7 +131,7 @@ class ReviewServiceTest {
 				new Review(2, 1, "A title", "A review of a thing.", null, null, this.dummyProduct, this.dummyUser)));
 		
 		try {
-			this.rServ.add(request, dummyUser);
+			this.rServ.add(request);
 			fail("Expected an exception to be thrown");
 		} catch (Exception e) {
 			assertEquals(DuplicateReviewException.class, e.getClass());
@@ -255,14 +256,14 @@ class ReviewServiceTest {
 	void testUpdate_Success() {
 		int id = this.dummyReview.getId();
 		User author = this.dummyReview.getUser();
-		ReviewRequest updatedReview = new ReviewRequest(this.dummyProduct.getId(), 1, "Updated review",
+		ReviewRequest updatedReview = new ReviewRequest(author.getId(), this.dummyProduct.getId(), 1, "Updated review",
 				"Updated review body text");
 		given(this.mockReviewRepo.findById(id)).willReturn(Optional.of(this.dummyReview));
 
 		Review expected = new Review(id, updatedReview.getStars(), updatedReview.getTitle(), updatedReview.getReview(),
 				null, null, this.dummyReview.getProduct(), author);
 		given(this.mockReviewRepo.save(expected)).willReturn(expected);
-		Review actual = this.rServ.update(updatedReview, id, author.getId());
+		Review actual = this.rServ.update(updatedReview, id);
 
 		assertEquals(expected, actual);
 		verify(this.mockReviewRepo, times(1)).save(expected);
@@ -273,12 +274,12 @@ class ReviewServiceTest {
 		int id = this.dummyReview.getId();
 		User author = this.dummyReview.getUser();
 		int wrongUserId = author.getId() + 1;
-		ReviewRequest updatedReview = new ReviewRequest(this.dummyProduct.getId(), 3, "Updated review",
+		ReviewRequest updatedReview = new ReviewRequest(wrongUserId, this.dummyProduct.getId(), 3, "Updated review",
 				"Updated review body text");
 		given(this.mockReviewRepo.findById(id)).willReturn(Optional.of(this.dummyReview));
 
 		try {
-			this.rServ.update(updatedReview, id, wrongUserId);
+			this.rServ.update(updatedReview, id);
 			fail("Expected a HttpClientErrorException with status code of 401");
 		} catch (Exception e) {
 			assertEquals(UnauthorizedReviewAccessException.class, e.getClass());
@@ -290,12 +291,12 @@ class ReviewServiceTest {
 	void testUpdate_Failure_ReviewIdNotFound() {
 		int id = this.dummyReview.getId();
 		int authorId = this.dummyReview.getUser().getId();
-		ReviewRequest updatedReview = new ReviewRequest(this.dummyProduct.getId(), 1, "Updated review",
+		ReviewRequest updatedReview = new ReviewRequest(authorId, this.dummyProduct.getId(), 1, "Updated review",
 				"Updated review body text");
 		given(this.mockReviewRepo.findById(id)).willReturn(Optional.empty());
 
 		try {
-			this.rServ.update(updatedReview, id, authorId);
+			this.rServ.update(updatedReview, id);
 			fail("Expected a HttpClientErrorException with status code of 404");
 		} catch (Exception e) {
 			assertEquals(ReviewNotFoundException.class, e.getClass());
