@@ -1,11 +1,13 @@
 package com.revature.models;
 
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
+
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import com.sun.istack.NotNull;
 
 @Getter
 @Setter
@@ -34,7 +36,7 @@ public class Purchase {
     @JoinColumn(name = "user_id")
     @NotNull
     private User ownerUser;
-    
+
     @Column(name = "quantity")
     private int quantity;
 }
