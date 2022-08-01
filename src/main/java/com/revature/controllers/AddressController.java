@@ -45,7 +45,6 @@ public class AddressController {
 
 	@PutMapping("/{id}")
 	public ResponseEntity<Address> updateAddress(@RequestBody AddressRequest addressRequest, @PathVariable("id") int userId) {
-		System.out.println(userId);
 		Optional<User> user = userv.findById(userId);
 		return ResponseEntity.ok(aserv.update(addressRequest, user.get()));
 
