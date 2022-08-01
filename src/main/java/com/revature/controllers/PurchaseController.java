@@ -42,11 +42,20 @@ public class PurchaseController {
 		this.pserv = pserv;
 	}
 
+	/**
+	 * Gets all purchases
+	 * @return HttpResponse with array of purchases
+	 */
 	@GetMapping
 	public ResponseEntity<List<Purchase>> getAllPurchases() {
 		return ResponseEntity.ok(pserv.findAll());
 	}
 
+	/**
+	 * Gets all purchases by User Id
+	 * @param userId
+	 * @return HttpResponse with body of array of Purchases
+	 */
 	@GetMapping("user/{user}")
 	public ResponseEntity<List<Purchase>> getPurchasesByOwner(@PathVariable("user") int userId) {
 		try {
@@ -56,6 +65,13 @@ public class PurchaseController {
 		}
 	}
 
+	/**
+	 * Adds all purchases and adjusts inventory but will only partially complete if a 
+	 * productId is not found in database.
+	 * @param purchaseRequests - Http request with body of array of Purchases
+	 * @param id of User sending the request
+	 * @return Http response with body of array of purchases or Http status Not Found
+	 */
 	@PostMapping("/{id}")
 	public ResponseEntity<List<Purchase>> addPurchase(@RequestBody List<PurchaseRequest> purchaseRequests, @PathVariable("id") int id) {
 		List<Purchase> resp = new LinkedList<>();

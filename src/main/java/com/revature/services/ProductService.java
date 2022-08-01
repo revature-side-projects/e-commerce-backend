@@ -12,6 +12,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Calls ProductRepository to perform CRUD operations on Products. 
+ * Also performs filtering on products.
+ *
+ */
 @Service
 public class ProductService {
 
@@ -23,10 +28,20 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
+    /**
+     * Finds all products in productRepository
+     * 
+     * @return List of Products
+     */
     public List<Product> findAll() {
         return productRepository.findAll();
     }
 
+    /**
+     * Finds a product if it exists in the database.
+     * @param id - Product's Id
+     * @return Optional<Product> or ProductNotFoundException
+     */
     public Optional<Product> findById(int id) {
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (!optionalProduct.isPresent()) {
@@ -37,14 +52,29 @@ public class ProductService {
         return optionalProduct;
     }
 
+    /**
+     * Creates or Updates an existing Product.
+     * @param product - Product
+     * @return Product
+     */
     public Product save(Product product) {
         return productRepository.save(product);
     }
 
+    /**
+     * Saves or updates all elements in productList
+     * @param productList - List<Product>
+     * @param metadata - List<Product>
+     * @return <List>Product
+     */
     public List<Product> saveAll(List<Product> productList, List<ProductInfo> metadata) {
         return productRepository.saveAll(productList);
     }
 
+    /**
+     * Deletes a product by Id or throws ProductNotFoundException
+     * @param id - int
+     */
     public void delete(int id) {
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isPresent()) {
@@ -56,14 +86,29 @@ public class ProductService {
 
     }
 
+    /**
+     * Filters ProductRepository by any Product whose name contains the search input. Returns that list.
+     * @param name - String
+     * @return List<Product>
+     */
     public List<Product> findByNameContains(String name) {
         return productRepository.findByNameContains(name);
     }
 
+    /**
+     * Finds all Products whose price falls between minPrice and maxPrice.
+     * @param minPrice
+     * @param maxPrice
+     * @return List<Product>
+     */
     public List<Product> findByPriceRange(double minPrice, double maxPrice) {
         return productRepository.findByPriceRange(minPrice, maxPrice);
     }
 
+    /**
+     * Sorts the products by rating in descending order.
+     * @return List<Product>
+     */
     public List<Product> filterByRating() {
         return productRepository.filterByRating();
     }

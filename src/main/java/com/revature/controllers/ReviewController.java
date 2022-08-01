@@ -37,13 +37,20 @@ public class ReviewController {
 		this.reviewService = reviewService;
 	}
 
-	// Get All
+	/**
+	 * Get all Reviews
+	 * @return Http response with array of all Reviews
+	 */
 	@GetMapping
 	public ResponseEntity<List<Review>> getReviews() {
 		return ResponseEntity.ok(reviewService.findAll());
 	}
 
-	// Get all reviews about a given product
+	/**
+	 * Get all reviews by productId
+	 * @param productId
+	 * @return Http response with array of Reviews belonging to a Product
+	 */
 	@GetMapping("/product/{productId}")
 	public ResponseEntity<List<Review>> getReviewsOfProduct(@PathVariable("productId") int productId) {
 		return ResponseEntity.ok(reviewService.findByProductId(productId));
@@ -52,7 +59,7 @@ public class ReviewController {
 	/**
 	 * Get all reviews written by a given user
 	 * @param userId User Id
-	 * @return A List of Reviews By the user
+	 * @return Http response with array of Reviews belonging to a User
 	 */
 	@GetMapping("/user/{userId}")
 	public ResponseEntity<List<Review>> getReviewsByUser(@PathVariable("userId") int userId) {
@@ -90,7 +97,6 @@ public class ReviewController {
 	 * @return an "ok" ResponseEntity so long as the current user authored the
 	 *         review, and the review exists
 	 */
-
 	@PutMapping("/{id}")
 	public ResponseEntity<Review> updateReview(@RequestBody ReviewRequest reviewRequest, @PathVariable("id") int id) {
 		return ResponseEntity.ok(reviewService.update(reviewRequest, id));
@@ -104,7 +110,6 @@ public class ReviewController {
 	 * @return an "ok" ResponseEntity so long as the current user authored the
 	 *         review, and the review exists
 	 */
-
 	@DeleteMapping("/{userId}/{id}")
 	public ResponseEntity<Review> deleteReview(@PathVariable("userId") int userId, @PathVariable("id") int id) {
 		return ResponseEntity.ok(reviewService.delete(id, userId));

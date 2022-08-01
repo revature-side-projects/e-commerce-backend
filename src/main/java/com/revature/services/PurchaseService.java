@@ -49,6 +49,12 @@ public class PurchaseService {
 		return purchaseRepo.findAll();
 	}
 
+	/**
+	 * This method calls the PurchaseRepository's findAll() method to return a
+	 * list of all the purchases currently in the database.
+	 * 
+	 * @return a List of Purchase Objects.
+	 */
 	public List<Purchase> findByOwner(int userId) {
 		Optional<User> optionalUser = this.userv.findById(userId);
 		if (optionalUser.isPresent()) {
