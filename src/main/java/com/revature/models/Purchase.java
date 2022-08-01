@@ -1,16 +1,20 @@
 package com.revature.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.sql.Timestamp;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import lombok.*;
-import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.sql.Timestamp;
-import java.util.Objects;
+import com.sun.istack.NotNull;
 
 @Getter
 @Setter
@@ -20,7 +24,6 @@ import java.util.Objects;
 @AllArgsConstructor
 @EqualsAndHashCode
 @Table(name = "purchases")
-//@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "product", "ownerUser" })
 public class Purchase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +43,7 @@ public class Purchase {
     @JoinColumn(name = "user_id")
     @NotNull
     private User ownerUser;
-    
+
     @Column(name = "quantity")
     private int quantity;
 }

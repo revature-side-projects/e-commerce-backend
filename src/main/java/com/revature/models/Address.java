@@ -24,25 +24,26 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "address_id")
     private int id;
-    @NotNull    @NonNull
 
+    @NotNull
+    @NonNull
     private String street;
     private String secondary;
 
-    @NotNull    @NonNull
-
+    @NotNull
+    @NonNull
     private String city;
-    @NotNull    @NonNull
 
+    @NotNull
+    @NonNull
     private String zip;
-    @NotNull    @NonNull
 
+    @NotNull
+    @NonNull
     private String state;
 
     @ManyToMany
-    @JoinTable(name = "users_addresses",
-            joinColumns = @JoinColumn(name = "address_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JoinTable(name = "users_addresses", joinColumns = @JoinColumn(name = "address_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     @ToString.Exclude
     private Set<User> users = new LinkedHashSet<>();
 

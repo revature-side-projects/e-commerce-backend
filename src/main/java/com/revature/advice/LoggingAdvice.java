@@ -13,13 +13,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Aspect
 @Component
 public class LoggingAdvice {
-	
+
 	Logger log = LoggerFactory.getLogger(LoggingAdvice.class);
-	
-	@Pointcut(value="execution(* com.revature.*.*.*(..))")
+
+	@Pointcut(value = "execution(* com.revature.*.*.*(..))")
 	public void pointCut() {
 	}
-	
+
 	@Before("pointCut()")
 	public Object appLogger(JoinPoint pjp) {
 		ObjectMapper mapper = new ObjectMapper();
@@ -27,13 +27,14 @@ public class LoggingAdvice {
 		String className = pjp.getTarget().getClass().toString();
 		Object[] methodArgs = pjp.getArgs();
 		Object o = null;
-		
+
 		try {
-			log.info(String.format("method invoked %1$s : %2$s () : arguments : %3$s", className, methodName, mapper.writeValueAsString(methodArgs)));
+			log.info(String.format("method invoked %1$s : %2$s () : arguments : %3$s", className, methodName,
+					mapper.writeValueAsString(methodArgs)));
 		} catch (Throwable e) {
 			log.error("logger unable to parse methodArgs");
 		}
-		
+
 		return o;
 	}
 }
