@@ -2,11 +2,13 @@ package com.revature.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,7 +16,6 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,6 +23,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.revature.dtos.PurchaseRequest;
+import com.revature.exceptions.ProductNotFoundException;
+import com.revature.exceptions.UserNotFoundException;
 import com.revature.models.Product;
 import com.revature.models.Purchase;
 import com.revature.models.User;
@@ -93,22 +96,52 @@ class PurchaseServiceTest {
 		assertTrue(actual.containsAll(expected));
 		verify(this.mockPurchaseRepo, times(1)).findByOwnerUser(this.dummyUser);
 	}
+	
+	@Test
+	void testFindByOwner_Failure_UserNotFound() {
+		int id = 2;
+		given(this.uServ.findById(id)).willReturn(Optional.empty());
+		
+		try {
+			this.purchaseServ.findByOwner(id);
+			fail("Expected UserNotFoundException to be thrown");
+		} catch (Exception e) {
+			assertEquals(UserNotFoundException.class, e.getClass());
+		}
+	}
 
 	@Test
 	void testAdd() {
 		int productId = this.dummyProduct.getId();
-		PurchaseRequest createRequest = new PurchaseRequest(productId, this.dummyPurchase.getQuantity());
+		int buyerId = this.dummyUser.getId();
+		PurchaseRequest createRequest = new PurchaseRequest(productId, buyerId, this.dummyPurchase.getQuantity());
+		given(this.uServ.findById(buyerId)).willReturn(Optional.of(this.dummyUser));
 		given(this.productServ.findById(createRequest.getId())).willReturn(Optional.of(this.dummyProduct));
-
-		Purchase newPurchase = new Purchase(0, null, this.dummyProduct, this.dummyUser, createRequest.getQuantity());
+		Purchase newPurchase = new Purchase();
+		newPurchase.setProduct(this.dummyProduct);
+		newPurchase.setOwnerUser(this.dummyUser);
+		newPurchase.setQuantity(createRequest.getQuantity());
 		given(this.mockPurchaseRepo.save(newPurchase)).willReturn(this.dummyPurchase);
 
 		Purchase expected = this.dummyPurchase;
-		Purchase actual = this.purchaseServ.add(createRequest, this.dummyUser);
+		Purchase actual = this.purchaseServ.add(createRequest, buyerId);
 
 		assertEquals(expected, actual);
 		verify(this.productServ, times(1)).findById(productId);
 		verify(this.mockPurchaseRepo, times(1)).save(newPurchase);
+	}
+	
+	@Test
+	void testAdd_Failure_ProductNotFound() {
+		int productId = 6;
+		PurchaseRequest createRequest = new PurchaseRequest(productId, this.dummyUser.getId(), 1);
+		given(this.productServ.findById(productId)).willReturn(Optional.empty());
+		try {
+			this.purchaseServ.add(createRequest, this.dummyUser.getId());
+			fail("Expected ProductNotFoundException to be thrown");
+		} catch (Exception e) {
+			assertEquals(ProductNotFoundException.class, e.getClass());
+		}
 	}
 
 }

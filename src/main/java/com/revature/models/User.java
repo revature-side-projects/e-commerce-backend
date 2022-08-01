@@ -1,6 +1,9 @@
 package com.revature.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.openpojo.business.BusinessIdentity;
+import com.openpojo.business.annotation.BusinessKey;
+
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
@@ -31,14 +34,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+
 @Getter
 @Setter
-@ToString
 @Entity
 @NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
 @Table(
         name = "users",
         uniqueConstraints = @UniqueConstraint(columnNames={"email"})
@@ -51,19 +53,24 @@ public class User {
     @Column(name = "user_id")
     private int id;
 
+	@BusinessKey
     @NotNull
     @NonNull
     private String email;
+	@BusinessKey
     @NotNull
     @NonNull
     private String password;
+	@BusinessKey
     @NotNull
     @NonNull
     private String firstName;
+	@BusinessKey
     @NotNull
     @NonNull
     private String lastName;
 
+	@BusinessKey
     @NotNull
     @NonNull
     private String role;
@@ -89,4 +96,13 @@ public class User {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<Address> addresses = new HashSet<>();
+    
+    @Override
+    public String toString() { return BusinessIdentity.toString(this); }
+
+    @Override
+    public boolean equals(final Object o) { return BusinessIdentity.areEqual(this, o); }
+
+    @Override
+    public int hashCode() { return BusinessIdentity.getHashCode(this); }
 }

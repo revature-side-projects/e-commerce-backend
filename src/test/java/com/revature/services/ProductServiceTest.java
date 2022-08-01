@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.revature.dtos.ProductInfo;
+import com.revature.exceptions.ProductNotFoundException;
 import com.revature.models.Product;
 import com.revature.repositories.ProductRepository;
 
@@ -79,6 +80,18 @@ class ProductServiceTest {
 		assertEquals(expected, actual);
 		verify(this.mockProductRepo, times(1)).findById(id);
 	}
+	
+	@Test
+	void testFindById_Failure_ProductNotFound() {
+		int id = 404;
+		given(this.mockProductRepo.findById(id)).willReturn(Optional.empty());
+		try {
+			this.pServ.findById(id);
+			fail("Expected ProductNotFoundException to be throw");
+		} catch (Exception e) {
+			assertEquals(ProductNotFoundException.class, e.getClass());
+		}
+	}
 
 	@Test
 	void testSave() {
@@ -109,6 +122,18 @@ class ProductServiceTest {
 		given(this.mockProductRepo.findById(this.dummyProduct.getId())).willReturn(Optional.of(this.dummyProduct));
 		this.pServ.delete(this.dummyProduct.getId());
 		verify(this.mockProductRepo, times(1)).deleteById(this.dummyProduct.getId());
+	}
+	
+	@Test
+	void testDelete_Failure_ProductNotFound() {
+		int id = 404;
+		given(this.mockProductRepo.findById(id)).willReturn(Optional.empty());
+		try {
+			this.pServ.delete(id);
+			fail("Expected ProductNotFoundException to be thrown");
+		} catch (Exception e) {
+			assertEquals(ProductNotFoundException.class, e.getClass());
+		}
 	}
 
 	@Test

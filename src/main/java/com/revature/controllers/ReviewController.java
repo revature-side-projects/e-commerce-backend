@@ -37,25 +37,40 @@ public class ReviewController {
 		this.reviewService = reviewService;
 	}
 
-	// Get All
+	/**
+	 * Get all Reviews
+	 * @return Http response with array of all Reviews
+	 */
 	@GetMapping
 	public ResponseEntity<List<Review>> getReviews() {
 		return ResponseEntity.ok(reviewService.findAll());
 	}
 
-	// Get all reviews about a given product
+	/**
+	 * Get all reviews by productId
+	 * @param productId
+	 * @return Http response with array of Reviews belonging to a Product
+	 */
 	@GetMapping("/product/{productId}")
 	public ResponseEntity<List<Review>> getReviewsOfProduct(@PathVariable("productId") int productId) {
 		return ResponseEntity.ok(reviewService.findByProductId(productId));
 	}
 
-	// Get all reviews written by a given user
+	/**
+	 * Get all reviews written by a given user
+	 * @param userId User Id
+	 * @return Http response with array of Reviews belonging to a User
+	 */
 	@GetMapping("/user/{userId}")
 	public ResponseEntity<List<Review>> getReviewsByUser(@PathVariable("userId") int userId) {
 		return ResponseEntity.ok(reviewService.findByUserId(userId));
 	}
 
-	// Get a review by its ID
+	/**
+	 * Get a review by its ID
+	 * @param id Review Id
+	 * @return Review
+	 */
 	@GetMapping("/{id}")
 	public ResponseEntity<Review> getReviewById(@PathVariable("id") int id) {
 		Review review = reviewService.findById(id);
@@ -65,8 +80,7 @@ public class ReviewController {
 	/**
 	 * Create a new review tied to the logged in User
 	 * 
-	 * @param reviewRequest
-	 * @param session
+	 * @param reviewRequest the requested Review Object
 	 * @return an "ok" ResponseEntity so long as the product being reviewed exists
 	 */
 	@PostMapping
@@ -77,14 +91,12 @@ public class ReviewController {
 	/**
 	 * Update a review with the given request's information, so long as session user
 	 * owns the review
-	 * 
-	 * @param reviewRequest
+	 *
+	 * @param reviewRequest the requested Review Object
 	 * @param id            ID of review to update
-	 * @param session
 	 * @return an "ok" ResponseEntity so long as the current user authored the
 	 *         review, and the review exists
 	 */
-
 	@PutMapping("/{id}")
 	public ResponseEntity<Review> updateReview(@RequestBody ReviewRequest reviewRequest, @PathVariable("id") int id) {
 		return ResponseEntity.ok(reviewService.update(reviewRequest, id));
@@ -95,11 +107,9 @@ public class ReviewController {
 	 * owns the review
 	 * 
 	 * @param id      ID of Review to delete
-	 * @param session Current HTTP session
 	 * @return an "ok" ResponseEntity so long as the current user authored the
 	 *         review, and the review exists
 	 */
-
 	@DeleteMapping("/{userId}/{id}")
 	public ResponseEntity<Review> deleteReview(@PathVariable("userId") int userId, @PathVariable("id") int id) {
 		return ResponseEntity.ok(reviewService.delete(id, userId));

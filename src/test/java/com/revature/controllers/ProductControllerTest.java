@@ -17,12 +17,15 @@ import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import com.revature.config.TestConfig;
 import com.revature.dtos.CreateUpdateRequest;
 import com.revature.dtos.PriceRangeRequest;
 import com.revature.dtos.ProductInfo;
@@ -39,6 +42,7 @@ import com.revature.services.StorageService;
  *
  */
 @AutoConfigureJsonTesters
+@ContextConfiguration(classes = TestConfig.class)
 @WebMvcTest(ProductController.class)
 class ProductControllerTest {
 
@@ -88,7 +92,8 @@ class ProductControllerTest {
 		inventory.add(this.dummyProduct);
 		given(this.pServ.findAll()).willReturn(inventory);
 
-		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT).accept(MediaType.APPLICATION_JSON);
+		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT).accept(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer token");
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -107,7 +112,8 @@ class ProductControllerTest {
 		int id = this.dummyProduct.getId();
 		given(this.pServ.findById(id)).willReturn(Optional.of(this.dummyProduct));
 
-		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/" + id).accept(MediaType.APPLICATION_JSON);
+		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/" + id).accept(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer token");
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -136,7 +142,8 @@ class ProductControllerTest {
 		Product expected = this.dummyProduct;
 		String jsonContent = this.jsonCreateUpdateRequest.write(createRequest).getJson();
 		MockHttpServletRequestBuilder request = put(this.MAPPING_ROOT + "/create-update")
-				.contentType(MediaType.APPLICATION_JSON).content(jsonContent);
+				.contentType(MediaType.APPLICATION_JSON).content(jsonContent)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer token");
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -158,7 +165,8 @@ class ProductControllerTest {
 		Product expected = this.dummyProduct;
 		String jsonContent = this.jsonCreateUpdateRequest.write(updateRequest).getJson();
 		MockHttpServletRequestBuilder request = put(this.MAPPING_ROOT + "/create-update")
-				.contentType(MediaType.APPLICATION_JSON).content(jsonContent);
+				.contentType(MediaType.APPLICATION_JSON).content(jsonContent)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer token");
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -179,7 +187,8 @@ class ProductControllerTest {
 		Product expected = this.dummyProduct;
 		String jsonContent = this.jsonCreateUpdateRequest.write(updateRequest).getJson();
 		MockHttpServletRequestBuilder request = put(this.MAPPING_ROOT + "/create-update")
-				.contentType(MediaType.APPLICATION_JSON).content(jsonContent);
+				.contentType(MediaType.APPLICATION_JSON).content(jsonContent)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer token");
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -238,7 +247,8 @@ class ProductControllerTest {
 
 		String jsonContent = this.jsonProductInfoList.write(metadata).getJson();
 		MockHttpServletRequestBuilder request = patch(this.MAPPING_ROOT).contentType(MediaType.APPLICATION_JSON)
-				.content(jsonContent);
+				.content(jsonContent)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer token");
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -265,7 +275,8 @@ class ProductControllerTest {
 		given(this.pServ.findById(productId)).willReturn(Optional.of(this.dummyProduct));
 
 		MockHttpServletRequestBuilder request = delete(this.MAPPING_ROOT + "/" + productId)
-				.contentType(MediaType.APPLICATION_JSON);
+				.contentType(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer token");
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -294,7 +305,8 @@ class ProductControllerTest {
 
 		List<Product> expected = results;
 		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/partial-search/" + name)
-				.contentType(MediaType.APPLICATION_JSON);
+				.contentType(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer token");
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -321,7 +333,8 @@ class ProductControllerTest {
 		List<Product> expected = results;
 		String content = this.jsonPriceRangeRequest.write(range).getJson();
 		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/price-range")
-				.contentType(MediaType.APPLICATION_JSON).content(content);
+				.contentType(MediaType.APPLICATION_JSON).content(content)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer token");
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -344,7 +357,8 @@ class ProductControllerTest {
 		given(this.pServ.filterByRating()).willReturn(results);
 
 		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/filter-rating")
-				.contentType(MediaType.APPLICATION_JSON);
+				.contentType(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer token");
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());

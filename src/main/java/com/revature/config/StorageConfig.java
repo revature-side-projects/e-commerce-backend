@@ -13,6 +13,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 @Configuration
 public class StorageConfig {
 
+	// Set up values pulling from the application.yml file
 	@Value("${cloud.aws.credentials.access-key}")
 	private String accessKey;
 	@Value("${cloud.aws.credentials.secret-key}")
@@ -22,6 +23,7 @@ public class StorageConfig {
 	@Value("{coud.aws.endpoint}")
 	private String endpoint;
 
+	// create a client to connect with the S3 bucket
 	@Bean
 	public AmazonS3 generateS3client() {
 		AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
