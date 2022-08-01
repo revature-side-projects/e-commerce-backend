@@ -7,7 +7,6 @@ import java.sql.Timestamp;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.sun.istack.NotNull;
 
 @Getter
 @Setter
