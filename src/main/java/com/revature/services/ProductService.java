@@ -73,8 +73,4 @@ public class ProductService {
             logger.warn(String.format("No Product found with ID %d", id));
             throw new ProductNotFoundException(String.format("No product found with ID %d", id));
         }
-
-    }
-    }
-
 }
