@@ -41,9 +41,6 @@ class PurchaseServiceTest {
 
 	@Mock
 	UserService uServ;
-	
-	@Mock
-	LocalDateTime ldt;
 
 	@InjectMocks
 	PurchaseService purchaseServ;
@@ -107,7 +104,7 @@ class PurchaseServiceTest {
 		
 		try {
 			this.purchaseServ.findByOwner(id);
-			fail("Expected exception to be thrown");
+			fail("Expected UserNotFoundException to be thrown");
 		} catch (Exception e) {
 			assertEquals(UserNotFoundException.class, e.getClass());
 		}
@@ -120,12 +117,10 @@ class PurchaseServiceTest {
 		PurchaseRequest createRequest = new PurchaseRequest(productId, buyerId, this.dummyPurchase.getQuantity());
 		given(this.uServ.findById(buyerId)).willReturn(Optional.of(this.dummyUser));
 		given(this.productServ.findById(createRequest.getId())).willReturn(Optional.of(this.dummyProduct));
-		given(LocalDateTime.now()).willReturn(LocalDateTime.parse("2007-12-03T10:15:30"));
 		Purchase newPurchase = new Purchase();
 		newPurchase.setProduct(this.dummyProduct);
 		newPurchase.setOwnerUser(this.dummyUser);
 		newPurchase.setQuantity(createRequest.getQuantity());
-		newPurchase.setOrderPlaced(Timestamp.valueOf(LocalDateTime.now()));
 		given(this.mockPurchaseRepo.save(newPurchase)).willReturn(this.dummyPurchase);
 
 		Purchase expected = this.dummyPurchase;
@@ -143,7 +138,7 @@ class PurchaseServiceTest {
 		given(this.productServ.findById(productId)).willReturn(Optional.empty());
 		try {
 			this.purchaseServ.add(createRequest, this.dummyUser.getId());
-			fail("Expected exception to be thrown");
+			fail("Expected ProductNotFoundException to be thrown");
 		} catch (Exception e) {
 			assertEquals(ProductNotFoundException.class, e.getClass());
 		}

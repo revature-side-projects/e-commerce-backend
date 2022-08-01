@@ -105,12 +105,13 @@ class ReviewServiceTest {
 				"It doesn't work as advertised. I am dissatisfied with this product.");
 		int productId = this.dummyProduct.getId();
 		given(this.pServ.findById(productId)).willReturn(Optional.of(this.dummyProduct));
+		given(this.uServ.findById(this.dummyUser.getId())).willReturn(Optional.of(this.dummyUser));
 		given(this.rServ.findByProductId(this.dummyProduct.getId())).willReturn(Collections.singletonList(
 				new Review(2, 1, "A title", "A review of a thing.", null, null, this.dummyProduct, this.dummyUser)));
 		
 		try {
 			this.rServ.add(request);
-			fail("Expected an exception to be thrown");
+			fail("Expected DuplicateReviewException to be thrown");
 		} catch (Exception e) {
 			assertEquals(DuplicateReviewException.class, e.getClass());
 		}
@@ -212,7 +213,7 @@ class ReviewServiceTest {
 
 		try {
 			this.rServ.findById(id);
-			fail("Expected an exception to be thrown");
+			fail("Expected ReviewNotFoundException to be thrown");
 		} catch (Exception e) {
 			assertEquals(ReviewNotFoundException.class, e.getClass());
 			verify(this.mockReviewRepo, times(1)).findById(id);
@@ -257,8 +258,8 @@ class ReviewServiceTest {
 		given(this.mockReviewRepo.findById(id)).willReturn(Optional.of(this.dummyReview));
 
 		try {
-			this.rServ.update(updatedReview, wrongId);
-			fail("Expected a HttpClientErrorException with status code of 401");
+			this.rServ.update(updatedReview, id);
+			fail("Expected a UnauthorizedReviewAccessException to be thrown");
 		} catch (Exception e) {
 			assertEquals(UnauthorizedReviewAccessException.class, e.getClass());
 			verify(this.mockReviewRepo, times(1)).findById(id);
@@ -275,7 +276,7 @@ class ReviewServiceTest {
 
 		try {
 			this.rServ.update(updatedReview, id);
-			fail("Expected a HttpClientErrorException with status code of 404");
+			fail("Expected a ReviewNotFoundException to be thrown");
 		} catch (Exception e) {
 			assertEquals(ReviewNotFoundException.class, e.getClass());
 			verify(this.mockReviewRepo, times(1)).findById(id);

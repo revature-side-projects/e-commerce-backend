@@ -87,7 +87,7 @@ class ProductServiceTest {
 		given(this.mockProductRepo.findById(id)).willReturn(Optional.empty());
 		try {
 			this.pServ.findById(id);
-			fail("Expected an exception to be throw");
+			fail("Expected ProductNotFoundException to be throw");
 		} catch (Exception e) {
 			assertEquals(ProductNotFoundException.class, e.getClass());
 		}
@@ -130,7 +130,7 @@ class ProductServiceTest {
 		given(this.mockProductRepo.findById(id)).willReturn(Optional.empty());
 		try {
 			this.pServ.delete(id);
-			fail("Expected an exception to be thrown");
+			fail("Expected ProductNotFoundException to be thrown");
 		} catch (Exception e) {
 			assertEquals(ProductNotFoundException.class, e.getClass());
 		}

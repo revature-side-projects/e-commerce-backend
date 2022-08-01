@@ -62,7 +62,7 @@ class UserServiceTest {
 		given(this.mockUserRepo.findByEmailAndPassword(email, password)).willReturn(Optional.empty());
 		try {
 			this.uServ.findByCredentials(email, password);
-			fail("Expected an exception to be thrown");
+			fail("Expected UserNotFoundException to be thrown");
 		} catch (Exception e) {
 			assertEquals(UserNotFoundException.class, e.getClass());
 		}
@@ -86,7 +86,7 @@ class UserServiceTest {
 		given(this.mockUserRepo.findById(id)).willReturn(Optional.empty());
 		try {
 			this.uServ.findById(id);
-			fail("Expected an exception to be thrown");
+			fail("Expected UserNotFoundException to be thrown");
 		} catch (Exception e) {
 			assertEquals(UserNotFoundException.class, e.getClass());
 		}
@@ -121,6 +121,7 @@ class UserServiceTest {
 		given(this.mockUserRepo.findByEmail(email)).willReturn(Optional.empty());
 		try {
 			this.uServ.findByEmail(email);
+			fail("Expected UserNotFoundException to be thrown");
 		} catch (Exception e) {
 			assertEquals(UserNotFoundException.class, e.getClass());
 		}

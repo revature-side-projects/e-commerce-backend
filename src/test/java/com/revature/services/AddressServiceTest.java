@@ -105,7 +105,7 @@ class AddressServiceTest {
 		given(this.mockAddressRepo.findById(id)).willReturn(Optional.empty());
 		try {
 			this.aServ.update(updateRequest, this.dummyUser);
-			fail("Expected an exception to be thrown");
+			fail("Expected AddressNotFoundException to be thrown");
 		} catch (Exception e) {
 			assertEquals(AddressNotFoundException.class, e.getClass());
 		}
