@@ -59,7 +59,6 @@ public class UserService {
 		if (!optionalUser.isPresent()) {
 			throw new UserNotFoundException(String.format("No user found with Email " + email));
 		}
-
 		return optionalUser;
 	}
 

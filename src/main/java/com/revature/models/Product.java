@@ -1,6 +1,9 @@
 package com.revature.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.openpojo.business.BusinessIdentity;
+import com.openpojo.business.annotation.BusinessKey;
+
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
@@ -26,32 +29,35 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
 @Entity
 @NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Table(name = "products")
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "reviews", "purchases" })
-@EqualsAndHashCode
 public class Product {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "product_id")
 	private int id;
+	@BusinessKey
 	@NotNull
 	@NonNull
 	private int quantity;
+	@BusinessKey
 	@NotNull
 	@NonNull
 	private double price;
+	@BusinessKey
 	@NotNull
 	@NonNull
 	private String description;
+	@BusinessKey
 	@NotNull
 	@NonNull
 	private String image;
+	@BusinessKey
 	@NotNull
 	@NonNull
 	private String name;
@@ -77,4 +83,13 @@ public class Product {
 		this.image = image;
 		this.name = name;
 	}
+	
+	@Override
+    public String toString() { return BusinessIdentity.toString(this); }
+
+    @Override
+    public boolean equals(final Object o) { return BusinessIdentity.areEqual(this, o); }
+
+    @Override
+    public int hashCode() { return BusinessIdentity.getHashCode(this); }
 }
