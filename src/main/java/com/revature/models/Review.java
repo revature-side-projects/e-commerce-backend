@@ -45,9 +45,11 @@ public class Review {
     private String review;
 
     @CreationTimestamp
+    @EqualsAndHashCode.Exclude
     private Timestamp posted;
 
     @UpdateTimestamp
+    @EqualsAndHashCode.Exclude
     private Timestamp updated;
 
     @ManyToOne
