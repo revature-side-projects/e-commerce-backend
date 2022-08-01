@@ -42,9 +42,6 @@ class PurchaseControllerTest {
 	private MockMvc mvc;
 
 	@Autowired
-	private JacksonTester<Purchase> jsonPurchase;
-
-	@Autowired
 	private JacksonTester<List<Purchase>> jsonPurchaseList;
 
 	@Autowired
@@ -122,10 +119,11 @@ class PurchaseControllerTest {
 
 	@Test
 	void testAddPurchase_Success() throws Exception {
-		PurchaseRequest newPurchase = new PurchaseRequest(this.dummyProduct.getId(), this.dummyPurchase.getQuantity());
+		int buyerId = this.dummyUser.getId();
+		PurchaseRequest newPurchase = new PurchaseRequest(this.dummyProduct.getId(), buyerId, this.dummyPurchase.getQuantity());
 		List<PurchaseRequest> addRequests = new LinkedList<>();
 		addRequests.add(newPurchase);
-		given(this.pServ.add(newPurchase, this.dummyUser)).willReturn(this.dummyPurchase);
+		given(this.pServ.add(newPurchase, buyerId)).willReturn(this.dummyPurchase);
 
 		List<Purchase> expected = new LinkedList<>();
 		expected.add(this.dummyPurchase);
@@ -137,16 +135,17 @@ class PurchaseControllerTest {
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		assertEquals(this.jsonPurchaseList.write(expected).getJson(), response.getContentAsString());
-		verify(this.pServ, times(1)).add(newPurchase, this.dummyUser);
+		verify(this.pServ, times(1)).add(newPurchase, buyerId);
 	}
 
 	@Test
 	void testAddPurchase_Failure_ProductNotFound() throws Exception {
+		int buyerId = this.dummyUser.getId();
 		int productId = this.dummyProduct.getId();
-		PurchaseRequest newPurchase = new PurchaseRequest(productId, this.dummyPurchase.getQuantity());
+		PurchaseRequest newPurchase = new PurchaseRequest(productId, buyerId, this.dummyPurchase.getQuantity());
 		List<PurchaseRequest> addRequests = new LinkedList<>();
 		addRequests.add(newPurchase);
-		given(this.pServ.add(newPurchase, this.dummyUser)).willThrow(new ProductNotFoundException(productId));
+		given(this.pServ.add(newPurchase, buyerId)).willThrow(new ProductNotFoundException(productId));
 
 		List<Purchase> expected = new LinkedList<>();
 		expected.add(this.dummyPurchase);
@@ -156,7 +155,7 @@ class PurchaseControllerTest {
 				.content(jsonContent).sessionAttr("user", this.dummyUser);
 		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
-		verify(this.pServ, times(1)).add(newPurchase, this.dummyUser);
+		verify(this.pServ, times(1)).add(newPurchase, buyerId);
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 	}
 

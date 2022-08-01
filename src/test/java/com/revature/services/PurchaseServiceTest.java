@@ -97,14 +97,16 @@ class PurchaseServiceTest {
 	@Test
 	void testAdd() {
 		int productId = this.dummyProduct.getId();
-		PurchaseRequest createRequest = new PurchaseRequest(productId, this.dummyPurchase.getQuantity());
+		int buyerId = this.dummyUser.getId();
+		PurchaseRequest createRequest = new PurchaseRequest(productId, buyerId, this.dummyPurchase.getQuantity());
+		given(this.uServ.findById(buyerId)).willReturn(Optional.of(this.dummyUser));
 		given(this.productServ.findById(createRequest.getId())).willReturn(Optional.of(this.dummyProduct));
 
 		Purchase newPurchase = new Purchase(0, null, this.dummyProduct, this.dummyUser, createRequest.getQuantity());
 		given(this.mockPurchaseRepo.save(newPurchase)).willReturn(this.dummyPurchase);
 
 		Purchase expected = this.dummyPurchase;
-		Purchase actual = this.purchaseServ.add(createRequest, this.dummyUser);
+		Purchase actual = this.purchaseServ.add(createRequest, buyerId);
 
 		assertEquals(expected, actual);
 		verify(this.productServ, times(1)).findById(productId);

@@ -177,8 +177,7 @@ class ReviewControllerTest {
 		given(this.rServ.findById(id)).willThrow(ReviewNotFoundException.class);
 
 		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/" + id).accept(MediaType.APPLICATION_JSON);
-		MockHttpServletResponse response = this.mvc.perform(request).andReturn()
-				.getResponse();
+		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 		verify(this.rServ, times(1)).findById(id);
@@ -186,9 +185,10 @@ class ReviewControllerTest {
 
 	@Test
 	void testAddReview_Success() throws Exception {
-		ReviewRequest newReview = new ReviewRequest(this.dummyProduct.getId(), this.dummyReview.getStars(),
+		int authorId = this.dummyUser.getId();
+		ReviewRequest newReview = new ReviewRequest(authorId, this.dummyProduct.getId(), this.dummyReview.getStars(),
 				this.dummyReview.getTitle(), this.dummyReview.getReview());
-		given(this.rServ.add(newReview, this.dummyUser)).willReturn(this.dummyReview);
+		given(this.rServ.add(newReview)).willReturn(this.dummyReview);
 
 		String jsonContent = this.jsonReviewRequest.write(newReview).getJson();
 		MockHttpServletRequestBuilder request = post(this.MAPPING_ROOT).contentType(MediaType.APPLICATION_JSON)
@@ -197,7 +197,7 @@ class ReviewControllerTest {
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		assertEquals(this.jsonReview.write(this.dummyReview).getJson(), response.getContentAsString());
-		verify(this.rServ, times(1)).add(newReview, this.dummyUser);
+		verify(this.rServ, times(1)).add(newReview);
 	}
 
 	@Test
@@ -216,13 +216,13 @@ class ReviewControllerTest {
 	void testUpdateReview_Success() throws Exception {
 		int reviewId = this.dummyReview.getId();
 		int authorId = this.dummyUser.getId();
-		ReviewRequest updatedReview = new ReviewRequest(this.dummyProduct.getId(), 5, "Updated review",
+		ReviewRequest updatedReview = new ReviewRequest(authorId, this.dummyProduct.getId(), 5, "Updated review",
 				"This new version of the product made it a lot better");
 		this.dummyReview.setTitle(updatedReview.getTitle());
 		this.dummyReview.setReview(updatedReview.getReview());
 		this.dummyReview.setStars(updatedReview.getStars());
 
-		given(this.rServ.update(updatedReview, reviewId, authorId)).willReturn(this.dummyReview);
+		given(this.rServ.update(updatedReview, reviewId)).willReturn(this.dummyReview);
 
 		String jsonContent = this.jsonReviewRequest.write(updatedReview).getJson();
 		MockHttpServletRequestBuilder request = put(this.MAPPING_ROOT + "/" + reviewId)
@@ -231,7 +231,7 @@ class ReviewControllerTest {
 
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		assertEquals(this.jsonReview.write(this.dummyReview).getJson(), response.getContentAsString());
-		verify(this.rServ, times(1)).update(updatedReview, reviewId, authorId);
+		verify(this.rServ, times(1)).update(updatedReview, reviewId);
 	}
 
 	@Test

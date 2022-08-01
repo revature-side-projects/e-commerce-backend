@@ -42,6 +42,5 @@ auth0:
 application:
   bucket:
     name: revazon-image-bucket
-
 #auth0:
 #  audience: http://backend-env.eba-g9uchpeu.us-west-2.elasticbeanstalk.com/

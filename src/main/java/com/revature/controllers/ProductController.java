@@ -142,18 +142,18 @@ public class ProductController {
 
     @GetMapping("/partial-search/{name}")
     public ResponseEntity<List<Product>> getProductsByNameContains(@PathVariable("name") String name) {
-    	
+
         return ResponseEntity.ok(productService.findByNameContains(name));
     }
     @GetMapping("/price-range")
     public ResponseEntity<List<Product>> getProductsByPriceRange(@RequestBody PriceRangeRequest priceRangeRequest) {
-    	
+
         return ResponseEntity.ok(productService.findByPriceRange(priceRangeRequest.getMinPrice(),priceRangeRequest.getMaxPrice()));
     }
 
     @GetMapping("/filter-rating")
     public ResponseEntity<List<Product>> filterByRating() {
-    	
+
         return ResponseEntity.ok(productService.filterByRating());
     }
 }

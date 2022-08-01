@@ -53,37 +53,39 @@ class AddressServiceTest {
 
 	@Test
 	void testAddAddress() {
-		AddressRequest createRequest = new AddressRequest(this.dummyAddress.getStreet(),
+		AddressRequest createRequest = new AddressRequest(this.dummyUser.getId(), this.dummyAddress.getStreet(),
 				this.dummyAddress.getSecondary(), this.dummyAddress.getCity(), this.dummyAddress.getZip(),
 				this.dummyAddress.getState());
-		Set<User> users = new HashSet<User>();
-		users.add(null);
+		Set<User> users = new HashSet<>();
+		users.add(this.dummyUser);
 		Address newAddress = new Address(0, createRequest.getStreet(), createRequest.getSecondary(),
 				createRequest.getCity(), createRequest.getZip(), createRequest.getState(), users);
+		this.dummyAddress.setUsers(users);
+
 		given(this.mockAddressRepo.save(newAddress)).willReturn(this.dummyAddress);
 
 		Address expected = this.dummyAddress;
-		Address actual = this.aServ.addAddress(createRequest, null);
+		Address actual = this.aServ.addAddress(createRequest, this.dummyUser);
 
 		assertEquals(expected, actual);
 		verify(this.mockAddressRepo, times(1)).save(newAddress);
 	}
 
-	// FIXME Fix implementation code to make this test pass
 	@Test
-	@Disabled("Waiting on Hector's team to fix implementation and make this test pass")
 	void testUpdate() {
+		int id = this.dummyAddress.getId();
 		Set<User> users = this.dummyAddress.getUsers();
 		users.add(this.dummyUser);
-		AddressRequest updateRequest = new AddressRequest(this.dummyAddress.getStreet(),
+		AddressRequest updateRequest = new AddressRequest(id, this.dummyAddress.getStreet(),
 				this.dummyAddress.getSecondary(), this.dummyAddress.getCity(), this.dummyAddress.getZip(),
 				this.dummyAddress.getState());
 		this.dummyAddress.setUsers(users);
-		int id = this.dummyAddress.getId();
+
 		given(this.mockAddressRepo.findById(id)).willReturn(Optional.of(this.dummyAddress));
 		given(this.mockAddressRepo.save(this.dummyAddress)).willReturn(this.dummyAddress);
+
 		Address expected = this.dummyAddress;
-		Address actual = this.aServ.update(updateRequest, id, this.dummyUser);
+		Address actual = this.aServ.update(updateRequest, this.dummyUser);
 
 		assertEquals(expected, actual);
 		verify(this.mockAddressRepo, times(1)).save(this.dummyAddress);
