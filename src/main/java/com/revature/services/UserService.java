@@ -39,9 +39,17 @@ public class UserService {
 
 	public Optional<User> findByEmail(String email) {
 		Optional<User> optionalUser = userRepository.findByEmail(email);
+<<<<<<< HEAD
 		if (!optionalUser.isPresent()) {
 			throw new UserNotFoundException(String.format("No user found with email %s", email));
 		}
+=======
+
+		if (!optionalUser.isPresent()) {
+			throw new UserNotFoundException(String.format("No user found with Email " + email));
+		}
+
+>>>>>>> 9949ac351aa49dce9af0e0eeb09e1ddd52cdd6f5
 		return optionalUser;
 	}
 

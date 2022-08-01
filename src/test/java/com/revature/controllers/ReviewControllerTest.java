@@ -177,8 +177,7 @@ class ReviewControllerTest {
 		given(this.rServ.findById(id)).willThrow(ReviewNotFoundException.class);
 
 		MockHttpServletRequestBuilder request = get(this.MAPPING_ROOT + "/" + id).accept(MediaType.APPLICATION_JSON);
-		MockHttpServletResponse response = this.mvc.perform(request).andReturn()
-				.getResponse();
+		MockHttpServletResponse response = this.mvc.perform(request).andReturn().getResponse();
 
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 		verify(this.rServ, times(1)).findById(id);
@@ -186,7 +185,8 @@ class ReviewControllerTest {
 
 	@Test
 	void testAddReview_Success() throws Exception {
-		ReviewRequest newReview = new ReviewRequest(this.dummyUser.getId(), this.dummyProduct.getId(), this.dummyReview.getStars(),
+		int authorId = this.dummyUser.getId();
+		ReviewRequest newReview = new ReviewRequest(authorId, this.dummyProduct.getId(), this.dummyReview.getStars(),
 				this.dummyReview.getTitle(), this.dummyReview.getReview());
 		given(this.rServ.add(newReview)).willReturn(this.dummyReview);
 

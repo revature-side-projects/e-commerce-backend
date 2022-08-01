@@ -32,6 +32,7 @@ public class Purchase {
 
     @CreationTimestamp
     @Column(name = "order_placed")
+    @EqualsAndHashCode.Exclude
     private Timestamp orderPlaced;
 
     @ManyToOne

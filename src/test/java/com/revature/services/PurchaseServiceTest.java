@@ -116,8 +116,9 @@ class PurchaseServiceTest {
 	@Test
 	void testAdd() {
 		int productId = this.dummyProduct.getId();
-		PurchaseRequest createRequest = new PurchaseRequest(productId, this.dummyUser.getId(), this.dummyPurchase.getQuantity());
-		given(this.uServ.findById(this.dummyUser.getId())).willReturn(Optional.of(this.dummyUser));
+		int buyerId = this.dummyUser.getId();
+		PurchaseRequest createRequest = new PurchaseRequest(productId, buyerId, this.dummyPurchase.getQuantity());
+		given(this.uServ.findById(buyerId)).willReturn(Optional.of(this.dummyUser));
 		given(this.productServ.findById(createRequest.getId())).willReturn(Optional.of(this.dummyProduct));
 		given(LocalDateTime.now()).willReturn(LocalDateTime.parse("2007-12-03T10:15:30"));
 		Purchase newPurchase = new Purchase();
@@ -128,7 +129,7 @@ class PurchaseServiceTest {
 		given(this.mockPurchaseRepo.save(newPurchase)).willReturn(this.dummyPurchase);
 
 		Purchase expected = this.dummyPurchase;
-		Purchase actual = this.purchaseServ.add(createRequest, this.dummyUser.getId());
+		Purchase actual = this.purchaseServ.add(createRequest, buyerId);
 
 		assertEquals(expected, actual);
 		verify(this.productServ, times(1)).findById(productId);

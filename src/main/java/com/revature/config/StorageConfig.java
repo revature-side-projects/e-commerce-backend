@@ -22,12 +22,7 @@ public class StorageConfig {
 	private String region;
 	@Value("{coud.aws.endpoint}")
 	private String endpoint;
-<<<<<<< HEAD
-
-=======
 	
-	// create a client to connect with the S3 bucket
->>>>>>> 40fac1a3d2d936174e1d747c2689a39f9b9bbe71
 	@Bean
 	public AmazonS3 generateS3client() {
 		AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
