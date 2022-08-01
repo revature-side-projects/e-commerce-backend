@@ -33,7 +33,7 @@ import com.revature.services.PurchaseService;
 
 @RestController
 @RequestMapping("api/purchases")
-@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
+@CrossOrigin(origins = "*")
 public class PurchaseController {
 
 	private final PurchaseService pserv;

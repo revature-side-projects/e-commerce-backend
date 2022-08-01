@@ -25,11 +25,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        /*
-         * This is where we configure the security required for our endpoints and setup
-         * our app to serve as
-         * an OAuth2 Resource Server, using JWT validation.
-         */
         http.authorizeRequests()
                 .mvcMatchers("/api/product").permitAll()
                 .mvcMatchers(HttpMethod.GET, "/api/product/**").permitAll()
@@ -49,13 +44,7 @@ public class SecurityConfig {
 
     @Bean
     JwtDecoder jwtDecoder() {
-        /*
-         * By default, Spring Security does not validate the "aud" claim of the token,
-         * to ensure that this token is
-         * indeed intended for our app. Adding our own validator is easy to do:
-         */
-
-        NimbusJwtDecoder jwtDecoder = (NimbusJwtDecoder) JwtDecoders.fromOidcIssuerLocation(issuer);
+        NimbusJwtDecoder jwtDecoder =  JwtDecoders.fromOidcIssuerLocation(issuer);
 
         OAuth2TokenValidator<Jwt> audienceValidator = new AudienceValidator(audience);
         OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(issuer);

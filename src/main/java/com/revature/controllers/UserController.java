@@ -46,10 +46,11 @@ public class UserController {
 	}
 
 	@PutMapping
-	public ResponseEntity<User> update(@RequestBody UserRequest user) {
-		User newUser = new User(user.getId(),user.getEmail(),user.getPassword(),user.getFirstName(),user.getLastName(), user.getRole(),
-				new HashSet<>(), new HashSet<>(), new HashSet<>());
-
+	public ResponseEntity<User> update(@RequestBody User user) {
+		Optional<User> newUserOptional = userv.findById(user.getId());
+		User newUser = newUserOptional.get();
+		newUser.setFirstName(user.getFirstName());
+		newUser.setLastName(user.getLastName());
 		return ResponseEntity.ok(userv.save(newUser));
 	}
 
