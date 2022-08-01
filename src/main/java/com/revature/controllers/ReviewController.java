@@ -1,9 +1,6 @@
 package com.revature.controllers;
 
 import java.util.List;
-import java.util.Optional;
-
-import javax.servlet.http.HttpSession;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.dtos.ReviewRequest;
 import com.revature.models.Review;
-import com.revature.models.User;
 import com.revature.services.ReviewService;
 
 /**
