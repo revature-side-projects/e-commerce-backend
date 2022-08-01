@@ -12,6 +12,11 @@ import com.revature.models.Address;
 import com.revature.models.User;
 import com.revature.repositories.AddressRepository;
 
+/**
+ * 
+ * Can add an address, update an existing Address, or find all Addresses belonging to a User
+ *
+ */
 @Service
 public class AddressService {
 
@@ -23,6 +28,12 @@ public class AddressService {
 		this.userService = userService;
 	}
 
+	/**
+	 * Creates a new Address and saves to Address Repository
+	 * @param addressRequest - An Address
+	 * @param u - A User
+	 * @return Address
+	 */
 	public Address addAddress(AddressRequest addressRequest, User u) {
 		Address address = new Address(addressRequest.getStreet(), addressRequest.getCity(),
 				addressRequest.getZip(), addressRequest.getState());
@@ -33,6 +44,12 @@ public class AddressService {
 		return addressRepo.save(address);
 	}
 
+	/**
+	 * Updates an existing Address. Address must already exist or will throw exception.
+	 * @param addressRequest - An Address
+	 * @param user
+	 * @return Address or throws AddressNotFoundException
+	 */
 	public Address update(AddressRequest addressRequest, User user) {
 		Optional<Address> optionalAddress = addressRepo.findById(addressRequest.getId());
 		if (optionalAddress.isPresent()) {
@@ -51,6 +68,11 @@ public class AddressService {
 		}
 	}
 
+	/**
+	 * Finds all Addresses belonging to a User
+	 * @param u - User
+	 * @return Set of Addresses
+	 */
 	public Set<Address> findUsersAddresses(User u) {
 		return addressRepo.findByUsers(u);
 	}
