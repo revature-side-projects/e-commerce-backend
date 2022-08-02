@@ -7,8 +7,6 @@ import com.openpojo.business.annotation.BusinessKey;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
